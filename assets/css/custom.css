@@ -1,0 +1,85 @@
+.center-block {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.content-section-mobile {
+	border-top: 1px solid #e7e7e7;
+	border-bottom: 1px solid #e7e7e7;
+	padding: 30px 0;
+}
+
+.centering {
+	float: none !important;
+	margin: 0 auto !important;
+}
+
+.navbar-form {
+	width: 35% !important;
+}
+
+@media ( max-width : 768px) {
+	.navbar-form {
+		width: 100% !important;
+	
+	}
+}
+@media ( min-width : 768px) {
+	.nav  > li{
+		margin-right:-15px !important;
+	
+	}
+}
+
+
+.twitter-typeahead .tt-hint {
+	display: block;
+	height: 34px;
+	padding: 6px 12px;
+	font-size: 14px;
+	line-height: 1.428571429;
+	border: 1px solid transparent;
+	border-radius: 4px;
+}
+
+.twitter-typeahead .hint-small {
+	height: 30px;
+	padding: 5px 10px;
+	font-size: 12px;
+	border-radius: 3px;
+	line-height: 1.5;
+}
+
+.twitter-typeahead .hint-large {
+	height: 45px;
+	padding: 10px 16px;
+	font-size: 18px;
+	border-radius: 6px;
+	line-height: 1.33;
+}
+
+.twitter-typeahead {
+	width: 100%;
+}
+
+.tt-dropdown-menu {
+	width: 100%;
+	background-color: white;
+	
+}
+
+.tt-hint {
+	width: 100%;
+}
+
+
+.tt-suggestions{
+	
+	margin-right: 1px;
+}
+
+.tt-suggestion p{
+	padding-left: 13px;
+
+	}

@@ -325,8 +325,8 @@ class devPlan {
                 }
             }
             //   console.log(data);
-          
-           $("#search-panel-body").attr("display", "none");
+
+            $("#search-panel-body").attr("display", "none");
             $("#search-results").append(data);
         } else {
             console.log("Too short query");
@@ -340,6 +340,4 @@ function getUrlParam(key: string): string {
     var result = new RegExp(key + "=([^&]*)", "i").exec(window.location.search.replace(/\+/g, " "));
     return result && decodeURIComponent(result[1]) || "";
 }
-
-
 

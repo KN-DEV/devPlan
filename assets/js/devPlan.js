@@ -247,6 +247,10 @@ var devPlan = (function () {
 
             //   console.log(data);
             $("#search-panel-body").attr("display", "none");
+
+            if (data.length == 0) {
+                data = "<tr><td class='text-center'>Brak wyników. Spróbuj jeszcze raz ;)</td</td>";
+            }
             $("#search-results").append(data);
         } else {
             console.log("Too short query");

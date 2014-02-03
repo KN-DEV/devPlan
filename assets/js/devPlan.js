@@ -88,6 +88,8 @@ var devPlan = (function () {
             devPlan.setTutors(tutors[0]);
             devPlan.setPlaces(places[0]);
 
+            $("#search-input").removeAttr('disabled').attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn').attr('data-provide', "typeahead");
+
             $("#search-input").typeahead([
                 {
                     name: "groups",
@@ -101,12 +103,11 @@ var devPlan = (function () {
                 }
             ]);
 
-            $("#search-input").removeAttr('disabled').attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn');
-
             $("#search-button").removeAttr("disabled").empty().append("Szukaj");
 
             if ($("#search-panel-input").length) {
-                $("#search-panel-input").attr('value', getUrlParam('search')).attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn');
+                $("#search-panel-input").attr('value', getUrlParam('search')).attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn').removeAttr("disabled");
+                ;
                 $("#search-panel .panel-body").remove();
 
                 devPlan.showSearchResults(getUrlParam("search"));

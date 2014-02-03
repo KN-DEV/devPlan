@@ -153,6 +153,13 @@ class devPlan {
                 devPlan.setTutors(tutors[0]);
                 devPlan.setPlaces(places[0]);
 
+
+                $("#search-input")
+                    .removeAttr('disabled')
+
+                    .attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn')
+                    .attr('data-provide', "typeahead");
+
                 $("#search-input").typeahead([
                     {
                         name: "groups",
@@ -166,9 +173,6 @@ class devPlan {
                     }
                 ]);
 
-                $("#search-input")
-                    .removeAttr('disabled')
-                    .attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn');
 
                 $("#search-button")
                     .removeAttr("disabled")
@@ -177,9 +181,12 @@ class devPlan {
 
 
                 if ($("#search-panel-input").length) {
+
+
                     $("#search-panel-input")
                         .attr('value', getUrlParam('search'))
                         .attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn')
+                        .removeAttr("disabled");
                     ;
                     $("#search-panel .panel-body").remove();
 
@@ -296,7 +303,7 @@ class devPlan {
             for (var i = 0; i < devPlan.getGroups().length; i++) {
 
                 if (devPlan.getGroups()[i].name.toString().toUpperCase().indexOf(query) !== -1) {
-                    data = data+ "<tr><td>" + devPlan.getGroups()[i].name + "<br/>" +
+                    data = data + "<tr><td>" + devPlan.getGroups()[i].name + "<br/>" +
                     "<small><a href='timetable.html?timetable=g" + devPlan.getGroups()[i].id + "'>Pokaż plan</a></small></td></tr>";
                 }
 
@@ -323,7 +330,7 @@ class devPlan {
         } else {
             console.log("Too short query");
         }
-    
+
     }
 }
 

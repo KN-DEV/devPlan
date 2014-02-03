@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" manifest="devPlan.appcache">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,18 +8,18 @@
 <meta name="keywords"
 	content="plan, zajęć, spersonalizowany, uek, uniwersytet, ekonomiczny, kraków">
 <meta name="author" content="Koło Naukowe Programistów >dev">
-<title>devPlan UEK</title>
+<title>devPlan UEK - Mój plan</title>
 <!-- Bootstrap core CSS -->
-<link href="assets/css/bootstrap.css" rel="stylesheet">
+<link href="./assets/css/bootstrap.css" rel="stylesheet">
 <!-- Custom Google Web Font -->
-<link href="assets/font-awesome/css/font-awesome.min.css"
+<link href="./assets/font-awesome/css/font-awesome.min.css"
 	rel="stylesheet">
 <link
 	href='http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900,100italic,300italic,400italic,700italic,900italic'
 	rel='stylesheet' type='text/css'>
 <!-- Add custom CSS here -->
-<link href="assets/css/landing-page.css" rel="stylesheet">
-<link href="assets/css/custom.css" rel="stylesheet">
+<link href="./assets/css/landing-page.css" rel="stylesheet">
+<link href="./assets/css/custom.css" rel="stylesheet">
 </head>
 <body>
 	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -51,11 +51,13 @@
 						<div class="hidden-xs">
 							<form class="navbar-form input-group navbar-right"
 								action="search.html" method="get" role="search">
-								<input id="search" name="search" data-provide="typeahead"
+								<input id="search-input" name="search" data-provide="typeahead"
 									autocomplete="off" type="text" class="form-control"
-									placeholder="Wyszukaj w devPlan UEK"> <span
-									class="input-group-btn">
-									<button class="btn btn-success">Szukaj</button>
+									placeholder="w8 a minute" /> <span class="input-group-btn">
+									<button id="search-button" class="btn btn-success"
+										disabled="disabled">
+										<i class="fa fa-refresh fa-spin"></i>
+									</button>
 								</span>
 							</form>
 						</div>
@@ -65,6 +67,61 @@
 			</div>
 		</div>
 	</nav>
+	<div class="container" style="margin-top: 70px">
+		<div class="row">
+			<button class="btn btn-primary btn-lg" data-toggle="modal"
+				data-target="#myModal">Launch demo modal</button>
+		</div>
+	</div>
+
+	<!-- Modal -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">Stwórz swój plan</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label for="exampleInputEmail1">Email address</label>
+						<div class="input-group">
+							<input id="group" name="group.1" data-provide="typeahead"
+								autocomplete="off" type="text" class="form-control"
+								placeholder="Enter email"> <span class="input-group-btn">
+								<button type="button" class="btn btn-danger" title="Usuń">
+									<i class="fa fa-fw fa-trash-o"></i>
+								</button>
+							</span>
+						</div>
+
+					</div>
+					<div class="form-group">
+						<div class="input-group">
+
+							<button type="button" class="btn btn-danger" title="Dodaj">
+								<i class="fa fa-fw fa-plus"></i>
+							</button>
+
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal"
+						title="Anuluj">Close</button>
+					<button type="button" class="btn btn-primary" title="Zapisz">
+						<i class="fa fa-fw fa-save"></i>
+					</button>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+
 	<footer>
 		<div class="container">
 			<div class="row">
@@ -72,16 +129,13 @@
 					<ul class="list-inline">
 						<li><a href="index.html"><strong>devPlan <small>UEK</small></strong></a></li>
 						<li class="footer-menu-divider">&sdot;</li>
-						<li><a href="search.html">Wyszukiwarka</a></li>
+						<li><a href="search.html">Szukaj</a></li>
 						<li class="footer-menu-divider">&sdot;</li>
 						<li><a href="timetable.html">Mój plan</a></li>
-
-						<li class="footer-menu-divider">&sdot;</li>
-						<li><a href="#about">Kontakt</a></li>
 					</ul>
 					<p class="copyright text-muted small">
-						Copyright &copy; <a href="http://dev.uek.krakow.pl">Koło
-							Naukowe Programistów >dev</a>
+						<a href="http://dev.uek.krakow.pl">Koło Naukowe Programistów
+							>dev</a>
 					</p>
 				</div>
 			</div>
@@ -90,7 +144,12 @@
 	<!-- JavaScript -->
 	<script src="assets/js/jquery-1.10.2.js"></script>
 	<script src="assets/js/bootstrap.js"></script>
+	<script src="assets/js/node_modules/hogan.js/lib/hogan.js"></script>
+
 	<script src="assets/js/typeahead.min.js"></script>
 	<script src="assets/js/devPlan.js"></script>
+	<script type="text/javascript">
+		new devPlan();
+	</script>
 </body>
 </html>

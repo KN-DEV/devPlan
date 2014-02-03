@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -51,11 +51,13 @@
 						<div class="hidden-xs">
 							<form class="navbar-form input-group navbar-right"
 								action="search.html" method="get" role="search">
-								<input id="search" name="search" data-provide="typeahead"
+								<input id="search-input" name="search" data-provide="typeahead"
 									autocomplete="off" type="text" class="form-control"
-									placeholder="Wyszukaj w devPlan UEK"> <span
-									class="input-group-btn">
-									<button class="btn btn-success">Szukaj</button>
+									placeholder="w8 a minute" /> <span class="input-group-btn">
+									<button id="search-button" type="submit" class="btn btn-success"
+										disabled="disabled">
+										<i class="fa fa-refresh fa-spin"></i>
+									</button>
 								</span>
 							</form>
 						</div>
@@ -125,7 +127,7 @@
 
 				<div class="col-lg-7 col-md-6">
 					<h2 class="section-heading">
-						Widzisz tylko swoje zajęcia językowe<br /> <small> Z <strong>devPlan
+						Widzisz tylko swoje zajęcia językowe<br /> <small>Z <strong>devPlan
 								<small>UEK</small>
 						</strong> widzisz te zajęcia językowe na które jesteś w rzeczywistości
 							zapisany.
@@ -153,7 +155,7 @@
 			<div class="row">
 				<div class="col-lg-5 col-md-6">
 					<img class="img-responsive" src="http://placehold.it/1200x600"
-						alt="">
+						alt="Wyszukiwanie wykładowców">
 				</div>
 				<div class="col-lg-7 col-md-6">
 					<h2 class="section-heading">
@@ -177,17 +179,17 @@
 			<div class="row">
 				<div class="col-lg-7 col-md-6">
 					<h2>
-						Zbyt dużo widocznychp przedmiotów?<br /> <small>
-							Filtrowanie planu to już nie problem. </small>
+						Zbyt dużo widocznych przedmiotów?<br /> <small>Filtrowanie
+							planu to już nie problem.</small>
 					</h2>
 					<p class="lead">
 						<strong>devPlan <small>UEK</small></strong> daje Ci możliość
-						filtrowania przedmiotów z twojego planu.
+						filtrowania przedmiotów z Twojego planu.
 					</p>
 				</div>
 				<div class="col-lg-5 col-md-6 ">
 					<img class="img-responsive" src="http://placehold.it/1200x600"
-						alt="">
+						alt="Filtrowanie planu">
 				</div>
 			</div>
 		</div>
@@ -214,9 +216,12 @@
 	<!-- JavaScript -->
 	<script src="assets/js/jquery-1.10.2.js"></script>
 	<script src="assets/js/bootstrap.js"></script>
+	<script src="assets/js/node_modules/hogan.js/lib/hogan.js"></script>
+
 	<script src="assets/js/typeahead.min.js"></script>
 	<script src="assets/js/devPlan.js"></script>
 	<script type="text/javascript">
+		new devPlan();
 	</script>
 </body>
 </html>

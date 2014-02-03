@@ -3,6 +3,7 @@
 /**
  * Cash service
  */
+declare var Hogan;
 module Cash {
     /**
      * Model of group data
@@ -23,28 +24,23 @@ module Cash {
     export interface Place {
         id: number;
         location: string;
+
     }
     /**
      * Model of Timetable param data
      */
-    export interface Timetable_Params {
+    export interface TimetableParams {
         group_id: number[];
         tutor_id: number[];
         place_id: number[];
     }
-    /**
-     * Model of activity datatyp
-     */
-    export interface Activity {
 
-    }
     export interface Timetable {
         _id: string;
         access_url: string;
-        params: Timetable_Params;
+        params: TimetableParams;
         activities: any;
     }
-
     /**
      * Cash API implementation
      */
@@ -59,32 +55,31 @@ module Cash {
         public static jqueryAjaxSettings: JQueryAjaxSettings = {
             dataType: "json",
             type: "GET",
-            cache: true,
-            async: false,
-            success: (data): any => { console.log(data); }
+            success: (data) => { },
         };
 
         /**
          * Gets list of all groups available in cash service
          */
-        public static getGroupsList(jqueryAjaxSettings: JQueryAjaxSettings = Cash.Api.jqueryAjaxSettings): void {
+        public static getGroupsList(jqueryAjaxSettings: JQueryAjaxSettings = Cash.Api.jqueryAjaxSettings): JQueryXHR {
             jqueryAjaxSettings.url = Cash.Api.host + "groups";
-            $.ajax(jqueryAjaxSettings);
+            return $.ajax(jqueryAjaxSettings);
 
         }
         /**
          * Gets list of all tutors available in cash service
          */
-        public static getTutorsList(jqueryAjaxSettings: JQueryAjaxSettings = Cash.Api.jqueryAjaxSettings): void {
+        public static getTutorsList(jqueryAjaxSettings: JQueryAjaxSettings = Cash.Api.jqueryAjaxSettings): JQueryXHR {
             jqueryAjaxSettings.url = Cash.Api.host + "tutors";
-            $.ajax(jqueryAjaxSettings);
+            return $.ajax(jqueryAjaxSettings);
+
         }
         /**
         * Gets list of all places available in cash service
         */
-        public static getPlacesList(jqueryAjaxSettings: JQueryAjaxSettings = Cash.Api.jqueryAjaxSettings): void {
+        public static getPlacesList(jqueryAjaxSettings: JQueryAjaxSettings = Cash.Api.jqueryAjaxSettings): JQueryXHR {
             jqueryAjaxSettings.url = Cash.Api.host + "places";
-            $.ajax(jqueryAjaxSettings);
+            return $.ajax(jqueryAjaxSettings);
         }
         /**
          * Registers timetable
@@ -95,6 +90,11 @@ module Cash {
             $.ajax(jqueryAjaxSettings);
             return this;
 
+        }
+
+        public static getTimetable(timetableParams: Cash.TimetableParams, jqueryAjaxSettings: JQueryAjaxSettings = Cash.Api.jqueryAjaxSettings): JQueryXHR {
+            jqueryAjaxSettings.url = Cash.Api.host + "places";
+            return $.ajax(jqueryAjaxSettings);
         }
     }
 }
@@ -121,107 +121,121 @@ interface DatumPlace {
  * devPlan App
  */
 class devPlan {
+
     /**
      * Keeps list of groups from Cash service
      */
-    groups: Cash.Group[] = [];
+    static groups: Cash.Group[] = [];
 
     /**
      * Keeps list of tutors from Cash service
      */
-    tutors: Cash.Tutor[] = [];
+    static tutors: Cash.Tutor[] = [];
     /**
      * Keeps list of places from Cash service
      */
-    places: Cash.Place[] = [];
+    static places: Cash.Place[] = [];
     /**
      * 
      */
     constructor() {
-        this.loadGroups();
-        this.loadTutors();
-        this.loadPlaces();
+        $("#search-input").attr('value', getUrlParam('search'));
+
+        if ($("#search-panel-input").length) {
+            $("#search-panel-input").attr('value', getUrlParam('search'));
+        }
+        $.when(
+            Cash.Api.getGroupsList(),
+            Cash.Api.getTutorsList(),
+            Cash.Api.getPlacesList()
+            ).done((groups, tutors, places) => {
+                devPlan.setGroups(groups[0]);
+                devPlan.setTutors(tutors[0]);
+                devPlan.setPlaces(places[0]);
+
+                $("#search-input").typeahead([
+                    {
+                        name: "groups",
+                        local: devPlan.generateTypeaheadDatumsForGroups(devPlan.getGroups()),
+                    }, {
+                        name: "tutors",
+                        local: devPlan.generateTypeaheadDatumsForTutors(devPlan.getTutors()),
+                    }, {
+                        name: "places",
+                        local: devPlan.generateTypeaheadDatumsForPlaces(devPlan.getPlaces()),
+                    }
+                ]);
+
+                $("#search-input")
+                    .removeAttr('disabled')
+                    .attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn');
+
+                $("#search-button")
+                    .removeAttr("disabled")
+                    .empty()
+                    .append("Szukaj");
 
 
+                if ($("#search-panel-input").length) {
+                    $("#search-panel-input")
+                        .attr('value', getUrlParam('search'))
+                        .attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn')
+                    ;
+                    $("#search-panel .panel-body").remove();
+
+                    devPlan.showSearchResults(getUrlParam("search"));
+                }
+            });
     }
     /**
-     * 
+     *
      */
-    public getGroups(): Cash.Group[] {
-        return this.groups;
+    static getGroups(): Cash.Group[] {
+        return devPlan.groups;
     }
     /**
-     * 
+     *
      */
-    public setGroups(groups: Cash.Group[]): devPlan {
-        this.groups = groups;
-        return this;
+    static setGroups(groups: Cash.Group[]): devPlan {
+
+
+
+        devPlan.groups = groups.sort((a: any, b: any) => {return a.name - b.name });
+        return devPlan;
     }
 
     /**
-     * 
+     *
      */
-    public getTutors(): Cash.Tutor[] {
-        return this.tutors;
+    static getTutors(): Cash.Tutor[] {
+        return devPlan.tutors;
     }
 
     /**
-     * 
+     *
      */
-    public setTutors(tutors: Cash.Tutor[]): devPlan {
-        this.tutors = tutors;
-        return this;
+    static setTutors(tutors: Cash.Tutor[]): devPlan {
+        devPlan.tutors = tutors.sort((a: any, b: any) => {return a.name - b.name });
+        return devPlan;
     }
     /**
-     * 
+     *
      */
-    public getPlaces(): Cash.Place[] {
-        return this.places;
+    static getPlaces(): Cash.Place[] {
+        return devPlan.places;
     }
     /**
-     * 
+     *
      */
-    public setPlaces(places: Cash.Place[]): devPlan {
-        this.places = places;
-        return this;
+    static setPlaces(places: Cash.Place[]): devPlan {
+        devPlan.places = places.sort((a: any, b: any) => {return a.location - b.location });
+        return devPlan;
     }
+
     /**
-     * 
+     *
      */
-    loadGroups(): any {
-        var jqueryAjaxSettings = Cash.Api.jqueryAjaxSettings;
-        jqueryAjaxSettings.success = (data: Cash.Group[]): void => {
-            this.setGroups(data);
-        };
-        Cash.Api.getGroupsList(jqueryAjaxSettings);
-        return this;
-    }
-    /**
-     * 
-     */
-    loadTutors(): any {
-        var jqueryAjaxSettings = Cash.Api.jqueryAjaxSettings;
-        jqueryAjaxSettings.success = (data): void=> {
-            this.setTutors(data);
-        };
-        Cash.Api.getTutorsList(jqueryAjaxSettings);
-        return this;
-    }
-    /**
-     * @TODO sprawdzić co zwraca success
-     */
-    loadPlaces(): devPlan {
-        var jqueryAjaxSettings = Cash.Api.jqueryAjaxSettings;
-        jqueryAjaxSettings.success = (data: Cash.Place[]): void => {
-            this.setPlaces(data);
-        };
-        Cash.Api.getPlacesList(jqueryAjaxSettings);
-        return this;
-    }
-    /**
-     * 
-     */
-    getTypeaheadDatumsForGroups(groups: Cash.Group[]= this.groups): DatumGroup[] {
+    public static generateTypeaheadDatumsForGroups(groups: Cash.Group[]): DatumGroup[] {
         var data: DatumGroup[] = [];
         for (var i = 0; i < groups.length; i++) {
             data[i] = {
@@ -234,11 +248,10 @@ class devPlan {
         return data;
     }
     /**
-     * 
+     *
      */
-    getTypeaheadDatumsForTutors(tutors: Cash.Tutor[]= this.tutors): DatumTutor[] {
+    public static generateTypeaheadDatumsForTutors(tutors: Cash.Tutor[]): DatumTutor[] {
         var data: DatumTutor[] = [];
-
         for (var i = 0; i < tutors.length; i++) {
             data[i] = {
                 value: tutors[i].name,
@@ -251,9 +264,9 @@ class devPlan {
         return data;
     }
     /**
-     * 
+     *
      */
-    getTypeaheadDatumsForPlaces(places: Cash.Place[]= this.places): DatumPlace[] {
+    public static generateTypeaheadDatumsForPlaces(places: Cash.Place[]): DatumPlace[] {
         var data: DatumPlace[] = [];
         for (var i = 0; i < places.length; i++) {
             data[i] = {
@@ -265,18 +278,60 @@ class devPlan {
         };
         return data;
     }
+
+
+
+
+    static showSearchResults(query: string = ""): void {
+
+        $("#search-results").empty();
+
+
+        console.log("Query: " + query);
+        query = query.toString().toUpperCase();
+        if (query.length >= 3) {
+
+            var data = "";
+
+            for (var i = 0; i < devPlan.getGroups().length; i++) {
+
+                if (devPlan.getGroups()[i].name.toString().toUpperCase().indexOf(query) !== -1) {
+                    data = data+ "<tr><td>" + devPlan.getGroups()[i].name + "<br/>" +
+                    "<small><a href='timetable.html?timetable=g" + devPlan.getGroups()[i].id + "'>Pokaż plan</a></small></td></tr>";
+                }
+
+            }
+
+            for (var i = 0; i < devPlan.getTutors().length; i++) {
+                if (devPlan.getTutors()[i].name.toString().toUpperCase().indexOf(query) !== -1) {
+                    data = data + "<tr><td>" + devPlan.getTutors()[i].name + "<br/>" +
+                    "<small><a href='timetable.html?timetable=t" + devPlan.getTutors()[i].id + "'>Pokaż plan</a>" +
+                    ((devPlan.getTutors()[i].moodle_url !== null) ? (" | <a href='" + devPlan.getTutors()[i].moodle_url + "'>Wizytówka</a>") : ("")) +
+                    "</small></td></tr>";
+                }
+            }
+
+            for (var i = 0; i < devPlan.getPlaces().length; i++) {
+                if (devPlan.getPlaces()[i].location.toString().toUpperCase().indexOf(query) !== -1) {
+                    data = data + "<tr><td>" + devPlan.getPlaces()[i].location + "<br/>" +
+                    "<small><a href='timetable.html?timetable=p" + devPlan.getPlaces()[i].id + "'>Pokaż plan</a></small></td></tr>";
+                }
+            }
+            //   console.log(data);
+
+            $("#search-results").append(data);
+        } else {
+            console.log("Too short query");
+        }
+    
+    }
 }
-var x = new devPlan();
-$("#search").typeahead([{
-    name: "groups",
-    local: x.getTypeaheadDatumsForGroups(x.getGroups()),
-}, {
-        name: "tutors",
-        local: x.getTypeaheadDatumsForTutors(x.getTutors()),
-    }, {
-        name: "places",
-        local: x.getTypeaheadDatumsForPlaces(x.getPlaces()),
-    }]);
+
+function getUrlParam(key: string): string {
+    //  return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null;
+    var result = new RegExp(key + "=([^&]*)", "i").exec(window.location.search.replace(/\+/g, " "));
+    return result && decodeURIComponent(result[1]) || "";
+}
 
 
 

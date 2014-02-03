@@ -221,10 +221,11 @@ var devPlan = (function () {
         if (typeof query === "undefined") { query = ""; }
         $("#search-results").empty();
 
+        $("#search-panel-body").removeAttr("display");
         console.log("Query: " + query);
         query = query.toString().toUpperCase();
         if (query.length >= 3) {
-            var data = "";
+            var data = '';
 
             for (var i = 0; i < devPlan.getGroups().length; i++) {
                 if (devPlan.getGroups()[i].name.toString().toUpperCase().indexOf(query) !== -1) {
@@ -245,6 +246,7 @@ var devPlan = (function () {
             }
 
             //   console.log(data);
+            $("#search-panel-body").attr("display", "none");
             $("#search-results").append(data);
         } else {
             console.log("Too short query");

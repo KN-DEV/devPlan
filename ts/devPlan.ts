@@ -3,7 +3,6 @@
 /**
  * Cash service
  */
-declare var Hogan;
 module Cash {
     /**
      * Model of group data
@@ -52,49 +51,68 @@ module Cash {
         /**
          * Settings for ajax request
          */
-        public static jqueryAjaxSettings: JQueryAjaxSettings = {
-            dataType: "json",
-            type: "GET",
-            success: (data) => { },
-        };
+
 
         /**
          * Gets list of all groups available in cash service
          */
-        public static getGroupsList(jqueryAjaxSettings: JQueryAjaxSettings = Cash.Api.jqueryAjaxSettings): JQueryXHR {
-            jqueryAjaxSettings.url = Cash.Api.host + "groups";
-            return $.ajax(jqueryAjaxSettings);
+        public static getGroupsList(): JQueryXHR {
+            return $.ajax({
+                url: Cash.Api.host + "groups",
+                type: "GET",
+                dataType: 'json'
 
+            });
         }
         /**
          * Gets list of all tutors available in cash service
          */
-        public static getTutorsList(jqueryAjaxSettings: JQueryAjaxSettings = Cash.Api.jqueryAjaxSettings): JQueryXHR {
-            jqueryAjaxSettings.url = Cash.Api.host + "tutors";
-            return $.ajax(jqueryAjaxSettings);
+        public static getTutorsList(): JQueryXHR {
+            return $.ajax({
+                url: Cash.Api.host + "tutors",
+                type: "GET",
+                dataType: 'json'
+
+            });
 
         }
         /**
         * Gets list of all places available in cash service
         */
-        public static getPlacesList(jqueryAjaxSettings: JQueryAjaxSettings = Cash.Api.jqueryAjaxSettings): JQueryXHR {
-            jqueryAjaxSettings.url = Cash.Api.host + "places";
-            return $.ajax(jqueryAjaxSettings);
+        public static getPlacesList(): JQueryXHR {
+            return $.ajax({
+                url: Cash.Api.host + "places",
+                type: "GET",
+                dataType: 'json'
+
+            });
         }
         /**
          * Registers timetable
          */
-        public static registerTimetable(jqueryAjaxSettings: JQueryAjaxSettings): Cash.Api {
-            jqueryAjaxSettings.url = Cash.Api.host + "timetables";
-            jqueryAjaxSettings.type = "POST",
-            $.ajax(jqueryAjaxSettings);
-            return this;
+        public static registerTimetable(timetableParams: Cash.TimetableParams): JQueryXHR {
+
+            //            jqueryAjaxSettings.data: Cash.TimetableParams = {
+            //                group_id: [],
+            //                tutor_id: [],
+            //                place_id: []
+            //            };
+
+            return $.ajax({
+                url: Cash.Api.host + "timetables",
+                type: "POST",
+                dataType: 'json',
+                data: timetableParams
+            });
 
         }
 
-        public static getTimetable(timetableParams: Cash.TimetableParams, jqueryAjaxSettings: JQueryAjaxSettings = Cash.Api.jqueryAjaxSettings): JQueryXHR {
-            jqueryAjaxSettings.url = Cash.Api.host + "places";
-            return $.ajax(jqueryAjaxSettings);
+        public static getTimetable(timetableParams: Cash.TimetableParams): JQueryXHR {
+            return $.ajax({
+                url: Cash.Api.host + "places",
+                type: "GET",
+                dataType: 'json'
+            });
         }
     }
 }
@@ -141,6 +159,33 @@ class devPlan {
     constructor() {
         $("#search-input").attr('value', getUrlParam('search'));
 
+        if (getUrlParam('timetable').length != 0) {
+
+            var param: Cash.TimetableParams = {
+                group_id: [],
+                tutor_id: [],
+                place_id: []
+            };
+            var timetable = getUrlParam('timetable').match(/[gtp][0-9]*/gi);
+
+            for (var i = 0; i < timetable.length; i++) {
+                if (timetable[i].toString().toLowerCase().indexOf("g") != -1) {
+                    param.group_id[param.group_id.length] = parseInt(timetable[i].slice(1).toString());
+                }
+                if (timetable[i].toString().toLowerCase().indexOf("t") != -1) {
+                    param.tutor_id[param.tutor_id.length] = parseInt(timetable[i].slice(1).toString());
+                }
+                if (timetable[i].toString().toLowerCase().indexOf("p") != -1) {
+                    param.place_id[param.place_id.length] = parseInt(timetable[i].slice(1).toString());
+                }
+            }
+            $.when
+                (Cash.Api.registerTimetable(param))
+                .done((response) => {
+                    console.log(response);
+                });
+        }
+
         if ($("#search-panel-input").length) {
             $("#search-panel-input").attr('value', getUrlParam('search'));
         }
@@ -152,14 +197,10 @@ class devPlan {
                 devPlan.setGroups(groups[0]);
                 devPlan.setTutors(tutors[0]);
                 devPlan.setPlaces(places[0]);
-
-
                 $("#search-input")
                     .removeAttr('disabled')
-
                     .attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn')
                     .attr('data-provide', "typeahead");
-
                 $("#search-input").typeahead([
                     {
                         name: "groups",
@@ -172,24 +213,17 @@ class devPlan {
                         local: devPlan.generateTypeaheadDatumsForPlaces(devPlan.getPlaces()),
                     }
                 ]);
-
-
                 $("#search-button")
                     .removeAttr("disabled")
                     .empty()
                     .append("Szukaj");
 
-
                 if ($("#search-panel-input").length) {
-
-
                     $("#search-panel-input")
                         .attr('value', getUrlParam('search'))
                         .attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn')
                         .removeAttr("disabled");
-                    ;
                     $("#search-panel .panel-body").remove();
-
                     devPlan.showSearchResults(getUrlParam("search"));
                 }
             });
@@ -204,9 +238,6 @@ class devPlan {
      *
      */
     static setGroups(groups: Cash.Group[]): devPlan {
-
-
-
         devPlan.groups = groups.sort((a: any, b: any) => {return a.name - b.name });
         return devPlan;
     }
@@ -286,29 +317,19 @@ class devPlan {
         return data;
     }
 
-
-
-
     static showSearchResults(query: string = ""): void {
-
         $("#search-results").empty();
-
         $("#search-panel-body").removeAttr("display");
         console.log("Query: " + query);
         query = query.toString().toUpperCase();
         if (query.length >= 3) {
-
             var data = '';
-
             for (var i = 0; i < devPlan.getGroups().length; i++) {
-
                 if (devPlan.getGroups()[i].name.toString().toUpperCase().indexOf(query) !== -1) {
                     data = data + "<tr><td>" + devPlan.getGroups()[i].name + "<br/>" +
                     "<small><a href='timetable.html?timetable=g" + devPlan.getGroups()[i].id + "'>Pokaż plan</a></small></td></tr>";
                 }
-
             }
-
             for (var i = 0; i < devPlan.getTutors().length; i++) {
                 if (devPlan.getTutors()[i].name.toString().toUpperCase().indexOf(query) !== -1) {
                     data = data + "<tr><td>" + devPlan.getTutors()[i].name + "<br/>" +
@@ -317,31 +338,24 @@ class devPlan {
                     "</small></td></tr>";
                 }
             }
-
             for (var i = 0; i < devPlan.getPlaces().length; i++) {
                 if (devPlan.getPlaces()[i].location.toString().toUpperCase().indexOf(query) !== -1) {
                     data = data + "<tr><td>" + devPlan.getPlaces()[i].location + "<br/>" +
                     "<small><a href='timetable.html?timetable=p" + devPlan.getPlaces()[i].id + "'>Pokaż plan</a></small></td></tr>";
                 }
             }
-            //   console.log(data);
-
             $("#search-panel-body").attr("display", "none");
-            
-            
-            if(data.length == 0){
-            data ="<tr><td class='text-center'>Brak wyników. Spróbuj jeszcze raz ;)</td</td>";
+            if (data.length == 0) {
+                data = "<tr><td class='text-center'>Brak wyników. Spróbuj jeszcze raz ;)</td</td>";
             }
             $("#search-results").append(data);
         } else {
             console.log("Too short query");
         }
-
     }
 }
 
 function getUrlParam(key: string): string {
-    //  return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null;
     var result = new RegExp(key + "=([^&]*)", "i").exec(window.location.search.replace(/\+/g, " "));
     return result && decodeURIComponent(result[1]) || "";
 }

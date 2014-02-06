@@ -291,7 +291,12 @@ var devPlan = (function () {
             return a.starts_at_timestamp - b.starts_at_timestamp;
         });
 
+        var date = "";
         for (var i = 0; i < timetable.activities.length; i++) {
+            if (date < timetable.activities[i].date) {
+                data = data + '<li class="list-group-item list-group-item-info">' + '<h3 id="' + timetable.activities[i].date + '">' + timetable.activities[i].day_of_week + ' ' + timetable.activities[i].date + '</h3>' + '</li>';
+                date = timetable.activities[i].date;
+            }
             data = data + '<li class="list-group-item">' + "<h4>" + timetable.activities[i].name + "</h4>" + "<p>" + timetable.activities[i].starts_at + " - " + timetable.activities[i].ends_at + ' ' + (timetable.activities[i].place != null ? '<a href="timetable.html?timetable=p' + timetable.activities[i].place.id + '">' + timetable.activities[i].place.location + '</a>' : "") + '<span class="pull-right">' + (timetable.activities[i].tutor != null ? '<a href="timetable.html?timetable=t' + timetable.activities[i].tutor.id + '">' + timetable.activities[i].tutor.name + "</a> " : "") + (timetable.activities[i].tutor != null && timetable.activities[i].tutor.moodle_url != null ? '<a href="' + timetable.activities[i].tutor.moodle_url + '" title="Wizytówka E-Uczelnia"><i class="fa fa-globe fa-fw"></i></a>' : "") + "</span>" + "</p>" + "</li>";
         }
 

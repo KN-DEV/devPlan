@@ -382,9 +382,16 @@ class devPlan {
 
         timetable.activities = timetable.activities.sort((a: any, b: any) => {return a.starts_at_timestamp - b.starts_at_timestamp });
 
+
+        var date = "";
         for (var i = 0; i < timetable.activities.length; i++) {
 
-
+            if (date < timetable.activities[i].date) {
+                data = data + '<li class="list-group-item">' +
+                '<h3 id="' + timetable.activities[i].date + '">' + timetable.activities[i].day_of_week + ' ' + timetable.activities[i].date + '</h3>' +
+                '</li>';
+                date = timetable.activities[i].date;
+            }
             data = data +
             '<li class="list-group-item">' +
             "<h4>" + timetable.activities[i].name + "</h4>" +

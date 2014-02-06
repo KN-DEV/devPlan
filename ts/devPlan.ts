@@ -38,7 +38,23 @@ module Cash {
         _id: string;
         access_url: string;
         params: TimetableParams;
-        activities: any;
+        activities: Cash.Activity[];
+    }
+    export interface Activity {
+        category: string;
+        date: string;
+        day_of_week: string;
+        ends_at: string;
+        ends_at_timestamp: number;
+        group: Cash.Group;
+        id: number;
+        name: string;
+        notes: string;
+        place: Cash.Place;
+        starts_at: string;
+        starts_at_timestamp: number;
+        state: number;
+        tutor: Cash.Tutor;
     }
     /**
      * Cash API implementation
@@ -72,9 +88,7 @@ module Cash {
                 url: Cash.Api.host + "tutors",
                 type: "GET",
                 dataType: 'json'
-
             });
-
         }
         /**
         * Gets list of all places available in cash service
@@ -91,20 +105,12 @@ module Cash {
          * Registers timetable
          */
         public static registerTimetable(timetableParams: Cash.TimetableParams): JQueryXHR {
-
-            //            jqueryAjaxSettings.data: Cash.TimetableParams = {
-            //                group_id: [],
-            //                tutor_id: [],
-            //                place_id: []
-            //            };
-
             return $.ajax({
                 url: Cash.Api.host + "timetables",
                 type: "POST",
                 dataType: 'json',
                 data: timetableParams
             });
-
         }
 
         public static getTimetable(timetableParams: Cash.TimetableParams): JQueryXHR {
@@ -181,8 +187,10 @@ class devPlan {
             }
             $.when
                 (Cash.Api.registerTimetable(param))
-                .done((response) => {
+                .done((response: Cash.Timetable) => {
                     console.log(response);
+                    devPlan.showTimetable(response);
+                    $("#timetable-panel .panel-body").remove();
                 });
         }
 
@@ -319,31 +327,44 @@ class devPlan {
 
     static showSearchResults(query: string = ""): void {
         $("#search-results").empty();
-        $("#search-panel-body").removeAttr("display");
         console.log("Query: " + query);
         query = query.toString().toUpperCase();
+
         if (query.length >= 3) {
             var data = '';
+
+
             for (var i = 0; i < devPlan.getGroups().length; i++) {
                 if (devPlan.getGroups()[i].name.toString().toUpperCase().indexOf(query) !== -1) {
-                    data = data + "<tr><td>" + devPlan.getGroups()[i].name + "<br/>" +
-                    "<small><a href='timetable.html?timetable=g" + devPlan.getGroups()[i].id + "'>Pokaż plan</a></small></td></tr>";
+                    data = data +
+                    '<li class="list-group-item">' +
+                    '<a href="timetable.html?timetable=g' + devPlan.getGroups()[i].id + '">' + devPlan.getGroups()[i].name + '</a>' +
+                    '</li>';
                 }
             }
             for (var i = 0; i < devPlan.getTutors().length; i++) {
                 if (devPlan.getTutors()[i].name.toString().toUpperCase().indexOf(query) !== -1) {
-                    data = data + "<tr><td>" + devPlan.getTutors()[i].name + "<br/>" +
-                    "<small><a href='timetable.html?timetable=t" + devPlan.getTutors()[i].id + "'>Pokaż plan</a>" +
-                    ((devPlan.getTutors()[i].moodle_url !== null) ? (" | <a href='" + devPlan.getTutors()[i].moodle_url + "'>Wizytówka</a>") : ("")) +
-                    "</small></td></tr>";
+                    data = data +
+                    '<li class="list-group-item">' +
+                    '<a href="timetable.html?timetable=t' + devPlan.getTutors()[i].id + '">' + devPlan.getTutors()[i].name + '</a>' +
+                    '<span class="pull-right">' +
+                    '<a href="' + devPlan.getTutors()[i].moodle_url + '" title="Wizytówka E-Uczelnia"><i class="fa fa-globe fa-fw"></i></a>' +
+                    '</span>' +
+                    '</li>';
+
                 }
             }
             for (var i = 0; i < devPlan.getPlaces().length; i++) {
                 if (devPlan.getPlaces()[i].location.toString().toUpperCase().indexOf(query) !== -1) {
-                    data = data + "<tr><td>" + devPlan.getPlaces()[i].location + "<br/>" +
-                    "<small><a href='timetable.html?timetable=p" + devPlan.getPlaces()[i].id + "'>Pokaż plan</a></small></td></tr>";
+                    data = data +
+                    '<li class="list-group-item">' +
+                    '<a href="timetable.html?timetable=p' + devPlan.getPlaces()[i].id + '">' + devPlan.getPlaces()[i].location + '</a>' +
+                    '</li>';
                 }
             }
+
+
+
             $("#search-panel-body").attr("display", "none");
             if (data.length == 0) {
                 data = "<tr><td class='text-center'>Brak wyników. Spróbuj jeszcze raz ;)</td</td>";
@@ -352,6 +373,41 @@ class devPlan {
         } else {
             console.log("Too short query");
         }
+    }
+
+
+    static showTimetable(timetable: Cash.Timetable): void {
+        var data = "";
+        $("#timetable-results").empty();
+
+        timetable.activities = timetable.activities.sort((a: any, b: any) => {return a.starts_at_timestamp - b.starts_at_timestamp });
+
+        for (var i = 0; i < timetable.activities.length; i++) {
+
+
+            data = data +
+            '<li class="list-group-item">' +
+            "<h4>" + timetable.activities[i].name + "</h4>" +
+            "<p>" +
+            timetable.activities[i].starts_at + " - " + timetable.activities[i].ends_at + ' ' +
+
+            (timetable.activities[i].place != null ?
+            '<a href="timetable.html?timetable=p' + timetable.activities[i].place.id + '">' + timetable.activities[i].place.location + '</a>' : "") +
+
+            '<span class="pull-right">' +
+            (timetable.activities[i].tutor != null ?
+            '<a href="timetable.html?timetable=t' + timetable.activities[i].tutor.id + '">' + timetable.activities[i].tutor.name + "</a> " : "") +
+
+            (timetable.activities[i].tutor != null && timetable.activities[i].tutor.moodle_url != null ?
+            '<a href="' + timetable.activities[i].tutor.moodle_url + '" title="Wizytówka E-Uczelnia"><i class="fa fa-globe fa-fw"></i></a>' : "") +
+
+            "</span>" +
+            "</p>" +
+            "</li>";
+        }
+
+
+        $("#timetable-results").append(data);
     }
 }
 

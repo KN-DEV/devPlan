@@ -478,6 +478,10 @@ class devPlan
             '<a href="' + timetable.activities[i].tutor.moodle_url + '" title="Wizytówka E-Uczelnia"><i class="fa fa-globe fa-fw"></i></a>' : "" ) +
 
             "</span>" +
+            '<br/>' +
+            ( timetable.activities[i].group != null ?
+            '<small><a href="timetable.html?timetable=g' + timetable.activities[i].group.id + '">' + timetable.activities[i].group.name + "</a></small>" : "" ) +
+
             "</p>" +
             "</li>";
         }

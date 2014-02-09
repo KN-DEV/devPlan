@@ -1,8 +1,3 @@
-/// <reference path="DefinitelyTyped/typeahead/typeahead.d.ts" />
-/// <reference path="DefinitelyTyped/jquery/jquery.d.ts" />
-/**
-* Cash service
-*/
 var Cash;
 (function (Cash) {
     
@@ -13,18 +8,9 @@ var Cash;
 
     
 
-    /**
-    * Cash API implementation
-    */
     var Api = (function () {
         function Api() {
         }
-        /**
-        * Settings for ajax request
-        */
-        /**
-        * Gets list of all groups available in cash service
-        */
         Api.getGroupsList = function () {
             return $.ajax({
                 url: Cash.Api.host + "groups",
@@ -33,9 +19,6 @@ var Cash;
             });
         };
 
-        /**
-        * Gets list of all tutors available in cash service
-        */
         Api.getTutorsList = function () {
             return $.ajax({
                 url: Cash.Api.host + "tutors",
@@ -44,9 +27,6 @@ var Cash;
             });
         };
 
-        /**
-        * Gets list of all places available in cash service
-        */
         Api.getPlacesList = function () {
             return $.ajax({
                 url: Cash.Api.host + "places",
@@ -55,9 +35,6 @@ var Cash;
             });
         };
 
-        /**
-        * Registers timetable
-        */
         Api.registerTimetable = function (timetableParams) {
             return $.ajax({
                 url: Cash.Api.host + "timetables",
@@ -80,13 +57,7 @@ var Cash;
     Cash.Api = Api;
 })(Cash || (Cash = {}));
 
-/**
-* devPlan App
-*/
 var devPlan = (function () {
-    /**
-    *
-    */
     function devPlan() {
         $("#search-input").attr('value', getUrlParam('search'));
 
@@ -124,6 +95,7 @@ var devPlan = (function () {
             devPlan.setTutors(tutors[0]);
             devPlan.setPlaces(places[0]);
             $("#search-input").removeAttr('disabled').attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn').attr('data-provide', "typeahead");
+
             $("#search-input").typeahead([
                 {
                     name: "groups",
@@ -145,16 +117,10 @@ var devPlan = (function () {
             }
         });
     }
-    /**
-    *
-    */
     devPlan.getGroups = function () {
         return devPlan.groups;
     };
 
-    /**
-    *
-    */
     devPlan.setGroups = function (groups) {
         devPlan.groups = groups.sort(function (a, b) {
             return a.name - b.name;
@@ -162,16 +128,10 @@ var devPlan = (function () {
         return devPlan;
     };
 
-    /**
-    *
-    */
     devPlan.getTutors = function () {
         return devPlan.tutors;
     };
 
-    /**
-    *
-    */
     devPlan.setTutors = function (tutors) {
         devPlan.tutors = tutors.sort(function (a, b) {
             return a.name - b.name;
@@ -179,16 +139,10 @@ var devPlan = (function () {
         return devPlan;
     };
 
-    /**
-    *
-    */
     devPlan.getPlaces = function () {
         return devPlan.places;
     };
 
-    /**
-    *
-    */
     devPlan.setPlaces = function (places) {
         devPlan.places = places.sort(function (a, b) {
             return a.location - b.location;
@@ -196,9 +150,6 @@ var devPlan = (function () {
         return devPlan;
     };
 
-    /**
-    *
-    */
     devPlan.generateTypeaheadDatumsForGroups = function (groups) {
         var data = [];
         for (var i = 0; i < groups.length; i++) {
@@ -213,9 +164,6 @@ var devPlan = (function () {
         return data;
     };
 
-    /**
-    *
-    */
     devPlan.generateTypeaheadDatumsForTutors = function (tutors) {
         var data = [];
         for (var i = 0; i < tutors.length; i++) {
@@ -231,9 +179,6 @@ var devPlan = (function () {
         return data;
     };
 
-    /**
-    *
-    */
     devPlan.generateTypeaheadDatumsForPlaces = function (places) {
         var data = [];
         for (var i = 0; i < places.length; i++) {
@@ -290,14 +235,15 @@ var devPlan = (function () {
         timetable.activities = timetable.activities.sort(function (a, b) {
             return a.starts_at_timestamp - b.starts_at_timestamp;
         });
+        console.log(timetable.activities[168]);
 
         var date = "";
         for (var i = 0; i < timetable.activities.length; i++) {
             if (date < timetable.activities[i].date) {
-                data = data + '<li class="list-group-item list-group-item-info">' + '<h3 id="' + timetable.activities[i].date + '">' + timetable.activities[i].day_of_week + ' ' + timetable.activities[i].date + '</h3>' + '</li>';
+                data = data + '<li class="list-group-item list-group-item-success">' + '<h3 id="' + timetable.activities[i].date + '">' + timetable.activities[i].day_of_week + ' ' + timetable.activities[i].date + '</h3>' + '</li>';
                 date = timetable.activities[i].date;
             }
-            data = data + '<li class="list-group-item">' + "<h4>" + timetable.activities[i].name + "</h4>" + "<p>" + timetable.activities[i].starts_at + " - " + timetable.activities[i].ends_at + ' ' + (timetable.activities[i].place != null ? '<a href="timetable.html?timetable=p' + timetable.activities[i].place.id + '">' + timetable.activities[i].place.location + '</a>' : "") + '<span class="pull-right">' + (timetable.activities[i].tutor != null ? '<a href="timetable.html?timetable=t' + timetable.activities[i].tutor.id + '">' + timetable.activities[i].tutor.name + "</a> " : "") + (timetable.activities[i].tutor != null && timetable.activities[i].tutor.moodle_url != null ? '<a href="' + timetable.activities[i].tutor.moodle_url + '" title="Wizytówka E-Uczelnia"><i class="fa fa-globe fa-fw"></i></a>' : "") + "</span>" + "</p>" + "</li>";
+            data = data + '<li id="' + i + '" class="list-group-item">' + '<p class="h4">' + timetable.activities[i].name + '<small class="pull-right">' + timetable.activities[i].category + '</small>' + '</p><div class="clearfix"></div>' + (timetable.activities[i].notes != null ? '<p>Notatka: ' + timetable.activities[i].notes + '</p>' : '') + "<p>" + timetable.activities[i].starts_at + " - " + timetable.activities[i].ends_at + ' ' + (timetable.activities[i].place != null ? '<a href="timetable.html?timetable=p' + timetable.activities[i].place.id + '">' + timetable.activities[i].place.location + '</a>' : "") + '<span class="pull-right">' + (timetable.activities[i].tutor != null ? '<a href="timetable.html?timetable=t' + timetable.activities[i].tutor.id + '">' + timetable.activities[i].tutor.name + "</a> " : "") + (timetable.activities[i].tutor != null && timetable.activities[i].tutor.moodle_url != null ? '<a href="' + timetable.activities[i].tutor.moodle_url + '" title="Wizytówka E-Uczelnia"><i class="fa fa-globe fa-fw"></i></a>' : "") + "</span>" + "</p>" + "</li>";
         }
 
         $("#timetable-results").append(data);
@@ -314,3 +260,4 @@ function getUrlParam(key) {
     var result = new RegExp(key + "=([^&]*)", "i").exec(window.location.search.replace(/\+/g, " "));
     return result && decodeURIComponent(result[1]) || "";
 }
+//# sourceMappingURL=devPlan.js.map

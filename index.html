@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +10,8 @@
 <meta name="author" content="Koło Naukowe Programistów >dev">
 <title>devPlan UEK</title>
 <!-- Bootstrap core CSS -->
-<link href="assets/css/bootstrap.css" rel="stylesheet">
+<link href="assets/css/bootstrap.min.css" rel="stylesheet">
+<link href="assets/css/bootstrap-theme.min.css" rel="stylesheet">
 <!-- Custom Google Web Font -->
 <link href="assets/font-awesome/css/font-awesome.min.css"
 	rel="stylesheet">
@@ -20,6 +21,7 @@
 <!-- Add custom CSS here -->
 <link href="assets/css/landing-page.css" rel="stylesheet">
 <link href="assets/css/custom.css" rel="stylesheet">
+<link href="assets/css/typeahead.css" rel="stylesheet">
 </head>
 <body>
 	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -33,36 +35,27 @@
 							data-target="#bs-example-navbar-collapse-1">
 							<i class="fa fa-align-justify"></i>
 						</button>
-						<a class="navbar-brand" href="index.html" title="devPlan UEK">
-							<strong>devPlan <small>UEK</small>
-						</strong>
-						</a>
+						<a class="navbar-brand" href="index.html" title="devPlan UEK"><strong
+							class="">devPlan <small>UEK</small></strong></a>
 					</div>
 					<div class="collapse navbar-collapse"
 						id="bs-example-navbar-collapse-1">
-
 						<ul class="nav navbar-nav navbar-right">
-							<li class="active"><a href="timetable.html" class="h4"
-								title="Mój plan"> <span class="text-info">Mój plan</span>
-							</a></li>
-							<li class="visible-xs"><a href="#" class="h4" title="Szukaj">Szukaj</a>
-							</li>
+							<li><a href="timetable.html" title="Mój plan">Mój plan</a></li>
+							<li class="visible-xs"><a href="#" title="Szukaj">Szukaj</a></li>
 						</ul>
-						<div class="hidden-xs">
-							<form class="navbar-form input-group navbar-right"
-								action="search.html" method="get" role="search">
+						<form class="navbar-form navbar-right hidden-xs"
+							action="search.html" method="get" role="search">
+							<div class="form-group">
 								<input id="search-input" name="search" autocomplete="off"
 									disabled="disabled" type="text" class="form-control"
-									placeholder="KrDzIs3011Io / dr Paweł Wołoszyn" /> <span
-									class="input-group-btn">
-									<button id="search-button" type="submit"
-										class="btn btn-success" disabled>
-										<i class="fa fa-refresh fa-spin"></i>
-									</button>
-								</span>
-							</form>
-						</div>
-
+									placeholder="KrDzIs3011Io / dr Paweł Wołoszyn" />
+							</div>
+							<button id="search-button" type="submit" class="btn btn-success"
+								disabled>
+								<i class="fa fa-fw fa-spin fa-refresh"></i>
+							</button>
+						</form>
 					</div>
 				</div>
 			</div>
@@ -74,7 +67,7 @@
 				<div class="col-lg-12">
 					<div class="intro-message">
 						<h1>
-							devPlan <small>UEK</small>
+							<strong>devPlan <small>UEK</small></strong>
 						</h1>
 						<h3>Twój spersonalizowany plan zajęć UEK'u.</h3>
 						<hr class="intro-divider" />
@@ -127,16 +120,16 @@
 			<div class="row">
 
 				<div class="col-lg-7 col-md-6">
-					<h2 class="section-heading">
+					<h2 class="section-heading text-justify">
 						Widzisz tylko swoje zajęcia językowe<br /> <small>Z <strong>devPlan
 								<small>UEK</small>
 						</strong> widzisz te zajęcia językowe na które jesteś w rzeczywistości
 							zapisany.
 						</small>
 					</h2>
-					<p class="lead">Czy nie zdażyło Ci się spóźnić na zajęcia
-						językowe bo nie wiedziałeś w której sali masz zajęcia?</p>
-					<p class="lead">
+					<p class="lead text-justify">Czy nie zdażyło Ci się spóźnić na
+						zajęcia językowe bo nie wiedziałeś w której sali masz zajęcia?</p>
+					<p class="lead text-justify">
 						Dzięki <strong>devPlan <small>UEK</small></strong> już nigdy
 						więcej Ci się to nie zdarzy.
 					</p>
@@ -159,18 +152,19 @@
 						alt="Wyszukiwanie wykładowców">
 				</div>
 				<div class="col-lg-7 col-md-6">
-					<h2 class="section-heading">
+					<h2 class="section-heading text-justify">
 						Szukasz zajęć wykładowców?<br /> <small>Teraz jest to
 							jeszcze łatwiejsze i bardziej przyjemne.</small>
 					</h2>
-					<p class="lead">Wystarczy, że podasz kilka liter nazwiska
-						prowadzącego a my podpowiemy Ci resztę.</p>
-					<p class="lead">
+					<p class="lead text-justify">Wystarczy, że podasz kilka liter
+						nazwiska prowadzącego a my podpowiemy Ci resztę.</p>
+					<p class="lead text-justify">
 						Tylko z <strong>devPlan <small>UEK</small></strong> w łatwy sposób
 						w jednym miejscu masz możliwość wyszukania planu zajęć grupy,
 						wykładowcy lub sali.
 					</p>
-					<p class="lead">Zapomnij o tysiącach linków w które klikasz.</p>
+					<p class="lead text-justify">Zapomnij o tysiącach linków w
+						które klikasz.</p>
 				</div>
 			</div>
 		</div>
@@ -179,11 +173,11 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-lg-7 col-md-6">
-					<h2>
+					<h2 class="section-heading text-justify">
 						Zbyt dużo widocznych przedmiotów?<br /> <small>Filtrowanie
 							planu to już nie problem.</small>
 					</h2>
-					<p class="lead">
+					<p class="lead text-justify">
 						<strong>devPlan <small>UEK</small></strong> daje Ci możliość
 						filtrowania przedmiotów z Twojego planu.
 					</p>
@@ -216,7 +210,7 @@
 	</footer>
 	<!-- JavaScript -->
 	<script src="assets/js/jquery-1.10.2.js"></script>
-	<script src="assets/js/bootstrap.js"></script>
+	<script src="assets/js/bootstrap.min.js"></script>
 	<script src="assets/js/typeahead.min.js"></script>
 	<script src="assets/js/devPlan.js"></script>
 	<script type="text/javascript">

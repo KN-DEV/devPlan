@@ -219,7 +219,7 @@ class devPlan
                 {
                     console.log( response );
                     devPlan.showTimetable( response );
-                    $( "#timetable-panel .panel-body" ).remove();
+                    $( "#timetable-panel-spinner" ).remove();
                 });
         }
 

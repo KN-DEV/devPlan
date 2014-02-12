@@ -6,22 +6,19 @@
 <meta name="description"
 	content="Spersonalizaowany plan zajęć studentów i pracowników Uniwersytetu Ekonomicznego w Krakowie.">
 <meta name="keywords"
-	content="plan, zajęć, spersonalizowany, uek, uniwersytet, ekonomiczny, kraków">
-<meta name="author" content="Koło Naukowe Programistów >dev">
-<title>devPlan UEK - Szukaj</title>
-<!-- Bootstrap core CSS -->
+	content="plan, zajęć, spersonalizowany, uek, uniwersytet, ekonomiczny, Kraków">
+<meta name="author" content="Koło Naukowe Programistów dev">
+<title>devPlan - Szukaj</title>
 <link href="assets/css/bootstrap.min.css" rel="stylesheet">
 <link href="assets/css/bootstrap-theme.min.css" rel="stylesheet">
-<!-- Custom Google Web Font -->
 <link href="assets/font-awesome/css/font-awesome.min.css"
 	rel="stylesheet">
 <link
 	href='http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900,100italic,300italic,400italic,700italic,900italic'
 	rel='stylesheet' type='text/css'>
-<!-- Add custom CSS here -->
+<link href="assets/css/typeahead.css" rel="stylesheet">
 <link href="assets/css/landing-page.css" rel="stylesheet">
 <link href="assets/css/custom.css" rel="stylesheet">
-<link href="assets/css/typeahead.css" rel="stylesheet">
 </head>
 <body>
 	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -35,14 +32,13 @@
 							data-target="#bs-example-navbar-collapse-1">
 							<i class="fa fa-align-justify"></i>
 						</button>
-						<a class="navbar-brand" href="index.html" title="devPlan UEK"><strong
-							class="">devPlan <small>UEK</small></strong></a>
+						<a class="navbar-brand" href="index.html" title="devPlan"><strong>devPlan</strong></a>
 					</div>
 					<div class="collapse navbar-collapse"
 						id="bs-example-navbar-collapse-1">
+
 						<ul class="nav navbar-nav navbar-right">
-							<li><a href="timetable.html" title="Mój plan">Mój
-									plan</a></li>
+							<li><a href="timetable.html" title="Mój plan">Mój plan</a></li>
 							<li class="visible-xs"><a href="#" title="Szukaj">Szukaj</a></li>
 						</ul>
 						<form class="navbar-form navbar-right hidden-xs"
@@ -57,6 +53,7 @@
 								<i class="fa fa-fw fa-spin fa-refresh"></i>
 							</button>
 						</form>
+
 					</div>
 				</div>
 			</div>
@@ -69,9 +66,8 @@
 					<!-- Default panel contents -->
 					<div class="panel-heading">
 						<h4>
-							<form class="div class=" col-lg-12"
-								action="search.html"
-								method="get" role="search">
+							<form action="search.html" method="get"
+								role="search">
 								<input id="search-panel-input" name="search" type="text"
 									class="form-control" disabled="disabled"
 									onkeyup="devPlan.showSearchResults(this.value);"
@@ -79,7 +75,6 @@
 							</form>
 						</h4>
 					</div>
-
 					<div id="search-panel-body" class="panel-body">
 						<p class=" text-center">
 							<i class="fa fa fa-spinner fa-spin fa-5x"></i>
@@ -96,7 +91,7 @@
 			<div class="row">
 				<div class="col-lg-12 col-md-12 col-sm-12">
 					<ul class="list-inline">
-						<li><a href="index.html"><strong>devPlan <small>UEK</small></strong></a></li>
+						<li><a href="index.html"><strong>devPlan</strong></a></li>
 						<li class="footer-menu-divider">&sdot;</li>
 						<li><a href="search.html">Szukaj</a></li>
 						<li class="footer-menu-divider">&sdot;</li>

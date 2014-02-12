@@ -83,7 +83,7 @@ var devPlan = (function () {
             $.when(Cash.Api.registerTimetable(param)).done(function (response) {
                 console.log(response);
                 devPlan.showTimetable(response);
-                $("#timetable-panel .panel-body").remove();
+                $("#timetable-panel-spinner").remove();
             });
         }
 

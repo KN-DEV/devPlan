@@ -443,9 +443,19 @@ class devPlan
         console.log( timetable.activities[168] );
 
         var date = "";
+
+        var j = 0;
         for ( var i = 0; i < timetable.activities.length; i++ )
         {
-
+            /**
+             * zajęcia dla wielu grup - opuszcza kolejne
+             */
+            if ( timetable.activities[i - 1] != null &&
+                timetable.activities[i].name == timetable.activities[i - 1].name &&
+                timetable.activities[i].ends_at_timestamp == timetable.activities[i - 1].ends_at_timestamp )
+            {
+                continue;
+            }
             if ( date < timetable.activities[i].date )
             {
                 data = data + '<li class="list-group-item list-group-item-success">' +
@@ -478,15 +488,26 @@ class devPlan
             '<a href="' + timetable.activities[i].tutor.moodle_url + '" title="Wizytówka E-Uczelnia"><i class="fa fa-globe fa-fw"></i></a>' : "" ) +
 
             "</span>" +
-            '<br/>' +
-            ( timetable.activities[i].group != null ?
-            '<small><a href="timetable.html?timetable=g' + timetable.activities[i].group.id + '">' + timetable.activities[i].group.name + "</a></small>" : "" ) +
-
-            "</p>" +
+            '<br/>';
+            /**
+             * zajęcia dla wielu grup - lista grup
+             */
+            j = i;
+            do
+            {
+                if ( j > i )
+                {
+                    data = data + " | ";
+                }
+                if( timetable.activities[j].group != null {
+                    data = data + '<small><a href="timetable.html?timetable=g' + timetable.activities[j].group.id + '">' + timetable.activities[j].group.name + "</a></small>";
+                }
+            } while ( timetable.activities[++j] != null &&
+                timetable.activities[i].name == timetable.activities[j].name &&
+                timetable.activities[i].ends_at_timestamp == timetable.activities[j].ends_at_timestamp );
+            data = data + "</p>" +
             "</li>";
         }
-
-
         $( "#timetable-results" ).append( data );
     }
 }

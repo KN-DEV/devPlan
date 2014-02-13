@@ -248,14 +248,16 @@ var devPlan = (function () {
                 data = data + '<li class="list-group-item list-group-item-success">' + '<h3 id="' + timetable.activities[i].date + '">' + timetable.activities[i].day_of_week + ' ' + timetable.activities[i].date + '</h3>' + '</li>';
                 date = timetable.activities[i].date;
             }
-            data = data + '<li id="' + i + '" class="list-group-item">' + '<p class="h4">' + timetable.activities[i].name + '<small class="pull-right">' + timetable.activities[i].category + '</small>' + '</p><div class="clearfix"></div>' + (timetable.activities[i].notes != null ? '<p>Notatka: ' + timetable.activities[i].notes + '</p>' : '') + "<p>" + timetable.activities[i].starts_at + " - " + timetable.activities[i].ends_at + ' ' + (timetable.activities[i].place != null ? '<a href="timetable.html?timetable=p' + timetable.activities[i].place.id + '">' + timetable.activities[i].place.location + '</a>' : "") + '<span class="pull-right">' + (timetable.activities[i].tutor != null ? '<a href="timetable.html?timetable=t' + timetable.activities[i].tutor.id + '">' + timetable.activities[i].tutor.name + "</a> " : "") + (timetable.activities[i].tutor != null && timetable.activities[i].tutor.moodle_url != null ? '<a href="' + timetable.activities[i].tutor.moodle_url + '" title="Wizytówka E-Uczelnia"><i class="fa fa-globe fa-fw"></i></a>' : "") + "</span>" + '<br/>';
+            data = data + '<li id="' + i + '" class="list-group-item">' + '<p class="h5"><strong>' + timetable.activities[i].name + '</strong><span class="pull-right label label-danger">' + timetable.activities[i].category + '<span>' + '</p><div class="clearfix"></div>' + (timetable.activities[i].notes != null ? '<p>Notatka: ' + timetable.activities[i].notes + '</p>' : '') + "<p>" + timetable.activities[i].starts_at + " - " + timetable.activities[i].ends_at + ' ' + (timetable.activities[i].place != null ? '<a href="timetable.html?timetable=p' + timetable.activities[i].place.id + '">' + timetable.activities[i].place.location + '</a>' : "") + '<span class="pull-right">' + (timetable.activities[i].tutor != null ? '<a href="timetable.html?timetable=t' + timetable.activities[i].tutor.id + '">' + timetable.activities[i].tutor.name + "</a> " : "") + (timetable.activities[i].tutor != null && timetable.activities[i].tutor.moodle_url != null ? '<a href="' + timetable.activities[i].tutor.moodle_url + '" title="Wizytówka E-Uczelnia"><i class="fa fa-globe fa-fw"></i></a>' : "") + "</span>" + '<br/>';
 
             j = i;
             do {
                 if (j > i) {
                     data = data + " | ";
                 }
-                (timetable.activities[j].group != null ? data = data + '<small><a href="timetable.html?timetable=g' + timetable.activities[j].group.id + '">' + timetable.activities[j].group.name + "</a></small>" : "");
+                if (timetable.activities[j].group != null) {
+                    data = data + '<small><a href="timetable.html?timetable=g' + timetable.activities[j].group.id + '">' + timetable.activities[j].group.name + "</a></small>";
+                }
             } while(timetable.activities[++j] != null && timetable.activities[i].name == timetable.activities[j].name && timetable.activities[i].ends_at_timestamp == timetable.activities[j].ends_at_timestamp);
             data = data + "</p>" + "</li>";
         }

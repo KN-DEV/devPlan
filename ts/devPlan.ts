@@ -468,10 +468,10 @@ class devPlan
             }
             data = data +
             '<li id="' + i + '" class="list-group-item">' +
-            '<p class="h4">' + timetable.activities[i].name +
-            '<small class="pull-right">' +
+            '<p class="h5"><strong>' + timetable.activities[i].name +
+            '</strong><span class="pull-right label label-danger">' +
             timetable.activities[i].category +
-            '</small>' +
+            '<span>' +
             '</p><div class="clearfix"></div>' +
             ( timetable.activities[i].notes != null ? '<p>Notatka: ' + timetable.activities[i].notes + '</p>' : '' ) +
             "<p>" +
@@ -499,7 +499,7 @@ class devPlan
                 {
                     data = data + " | ";
                 }
-                if( timetable.activities[j].group != null {
+                if( timetable.activities[j].group != null) {
                     data = data + '<small><a href="timetable.html?timetable=g' + timetable.activities[j].group.id + '">' + timetable.activities[j].group.name + "</a></small>";
                 }
             } while ( timetable.activities[++j] != null &&

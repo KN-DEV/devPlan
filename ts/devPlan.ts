@@ -468,10 +468,17 @@ class devPlan
             }
             data = data +
             '<li id="' + i + '" class="list-group-item">' +
-            '<p class="h5"><strong>' + timetable.activities[i].name +
-            '</strong><span class="pull-right label label-danger">' +
+            '<p class="h5">' +
+
+            '<strong>' +
+            timetable.activities[i].name +
+            '</strong>' +
+
+            '<span class="pull-right label label-danger">' +
             timetable.activities[i].category +
+
             '<span>' +
+
             '</p><div class="clearfix"></div>' +
             ( timetable.activities[i].notes != null ? '<p>Notatka: ' + timetable.activities[i].notes + '</p>' : '' ) +
             "<p>" +
@@ -480,6 +487,9 @@ class devPlan
             ( timetable.activities[i].place != null ?
             '<a href="timetable.html?timetable=p' + timetable.activities[i].place.id + '">' + timetable.activities[i].place.location + '</a>' : "" ) +
 
+            '<small>( godzin lekcyjnych:' +
+            devPlan.getLessonsCounter( timetable.activities[i].starts_at, timetable.activities[i].ends_at ) +
+            ' )</small>' +
             '<span class="pull-right">' +
             ( timetable.activities[i].tutor != null ?
             '<a href="timetable.html?timetable=t' + timetable.activities[i].tutor.id + '">' + timetable.activities[i].tutor.name + "</a> " : "" ) +
@@ -499,7 +509,8 @@ class devPlan
                 {
                     data = data + " | ";
                 }
-                if( timetable.activities[j].group != null) {
+                if ( timetable.activities[j].group != null )
+                {
                     data = data + '<small><a href="timetable.html?timetable=g' + timetable.activities[j].group.id + '">' + timetable.activities[j].group.name + "</a></small>";
                 }
             } while ( timetable.activities[++j] != null &&
@@ -510,7 +521,67 @@ class devPlan
         }
         $( "#timetable-results" ).append( data );
     }
+
+
+    static getLessonsCounter( startsAt: string, endsAt: number ): number
+    {
+
+
+        var alarms = [
+            "07:50",
+            "08:35",
+            "08:45",
+            "09:30",
+            "09:35",
+            "10:20",
+            "10:30",
+            "11:15",
+            "11:20",
+            "12:05",
+            "12:15",
+            "13:00",
+            "13:05",
+            "13:50",
+            "14:00",
+            "14:45",
+            "14:50",
+            "15:35",
+            "15:40",
+            "16:25",
+            "16:30",
+            "17:15",
+            "17:20",
+            "18:05",
+            "18:10",
+            "18:55",
+            "19:00",
+            "19:45",
+            "19:50",
+            "20:35",
+        ];
+        var counter = 0;
+        for ( var i = 0; i <= alarms.length; i++ )
+        {
+            if ( alarms[i] == startsAt )
+            {
+                for ( var j = i; j <= alarms.length; j++ )
+                {
+                    if ( alarms[j] <= endsAt )
+                    {
+
+                        counter++;
+                    }
+
+                }
+                break;
+
+            }
+        }
+        console.log( counter );
+        return Math.floor( counter / 2 );
+    }
 }
+
 /**
  * Returns param from url
  */

@@ -287,16 +287,18 @@ class TimetableViewSettings
 
         $.cookie.json = true;
         var data = $.cookie( 'TimetableViewSettings' );
-        console.log( data );
-        TimetableViewSettings.setCounterStatus( data.counter );
-        TimetableViewSettings.setHourStatus( data.hour );
-        TimetableViewSettings.setCategoryStatus( data.category );
-        TimetableViewSettings.setBellStatus( data.bell );
-        TimetableViewSettings.setLocationStatus( data.location );
-        TimetableViewSettings.setGroupStatus( data.group );
-        TimetableViewSettings.setTutorStatus( data.tutor );
-        console.log( "Timetable view settings loaded" );
+        if ( data )
+        {
+            TimetableViewSettings.setCounterStatus( data.counter );
+            TimetableViewSettings.setHourStatus( data.hour );
+            TimetableViewSettings.setCategoryStatus( data.category );
+            TimetableViewSettings.setBellStatus( data.bell );
+            TimetableViewSettings.setLocationStatus( data.location );
+            TimetableViewSettings.setGroupStatus( data.group );
+            TimetableViewSettings.setTutorStatus( data.tutor );
+            console.log( "Timetable view settings loaded" );
 
+        }
         return TimetableViewSettings;
     }
     static save(): TimetableViewSettings
@@ -383,7 +385,7 @@ class devPlan
                     devPlan.showTimetable( devPlan.setTimetable( response ).getTimetable() );
                     $( "#timetable-panel-spinner" ).remove();
                 });
-        } 
+        }
 
 
 

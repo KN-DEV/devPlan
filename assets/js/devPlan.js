@@ -365,7 +365,7 @@ var devPlan = (function () {
 
             data = data + '<li id="' + i + '" class="list-group-item">' + '<p class="h5">' + '<strong>';
 
-            data = data + '<span title="Nazwa przedmiotu">' + timetable.activities[i].name + '</span></strong>';
+            data = data + '<span title="Nazwa przedmiotu">' + (timetable.activities[i].name.length > 0 ? timetable.activities[i].name : timetable.activities[i].category) + '</span></strong>';
 
             if (TimetableViewSettings.tutor) {
                 data = data + '<span class="pull-right">' + '<a href="timetable.html?timetable=t' + timetable.activities[i].tutor.id + '" title="Pełny plan zajęć prowadzącego">' + timetable.activities[i].tutor.name + "</a> " + (timetable.activities[i].tutor.moodle_url != null ? '<a href="' + timetable.activities[i].tutor.moodle_url + '" title="Wizytówka prowadzącego na E-Uczelni"><i class="fa fa-globe fa-fw"></i></a>' : "") + "</span>";
@@ -385,7 +385,7 @@ var devPlan = (function () {
                 data = data + '<span class="label label-danger" title="Typ zajęć"><i class="fa fa-fw fa-tag"></i>' + timetable.activities[i].category + '</span> ';
             }
 
-            if (TimetableViewSettings.counter) {
+            if (TimetableViewSettings.counter && timetable.activities[i].category != "egzamin") {
                 data = data + '<span class="label label-info" title="Licznik zajęć">' + ++activityCounter[activityCounterIndex].counter + '</span> ';
             }
 

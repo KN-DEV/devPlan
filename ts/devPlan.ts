@@ -622,7 +622,7 @@ class devPlan
             activityCounterIndex = indexgroup + '-' +
             timetable.activities[i].name + '-' +
             timetable.activities[i].category + '-' +
-          (  timetable.activities[i].tutor != null ? timetable.activities[i].tutor.id + '' : '');
+            ( timetable.activities[i].tutor != null ? timetable.activities[i].tutor.id + '' : '' );
             console.log( activityCounterIndex );
 
             if ( activityCounter[activityCounterIndex] == undefined )
@@ -657,7 +657,7 @@ class devPlan
 
 
             data = data + '<span title="Nazwa przedmiotu">' +
-            timetable.activities[i].name +
+            ( timetable.activities[i].name.length > 0 ? timetable.activities[i].name : timetable.activities[i].category ) +
             '</span></strong>';
 
             if ( TimetableViewSettings.tutor )
@@ -701,7 +701,7 @@ class devPlan
                 '</span> ';
             }
 
-            if ( TimetableViewSettings.counter )
+            if ( TimetableViewSettings.counter && timetable.activities[i].category != "egzamin" )
             {
                 data = data + '<span class="label label-info" title="Licznik zajęć">' + ++activityCounter[activityCounterIndex].counter + '</span> ';
             }

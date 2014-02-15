@@ -76,9 +76,6 @@ var devPlan = (function () {
                 if (timetable[i].toString().toLowerCase().indexOf("t") != -1) {
                     param.tutor_id[param.tutor_id.length] = parseInt(timetable[i].slice(1).toString());
                 }
-                if (timetable[i].toString().toLowerCase().indexOf("p") != -1) {
-                    param.place_id[param.place_id.length] = parseInt(timetable[i].slice(1).toString());
-                }
             }
             $.when(Cash.Api.registerTimetable(param)).done(function (response) {
                 console.log(response);
@@ -90,10 +87,10 @@ var devPlan = (function () {
         if ($("#search-panel-input").length) {
             $("#search-panel-input").attr('value', getUrlParam('search'));
         }
-        $.when(Cash.Api.getGroupsList(), Cash.Api.getTutorsList(), Cash.Api.getPlacesList()).done(function (groups, tutors, places) {
+        $.when(Cash.Api.getGroupsList(), Cash.Api.getTutorsList()).done(function (groups, tutors) {
             devPlan.setGroups(groups[0]);
             devPlan.setTutors(tutors[0]);
-            devPlan.setPlaces(places[0]);
+
             $("#search-input").removeAttr('disabled').attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn').attr('data-provide', "typeahead");
 
             $("#search-input").typeahead([
@@ -103,9 +100,6 @@ var devPlan = (function () {
                 }, {
                     name: "tutors",
                     local: devPlan.generateTypeaheadDatumsForTutors(devPlan.getTutors())
-                }, {
-                    name: "places",
-                    local: devPlan.generateTypeaheadDatumsForPlaces(devPlan.getPlaces())
                 }
             ]);
             $("#search-button").removeAttr("disabled").empty().append("Szukaj");
@@ -196,7 +190,6 @@ var devPlan = (function () {
     devPlan.showSearchResults = function (query) {
         if (typeof query === "undefined") { query = ""; }
         $("#search-results").empty();
-        console.log("Query: " + query);
         query = query.toString().toUpperCase();
 
         if (query.length >= 3) {
@@ -210,11 +203,6 @@ var devPlan = (function () {
             for (var i = 0; i < devPlan.getTutors().length; i++) {
                 if (devPlan.getTutors()[i].name.toString().toUpperCase().indexOf(query) !== -1) {
                     data = data + '<li class="list-group-item">' + '<a href="timetable.html?timetable=t' + devPlan.getTutors()[i].id + '">' + devPlan.getTutors()[i].name + '</a>' + '<span class="pull-right">' + '<a href="' + devPlan.getTutors()[i].moodle_url + '" title="Wizytówka E-Uczelnia"><i class="fa fa-globe fa-fw"></i></a>' + '</span>' + '</li>';
-                }
-            }
-            for (var i = 0; i < devPlan.getPlaces().length; i++) {
-                if (devPlan.getPlaces()[i].location.toString().toUpperCase().indexOf(query) !== -1) {
-                    data = data + '<li class="list-group-item">' + '<a href="timetable.html?timetable=p' + devPlan.getPlaces()[i].id + '">' + devPlan.getPlaces()[i].location + '</a>' + '</li>';
                 }
             }
 
@@ -248,7 +236,7 @@ var devPlan = (function () {
                 data = data + '<li class="list-group-item list-group-item-success">' + '<h3 id="' + timetable.activities[i].date + '">' + timetable.activities[i].day_of_week + ' ' + timetable.activities[i].date + '</h3>' + '</li>';
                 date = timetable.activities[i].date;
             }
-            data = data + '<li id="' + i + '" class="list-group-item">' + '<p class="h5">' + '<strong>' + timetable.activities[i].name + '</strong>' + '<span class="pull-right label label-danger">' + timetable.activities[i].category + '<span>' + '</p><div class="clearfix"></div>' + (timetable.activities[i].notes != null ? '<p>Notatka: ' + timetable.activities[i].notes + '</p>' : '') + "<p>" + timetable.activities[i].starts_at + " - " + timetable.activities[i].ends_at + ' ' + (timetable.activities[i].place != null ? '<a href="timetable.html?timetable=p' + timetable.activities[i].place.id + '">' + timetable.activities[i].place.location + '</a>' : "") + '<small>( godzin lekcyjnych:' + devPlan.getLessonsCounter(timetable.activities[i].starts_at, timetable.activities[i].ends_at) + ' )</small>' + '<span class="pull-right">' + (timetable.activities[i].tutor != null ? '<a href="timetable.html?timetable=t' + timetable.activities[i].tutor.id + '">' + timetable.activities[i].tutor.name + "</a> " : "") + (timetable.activities[i].tutor != null && timetable.activities[i].tutor.moodle_url != null ? '<a href="' + timetable.activities[i].tutor.moodle_url + '" title="Wizytówka E-Uczelnia"><i class="fa fa-globe fa-fw"></i></a>' : "") + "</span>" + '<br/>';
+            data = data + '<li id="' + i + '" class="list-group-item">' + '<p class="h5">' + '<strong>' + timetable.activities[i].name + '</strong>' + '<span class="pull-right label label-danger">' + timetable.activities[i].category + '<span>' + '</p><div class="clearfix"></div>' + (timetable.activities[i].notes != null ? '<p>Notatka: ' + timetable.activities[i].notes + '</p>' : '') + '<p><i class="fa fa-fw fa-clock-o"></i>' + timetable.activities[i].starts_at + " - " + timetable.activities[i].ends_at + ' ' + (timetable.activities[i].place != null ? '<i class="fa fa-fw fa-building-o"></i><!--<a href="timetable.html?timetable=p' + timetable.activities[i].place.id + '">--!>' + timetable.activities[i].place.location + '<!--</a>--!>' : "") + '<small class="text-muted"> ( godzin lekcyjnych:' + devPlan.getClassHoursCounter(timetable.activities[i].starts_at, timetable.activities[i].ends_at) + ' )</small>' + '<span class="pull-right">' + (timetable.activities[i].tutor != null ? '<a href="timetable.html?timetable=t' + timetable.activities[i].tutor.id + '">' + timetable.activities[i].tutor.name + "</a> " : "") + (timetable.activities[i].tutor != null && timetable.activities[i].tutor.moodle_url != null ? '<a href="' + timetable.activities[i].tutor.moodle_url + '" title="Wizytówka E-Uczelnia"><i class="fa fa-globe fa-fw"></i></a>' : "") + "</span>" + '<br/>';
 
             j = i;
             do {
@@ -264,38 +252,13 @@ var devPlan = (function () {
         $("#timetable-results").append(data);
     };
 
-    devPlan.getLessonsCounter = function (startsAt, endsAt) {
+    devPlan.getClassHoursCounter = function (startsAt, endsAt) {
         var alarms = [
-            "07:50",
-            "08:35",
-            "08:45",
-            "09:30",
-            "09:35",
-            "10:20",
-            "10:30",
-            "11:15",
-            "11:20",
-            "12:05",
-            "12:15",
-            "13:00",
-            "13:05",
-            "13:50",
-            "14:00",
-            "14:45",
-            "14:50",
-            "15:35",
-            "15:40",
-            "16:25",
-            "16:30",
-            "17:15",
-            "17:20",
-            "18:05",
-            "18:10",
-            "18:55",
-            "19:00",
-            "19:45",
-            "19:50",
-            "20:35"
+            "07:50", "08:35", "08:45", "09:30", "09:35", "10:20",
+            "10:30", "11:15", "11:20", "12:05", "12:15", "13:00",
+            "13:05", "13:50", "14:00", "14:45", "14:50", "15:35",
+            "15:40", "16:25", "16:30", "17:15", "17:20", "18:05",
+            "18:10", "18:55", "19:00", "19:45", "19:50", "20:35"
         ];
         var counter = 0;
         for (var i = 0; i <= alarms.length; i++) {
@@ -308,8 +271,7 @@ var devPlan = (function () {
                 break;
             }
         }
-        console.log(counter);
-        return Math.floor(counter / 2);
+        return counter / 2;
     };
     devPlan.groups = [];
 

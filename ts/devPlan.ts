@@ -1,5 +1,6 @@
 /// <reference path="DefinitelyTyped/typeahead/typeahead.d.ts" />
 /// <reference path="DefinitelyTyped/jquery/jquery.d.ts" />
+/// <reference path="DefinitelyTyped/jquery.cookie/jquery.cookie.d.ts" />
 
 /**
  * Cash service
@@ -280,6 +281,43 @@ class TimetableViewSettings
         return TimetableViewSettings;
     }
 
+    static load(): TimetableViewSettings
+    {
+
+
+        $.cookie.json = true;
+        var data = $.cookie( 'TimetableViewSettings' );
+        console.log( data );
+        TimetableViewSettings.setCounterStatus( data.counter );
+        TimetableViewSettings.setHourStatus( data.hour );
+        TimetableViewSettings.setCategoryStatus( data.category );
+        TimetableViewSettings.setBellStatus( data.bell );
+        TimetableViewSettings.setLocationStatus( data.location );
+        TimetableViewSettings.setGroupStatus( data.group );
+        TimetableViewSettings.setTutorStatus( data.tutor );
+        console.log( "Timetable view settings loaded" );
+
+        return TimetableViewSettings;
+    }
+    static save(): TimetableViewSettings
+    {
+        $.cookie.json = true;
+        $.cookie( 'TimetableViewSettings', {
+            counter: TimetableViewSettings.getCounterStatus(),
+            hour: TimetableViewSettings.getHourStatus(),
+            category: TimetableViewSettings.getCategoryStatus(),
+            bell: TimetableViewSettings.getBellStatus(),
+            location: TimetableViewSettings.getLocationStatus(),
+            group: TimetableViewSettings.getGroupStatus(),
+            tutor: TimetableViewSettings.getTutorStatus(),
+        });
+
+
+        console.log( $.cookie( 'TimetableViewSettings' ) );
+        console.log( "Timetable settings saved" );
+        return TimetableViewSettings;
+    }
+
 }
 /**
  * devPlan App
@@ -312,9 +350,10 @@ class devPlan
 
         $( "#search-input" ).attr( 'value', getUrlParam( 'search' ) );
 
+        TimetableViewSettings.load();
+
         if ( getUrlParam( 'timetable' ).length != 0 )
         {
-
             var param: Cash.TimetableParams = {
                 group_id: [],
                 tutor_id: [],
@@ -341,11 +380,12 @@ class devPlan
                 ( Cash.Api.registerTimetable( param ) )
                 .done( ( response: Cash.Timetable ) =>
                 {
-
                     devPlan.showTimetable( devPlan.setTimetable( response ).getTimetable() );
                     $( "#timetable-panel-spinner" ).remove();
                 });
-        }
+        } 
+
+
 
         if ( $( "#search-panel-input" ).length )
         {
@@ -578,7 +618,7 @@ class devPlan
 
         var data = "";
         $( "#timetable-results" ).empty();
-        console.log( timetable );
+
         timetable.activities = timetable.activities.sort( ( a: any, b: any ) => {return a.starts_at_timestamp - b.starts_at_timestamp });
 
 
@@ -611,7 +651,7 @@ class devPlan
                 timetable.activities[i].name == timetable.activities[j].name &&
                 timetable.activities[i].ends_at_timestamp == timetable.activities[j].ends_at_timestamp );
 
-            var indexgroup: string = "";
+            var indexgroup = "";
             groups = groups.sort( ( a: any, b: any ) => { return a.name > b.name; });
 
             for ( var k = 0; k < groups.length; k++ )
@@ -623,7 +663,6 @@ class devPlan
             timetable.activities[i].name + '-' +
             timetable.activities[i].category + '-' +
             ( timetable.activities[i].tutor != null ? timetable.activities[i].tutor.id + '' : '' );
-            console.log( activityCounterIndex );
 
             if ( activityCounter[activityCounterIndex] == undefined )
             {
@@ -652,7 +691,7 @@ class devPlan
 
             data = data +
             '<li id="' + i + '" class="list-group-item">' +
-            '<p class="h5">' +
+            '<p class="h4">' +
             '<strong>';
 
 
@@ -662,31 +701,29 @@ class devPlan
 
             if ( TimetableViewSettings.tutor )
             {
-                data = data + '<span class="pull-right">' +
+                data = data + ( timetable.activities[i].tutor.moodle_url != null ?
+                '<a class="pull-right" href="' + timetable.activities[i].tutor.moodle_url + '" title="Wizytówka prowadzącego na E-Uczelni"><i class="fa fa-globe fa-fw"></i></a>' : "" );
 
-                '<a href="timetable.html?timetable=t' + timetable.activities[i].tutor.id + '" title="Pełny plan zajęć prowadzącego">' + timetable.activities[i].tutor.name + "</a> " +
 
-                ( timetable.activities[i].tutor.moodle_url != null ?
-                '<a href="' + timetable.activities[i].tutor.moodle_url + '" title="Wizytówka prowadzącego na E-Uczelni"><i class="fa fa-globe fa-fw"></i></a>' : "" ) +
+                data = data + '<a class="pull-right" href="timetable.html?timetable=t' + timetable.activities[i].tutor.id + '" title="Pełny plan zajęć prowadzącego">' + timetable.activities[i].tutor.name + "</a> ";
 
-                "</span>";
             }
 
             data = data + '</p><div class="clearfix"></div>' +
 
             ( timetable.activities[i].notes != null ? '<p>Notatka: ' + timetable.activities[i].notes + '</p>' : '' ) +
-            '<p>';
+            '<p class="h5">';
 
             if ( TimetableViewSettings.bell )
             {
-                data = data + '<span class="label label-primary" title="Czas rozpoczęcia i zakończenia zajęć"><i class="fa fa-fw fa-bell"></i>' +
+                data = data + '<span class="" title="Czas rozpoczęcia i zakończenia zajęć"><i class="fa fa-fw fa-bell"></i>' +
                 timetable.activities[i].starts_at + " - " + timetable.activities[i].ends_at + '</span> ';
             }
 
             if ( TimetableViewSettings.location )
             {
                 data = data + ( timetable.activities[i].place != null ?
-                '<span class="label label-success" title="Lokalizacja zajęć"><i class="fa fa-fw fa-map-marker"></i>' +
+                '<span class="" title="Lokalizacja zajęć"><i class="fa fa-fw fa-map-marker"></i>' +
                 //            '<a href="timetable.html?timetable=p' + timetable.activities[i].place.id + '">' +
                 timetable.activities[i].place.location +
                 //            '</a>'+ 
@@ -712,23 +749,25 @@ class devPlan
                 ( activityCounter[activityCounterIndex].hour + " - " + ( activityCounter[activityCounterIndex].hour += devPlan.getClassHoursCounter( timetable.activities[i].starts_at, timetable.activities[i].ends_at ) ) ) +
                 '</span> ';
             }
+            data = data + '</p>';
 
             if ( TimetableViewSettings.group )
             {
-                data = data + '<br/>';
+                data = data + '<p>';
                 for ( var j = 0; j < groups.length; j++ )
                 {
                     if ( groups[j] != null )
                     {
-                        data = data + '<small><a href="timetable.html?timetable=g' + groups[j].id + '" title="Plan zajęć dla ' + groups[j].name + '">' + groups[j].name + "</a></small> ";
+                        data = data + '<a href="timetable.html?timetable=g' + groups[j].id + '" title="Plan zajęć dla ' + groups[j].name + '">' + groups[j].name + "</a>";
                         if ( j < ( groups.length - 1 ) )
                         {
                             data = data + ' | ';
                         }
                     }
                 }
+                data = data + '</p>';
             }
-            data = data + '</p><div class="clearfix"></div>' +
+            data = data + '<div class="clearfix"></div>' +
             "</li>";
         }
 

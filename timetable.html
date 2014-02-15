@@ -88,48 +88,48 @@
 								<form role="view">
 									<div class="checkbox">
 										<label> <input type="checkbox" name="couter"
-											onClick="TimetableViewSettings.setCounterStatus(!TimetableViewSettings.getCounterStatus()); devPlan.showTimetable(devPlan.getTimetable());">
+											onClick="TimetableViewSettings.setCounterStatus(!TimetableViewSettings.getCounterStatus()).save(); devPlan.showTimetable(devPlan.getTimetable());">
 											Informacja o numerze zajęć
 										</label>
 									</div>
 									<div class="checkbox">
 										<label> <input type="checkbox" name="hour"
-											onClick="TimetableViewSettings.setHourStatus(!TimetableViewSettings.getHourStatus()); devPlan.showTimetable(devPlan.getTimetable());">
+											onClick="TimetableViewSettings.setHourStatus(!TimetableViewSettings.getHourStatus()).save(); devPlan.showTimetable(devPlan.getTimetable());">
 											Informacja o ilości godzin lekcyjnych
 										</label>
 									</div>
 									<div class="checkbox">
 										<label> <input type="checkbox" name="location"
-											onClick="TimetableViewSettings.setLocationStatus(!TimetableViewSettings.getLocationStatus()); devPlan.showTimetable(devPlan.getTimetable());">
+											onClick="TimetableViewSettings.setLocationStatus(!TimetableViewSettings.getLocationStatus()).save(); devPlan.showTimetable(devPlan.getTimetable());">
 											Informacja o miejscu zajęć
 										</label>
 									</div>
 									<div class="checkbox">
 										<label> <input type="checkbox" name="category"
-											onClick="TimetableViewSettings.setCategoryStatus(!TimetableViewSettings.getCategoryStatus()); devPlan.showTimetable(devPlan.getTimetable());">
+											onClick="TimetableViewSettings.setCategoryStatus(!TimetableViewSettings.getCategoryStatus()).save(); devPlan.showTimetable(devPlan.getTimetable());">
 											Informacja o kategorii zajęć
 										</label>
 									</div>
 									<div class="checkbox">
 										<label> <input type="checkbox" name="bell"
-											onClick="TimetableViewSettings.setBellStatus(!TimetableViewSettings.getBellStatus()); devPlan.showTimetable(devPlan.getTimetable());">
+											onClick="TimetableViewSettings.setBellStatus(!TimetableViewSettings.getBellStatus()).save(); devPlan.showTimetable(devPlan.getTimetable());">
 											Informcja o godzinie zajęć
 										</label>
 									</div>
 									<div class="checkbox">
 										<label> <input type="checkbox" name="group"
-											onClick="TimetableViewSettings.setGroupStatus(!TimetableViewSettings.getGroupStatus()); devPlan.showTimetable(devPlan.getTimetable());">
+											onClick="TimetableViewSettings.setGroupStatus(!TimetableViewSettings.getGroupStatus()).save(); devPlan.showTimetable(devPlan.getTimetable());">
 
 											Informcja o grupie z którą są zajęcia
 										</label>
 									</div>
 									<div class="checkbox">
 										<label> <input type="checkbox" name="tutor"
-											onClick="TimetableViewSettings.setTutorStatus(!TimetableViewSettings.getTutorStatus()); devPlan.showTimetable(devPlan.getTimetable());">
+											onClick="TimetableViewSettings.setTutorStatus(!TimetableViewSettings.getTutorStatus()).save(); devPlan.showTimetable(devPlan.getTimetable());">
 											Informcja prowadzącym zajęcia
 										</label>
 									</div>
-									
+
 								</form>
 							</div>
 
@@ -221,6 +221,7 @@
 	</footer>
 	<!-- JavaScript -->
 	<script src="assets/js/jquery-1.10.2.js"></script>
+	<script src="assets/js/jquery.cookie.js"></script>
 	<script src="assets/js/bootstrap.min.js"></script>
 	<script src="assets/js/typeahead.min.js"></script>
 	<script src="assets/js/devPlan.js"></script>

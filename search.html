@@ -18,13 +18,14 @@
 <link href="assets/css/typeahead.css" rel="stylesheet">
 <link href="assets/css/landing-page.css" rel="stylesheet">
 <link href="assets/css/custom.css" rel="stylesheet">
-	<script src="assets/js/jquery-1.10.2.js"></script>
-	<script src="assets/js/bootstrap.min.js"></script>
-	<script src="assets/js/typeahead.min.js"></script>
-	<script src="assets/js/devPlan.js"></script>
-	<script type="text/javascript">
-		new devPlan();
-	</script>
+<script src="assets/js/jquery-1.10.2.js"></script>
+<script src="assets/js/jquery.cookie.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+<script src="assets/js/typeahead.min.js"></script>
+<script src="assets/js/devPlan.js"></script>
+<script type="text/javascript">
+	new devPlan();
+</script>
 </head>
 <body>
 	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -72,8 +73,7 @@
 					<!-- Default panel contents -->
 					<div class="panel-heading">
 						<h4>
-							<form action="search.html" method="get"
-								role="search">
+							<form action="search.html" method="get" role="search">
 								<input id="search-panel-input" name="search" type="text"
 									class="form-control" disabled="disabled"
 									onkeyup="devPlan.showSearchResults(this.value);"

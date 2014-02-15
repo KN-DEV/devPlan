@@ -66,15 +66,16 @@
 					<!-- Default panel contents -->
 					<div class="panel-heading">
 						<h4>
-							<span id="panel-title">Plan zajęć</span><a data-toggle="collapse" data-parent="#accordion"
-								href="#collapseOne"><i class="fa fa-fw fa-gears pull-right"></i></a>
+							<span id="panel-title">Plan zajęć</span><a data-toggle="collapse"
+								data-parent="#accordion" href="#collapseOne"><i
+								class="fa fa-fw fa-gears pull-right"></i></a>
 						</h4>
 					</div>
 
 					<div id="collapseOne" class="panel-collapse collapse panel-body">
 						<!-- Nav tabs -->
 						<ul class="nav nav-tabs">
-							<li class="active"><a href="#filters" data-toggle="tab">Filtry
+							<li class="active"><a href="#view" data-toggle="tab">Widok
 							</a></li>
 							<li><a href="#timetables" data-toggle="tab">Wybrane
 									plany</a></li>
@@ -82,9 +83,50 @@
 
 						<!-- Tab panes -->
 						<div class="tab-content">
-							<div class="tab-pane active" id="filters">
-								<p>Filtry</p>
+							<div class="tab-pane active" id="view">
+
+								<form role="view">
+									<div class="checkbox">
+										<label> <input type="checkbox" name="couter"
+											onClick="TimetableViewSettings.setCounterStatus(!TimetableViewSettings.getCounterStatus()); devPlan.showTimetable(devPlan.getTimetable());">
+											Informacja o numerze zajęć
+										</label>
+									</div>
+									<div class="checkbox">
+										<label> <input type="checkbox" name="hour"
+											onClick="TimetableViewSettings.setHourStatus(!TimetableViewSettings.getHourStatus()); devPlan.showTimetable(devPlan.getTimetable());">
+											Informacja o ilości godzin lekcyjnych
+										</label>
+									</div>
+									<div class="checkbox">
+										<label> <input type="checkbox" name="category"
+											onClick="TimetableViewSettings.setCategoryStatus(!TimetableViewSettings.getCategoryStatus()); devPlan.showTimetable(devPlan.getTimetable());">
+											Informacja o kategorii zajęć
+										</label>
+									</div>
+									<div class="checkbox">
+										<label> <input type="checkbox" name="bell"
+											onClick="TimetableViewSettings.setBellStatus(!TimetableViewSettings.getBellStatus()); devPlan.showTimetable(devPlan.getTimetable());">
+											Informcja o godzinie zajęć
+										</label>
+									</div>
+									<div class="checkbox">
+										<label> <input type="checkbox" name="group"
+											onClick="TimetableViewSettings.setGroupStatus(!TimetableViewSettings.getGroupStatus()); devPlan.showTimetable(devPlan.getTimetable());">
+
+											Informcja o grupie z którą są zajęcia
+										</label>
+									</div>
+									<div class="checkbox">
+										<label> <input type="checkbox" name="tutor"
+											onClick="TimetableViewSettings.setTutorStatus(!TimetableViewSettings.getTutorStatus()); devPlan.showTimetable(devPlan.getTimetable());">
+											Informcja prowadzącym zajęcia
+										</label>
+									</div>
+									
+								</form>
 							</div>
+
 							<div class="tab-pane" id="timetables">
 								<p>Wybrane plany zajęć</p>
 							</div>

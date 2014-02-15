@@ -136,16 +136,6 @@ var TimetableViewSettings = (function () {
         TimetableViewSettings.tutor = status;
         return TimetableViewSettings;
     };
-
-    TimetableViewSettings.getUniqueStatus = function () {
-        return TimetableViewSettings.unique;
-    };
-
-    TimetableViewSettings.setUniqueStatus = function (status) {
-        if (typeof status === "undefined") { status = false; }
-        TimetableViewSettings.unique = status;
-        return TimetableViewSettings;
-    };
     TimetableViewSettings.counter = false;
     TimetableViewSettings.hour = false;
     TimetableViewSettings.category = false;
@@ -153,7 +143,6 @@ var TimetableViewSettings = (function () {
     TimetableViewSettings.location = false;
     TimetableViewSettings.group = false;
     TimetableViewSettings.tutor = false;
-    TimetableViewSettings.unique = true;
     return TimetableViewSettings;
 })();
 
@@ -342,65 +331,65 @@ var devPlan = (function () {
         var activityCounterIndex = "";
         var j = 0;
         for (var i = 0; i < timetable.activities.length; i++) {
-            activityCounterIndex = timetable.activities[i].group.id + timetable.activities[i].name + timetable.activities[i].category + timetable.activities[i].tutor.id;
+            activityCounterIndex = timetable.activities[i].group + timetable.activities[i].name + timetable.activities[i].category + timetable.activities[i].tutor;
 
             if (activityCounter[activityCounterIndex] == undefined) {
                 activityCounter[activityCounterIndex] = new ActivityHourCounter();
             }
-            if (TimetableViewSettings.unique && activityCounter[activityCounterIndex].counter == 0) {
-                if (timetable.activities[i - 1] != null && timetable.activities[i].name == timetable.activities[i - 1].name && timetable.activities[i].ends_at_timestamp == timetable.activities[i - 1].ends_at_timestamp) {
-                    continue;
-                }
-                if (date < timetable.activities[i].date) {
-                    data = data + '<li class="list-group-item list-group-item-success">' + '<p id="' + timetable.activities[i].date + '" class="h2">' + timetable.activities[i].day_of_week + ' ' + timetable.activities[i].date + '</p>' + '</li>';
-                    date = timetable.activities[i].date;
-                }
 
-                data = data + '<li id="' + i + '" class="list-group-item">' + '<p class="h5">' + '<strong class="pull-left">';
-                if (TimetableViewSettings.counter) {
-                    data = data + '<span title="Licznik zajęć">( ' + ++activityCounter[activityCounterIndex].counter + ' )</span> ';
-                }
-
-                data = data + '<span title="Nazwa przedmiotu">' + timetable.activities[i].name + '</span></strong>';
-
-                if (TimetableViewSettings.tutor) {
-                    data = data + '<span class="pull-right">' + '<a href="timetable.html?timetable=t' + timetable.activities[i].tutor.id + '" title="Pełny plan zajęć prowadzącego">' + timetable.activities[i].tutor.name + "</a> " + (timetable.activities[i].tutor.moodle_url != null ? '<a href="' + timetable.activities[i].tutor.moodle_url + '" title="Wizytówka prowadzącego na E-Uczelni"><i class="fa fa-globe fa-fw"></i></a>' : "") + "</span>";
-                }
-
-                data = data + '</p><div class="clearfix"></div>' + (timetable.activities[i].notes != null ? '<p>Notatka: ' + timetable.activities[i].notes + '</p>' : '') + '<p>';
-
-                if (TimetableViewSettings.bell) {
-                    data = data + '<span class="label label-primary" title="Czas rozpoczęcia i zakończenia zajęć"><i class="fa fa-fw fa-bell"></i>' + timetable.activities[i].starts_at + " - " + timetable.activities[i].ends_at + '</span> ';
-                }
-
-                if (TimetableViewSettings.location) {
-                    data = data + (timetable.activities[i].place != null ? '<span class="label label-success" title="Lokalizacja zajęć"><i class="fa fa-fw fa-map-marker"></i>' + timetable.activities[i].place.location + '</span>' : '');
-                }
-
-                if (TimetableViewSettings.category) {
-                    data = data + '<span class="label label-danger" title="Typ zajęć"><i class="fa fa-fw fa-tag"></i>' + timetable.activities[i].category + '</span> ';
-                }
-
-                if (TimetableViewSettings.hour) {
-                    data = data + '<span class="label label-default" title="Ilość jednostek lekcyjnych"><i class="fa fa-fw fa-clock-o"></i>' + (activityCounter[activityCounterIndex].hour + " - " + (activityCounter[activityCounterIndex].hour += devPlan.getClassHoursCounter(timetable.activities[i].starts_at, timetable.activities[i].ends_at))) + '</span> ';
-                }
-
-                if (TimetableViewSettings.group) {
-                    data = data + '<br/>';
-
-                    j = i;
-                    do {
-                        if (j > i) {
-                            data = data + " | ";
-                        }
-                        if (timetable.activities[j].group != null) {
-                            data = data + '<small><a href="timetable.html?timetable=g' + timetable.activities[j].group.id + '" title="Plan zajęć dla ' + timetable.activities[j].group.name + '">' + timetable.activities[j].group.name + "</a></small>";
-                        }
-                    } while(timetable.activities[++j] != null && timetable.activities[i].name == timetable.activities[j].name && timetable.activities[i].ends_at_timestamp == timetable.activities[j].ends_at_timestamp);
-                }
-                data = data + '</p><div class="clearfix"></div>' + "</li>";
+            if (timetable.activities[i - 1] != null && timetable.activities[i].name == timetable.activities[i - 1].name && timetable.activities[i].ends_at_timestamp == timetable.activities[i - 1].ends_at_timestamp) {
+                continue;
             }
+            if (date < timetable.activities[i].date) {
+                data = data + '<li class="list-group-item list-group-item-success">' + '<p id="' + timetable.activities[i].date + '" class="h2">' + timetable.activities[i].day_of_week + ' ' + timetable.activities[i].date + '</p>' + '</li>';
+                date = timetable.activities[i].date;
+            }
+
+            data = data + '<li id="' + i + '" class="list-group-item">' + '<p class="h5">' + '<strong class="pull-left">';
+            if (TimetableViewSettings.counter) {
+                data = data + '<span title="Licznik zajęć">( ' + ++activityCounter[activityCounterIndex].counter + ' )</span> ';
+            }
+
+            data = data + '<span title="Nazwa przedmiotu">' + timetable.activities[i].name + '</span></strong>';
+
+            if (TimetableViewSettings.tutor) {
+                data = data + '<span class="pull-right">' + '<a href="timetable.html?timetable=t' + timetable.activities[i].tutor.id + '" title="Pełny plan zajęć prowadzącego">' + timetable.activities[i].tutor.name + "</a> " + (timetable.activities[i].tutor.moodle_url != null ? '<a href="' + timetable.activities[i].tutor.moodle_url + '" title="Wizytówka prowadzącego na E-Uczelni"><i class="fa fa-globe fa-fw"></i></a>' : "") + "</span>";
+            }
+
+            data = data + '</p><div class="clearfix"></div>' + (timetable.activities[i].notes != null ? '<p>Notatka: ' + timetable.activities[i].notes + '</p>' : '') + '<p>';
+
+            if (TimetableViewSettings.bell) {
+                data = data + '<span class="label label-primary" title="Czas rozpoczęcia i zakończenia zajęć"><i class="fa fa-fw fa-bell"></i>' + timetable.activities[i].starts_at + " - " + timetable.activities[i].ends_at + '</span> ';
+            }
+
+            if (TimetableViewSettings.location) {
+                data = data + (timetable.activities[i].place != null ? '<span class="label label-success" title="Lokalizacja zajęć"><i class="fa fa-fw fa-map-marker"></i>' + timetable.activities[i].place.location + '</span>' : '');
+            }
+
+            if (TimetableViewSettings.category) {
+                data = data + '<span class="label label-danger" title="Typ zajęć"><i class="fa fa-fw fa-tag"></i>' + timetable.activities[i].category + '</span> ';
+            }
+
+            if (TimetableViewSettings.hour) {
+                data = data + '<span class="label label-default" title="Ilość jednostek lekcyjnych"><i class="fa fa-fw fa-clock-o"></i>' + (activityCounter[activityCounterIndex].hour + " - " + (activityCounter[activityCounterIndex].hour += devPlan.getClassHoursCounter(timetable.activities[i].starts_at, timetable.activities[i].ends_at))) + '</span> ';
+            }
+
+            if (TimetableViewSettings.group) {
+                data = data + '<br/>';
+
+                j = i;
+                do {
+                    if (j > i) {
+                        data = data + " | ";
+                    }
+                    if (timetable.activities[j].group != null) {
+                        data = data + '<small><a href="timetable.html?timetable=g' + timetable.activities[j].group.id + '" title="Plan zajęć dla ' + timetable.activities[j].group.name + '">' + timetable.activities[j].group.name + "</a></small>";
+                    }
+                } while(timetable.activities[++j] != null && timetable.activities[i].name == timetable.activities[j].name && timetable.activities[i].ends_at_timestamp == timetable.activities[j].ends_at_timestamp);
+            }
+            data = data + '</p><div class="clearfix"></div>' + "</li>";
         }
+
         $("#timetable-results").append(data);
     };
 

@@ -596,13 +596,13 @@ class devPlan
         for ( var i = 0; i < timetable.activities.length; i++ )
         {
 
-            activityCounterIndex = timetable.activities[i].group.id + timetable.activities[i].name + timetable.activities[i].category + timetable.activities[i].tutor.id;
+            activityCounterIndex = timetable.activities[i].group + timetable.activities[i].name + timetable.activities[i].category + timetable.activities[i].tutor;
 
             if ( activityCounter[activityCounterIndex] == undefined )
             {
                 activityCounter[activityCounterIndex] = new ActivityHourCounter();
             }
-           \
+           
             /**
              * zajęcia dla wielu grup - opuszcza kolejne
              */

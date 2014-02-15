@@ -461,7 +461,10 @@ class devPlan
         var date = "";
 
 
-
+        if ( timetable.activities[0].tutor != null && getUrlParam( "timetable" ) == 't' + timetable.activities[0].tutor.id )
+        {
+            $( "#panel-title" ).empty().append( 'Plan zajęć:  <a href="timetable.html?timetable=t' + timetable.activities[0].tutor.id + '">' + timetable.activities[0].tutor.name + '</a><a href="' + timetable.activities[0].tutor.moodle_url + '" title="Wizytówka E-Uczelnia"><i class="fa fa-globe fa-fw"></i></a>');
+        }
 
         var activityCounter: number[] = [];
         var activityCounterIndex: string = "";
@@ -470,7 +473,7 @@ class devPlan
         {
 
             activityCounterIndex = timetable.activities[i].group + timetable.activities[i].name + timetable.activities[i].category + timetable.activities[i].tutor.id;
-            if (activityCounter[activityCounterIndex] == undefined )
+            if ( activityCounter[activityCounterIndex] == undefined )
             {
                 activityCounter[activityCounterIndex] = 0;
             }
@@ -498,19 +501,20 @@ class devPlan
             '<p class="h5">' +
             '<strong class="pull-left">' +
             timetable.activities[i].name +
-            '</strong>' +
+            '</strong>';
+console.log(getUrlParam( "timetable" ));
+            if ( timetable.activities[i].tutor != null && getUrlParam( "timetable" ) != "t" + timetable.activities[i].tutor.id )
+            {
+                data = data + '<span class="pull-right">' +
 
+                '<a href="timetable.html?timetable=t' + timetable.activities[i].tutor.id + '">' + timetable.activities[i].tutor.name + "</a> " +
 
-            '<span class="pull-right">' +
-            ( timetable.activities[i].tutor != null ?
-            '<a href="timetable.html?timetable=t' + timetable.activities[i].tutor.id + '">' + timetable.activities[i].tutor.name + "</a> " : "" ) +
+                ( timetable.activities[i].tutor.moodle_url != null ?
+                '<a href="' + timetable.activities[i].tutor.moodle_url + '" title="Wizytówka E-Uczelnia"><i class="fa fa-globe fa-fw"></i></a>' : "" ) +
 
-            ( timetable.activities[i].tutor != null && timetable.activities[i].tutor.moodle_url != null ?
-            '<a href="' + timetable.activities[i].tutor.moodle_url + '" title="Wizytówka E-Uczelnia"><i class="fa fa-globe fa-fw"></i></a>' : "" ) +
-
-            "</span>" +
-
-            '</p><div class="clearfix"></div>' +
+                "</span>";
+            }
+            data = data + '</p><div class="clearfix"></div>' +
 
             ( timetable.activities[i].notes != null ? '<p>Notatka: ' + timetable.activities[i].notes + '</p>' : '' ) +
             '<p>' +
@@ -531,7 +535,7 @@ class devPlan
             '</span>' +
             //Hours
             ' <span class="label label-default">godziny: ' +
-          (  activityCounter[activityCounterIndex] + " - " + (activityCounter[activityCounterIndex] += devPlan.getClassHoursCounter( timetable.activities[i].starts_at, timetable.activities[i].ends_at )) )+
+            ( activityCounter[activityCounterIndex] + " - " + ( activityCounter[activityCounterIndex] += devPlan.getClassHoursCounter( timetable.activities[i].starts_at, timetable.activities[i].ends_at ) ) ) +
             '</span>' +
 
             '<br/>';

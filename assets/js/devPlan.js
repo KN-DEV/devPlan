@@ -227,6 +227,10 @@ var devPlan = (function () {
 
         var date = "";
 
+        if (timetable.activities[0].tutor != null && getUrlParam("timetable") == 't' + timetable.activities[0].tutor.id) {
+            $("#panel-title").empty().append('Plan zajęć:  <a href="timetable.html?timetable=t' + timetable.activities[0].tutor.id + '">' + timetable.activities[0].tutor.name + '</a><a href="' + timetable.activities[0].tutor.moodle_url + '" title="Wizytówka E-Uczelnia"><i class="fa fa-globe fa-fw"></i></a>');
+        }
+
         var activityCounter = [];
         var activityCounterIndex = "";
         var j = 0;
@@ -243,7 +247,12 @@ var devPlan = (function () {
                 data = data + '<li class="list-group-item list-group-item-success">' + '<p id="' + timetable.activities[i].date + '" class="h2">' + timetable.activities[i].day_of_week + ' ' + timetable.activities[i].date + '</p>' + '</li>';
                 date = timetable.activities[i].date;
             }
-            data = data + '<li id="' + i + '" class="list-group-item">' + '<p class="h5">' + '<strong class="pull-left">' + timetable.activities[i].name + '</strong>' + '<span class="pull-right">' + (timetable.activities[i].tutor != null ? '<a href="timetable.html?timetable=t' + timetable.activities[i].tutor.id + '">' + timetable.activities[i].tutor.name + "</a> " : "") + (timetable.activities[i].tutor != null && timetable.activities[i].tutor.moodle_url != null ? '<a href="' + timetable.activities[i].tutor.moodle_url + '" title="Wizytówka E-Uczelnia"><i class="fa fa-globe fa-fw"></i></a>' : "") + "</span>" + '</p><div class="clearfix"></div>' + (timetable.activities[i].notes != null ? '<p>Notatka: ' + timetable.activities[i].notes + '</p>' : '') + '<p>' + '<span class="label label-primary"><i class="fa fa-fw fa-clock-o"></i>' + timetable.activities[i].starts_at + " - " + timetable.activities[i].ends_at + '</span> ' + (timetable.activities[i].place != null ? '<span class="label label-success"><i class="fa fa-fw fa-map-marker"></i>' + timetable.activities[i].place.location + '</span>' : '') + ' <span class="label label-danger"><i class="fa fa-fw fa-tag"></i>' + timetable.activities[i].category + '</span>' + ' <span class="label label-default">godziny: ' + (activityCounter[activityCounterIndex] + " - " + (activityCounter[activityCounterIndex] += devPlan.getClassHoursCounter(timetable.activities[i].starts_at, timetable.activities[i].ends_at))) + '</span>' + '<br/>';
+            data = data + '<li id="' + i + '" class="list-group-item">' + '<p class="h5">' + '<strong class="pull-left">' + timetable.activities[i].name + '</strong>';
+            console.log(getUrlParam("timetable"));
+            if (timetable.activities[i].tutor != null && getUrlParam("timetable") != "t" + timetable.activities[i].tutor.id) {
+                data = data + '<span class="pull-right">' + '<a href="timetable.html?timetable=t' + timetable.activities[i].tutor.id + '">' + timetable.activities[i].tutor.name + "</a> " + (timetable.activities[i].tutor.moodle_url != null ? '<a href="' + timetable.activities[i].tutor.moodle_url + '" title="Wizytówka E-Uczelnia"><i class="fa fa-globe fa-fw"></i></a>' : "") + "</span>";
+            }
+            data = data + '</p><div class="clearfix"></div>' + (timetable.activities[i].notes != null ? '<p>Notatka: ' + timetable.activities[i].notes + '</p>' : '') + '<p>' + '<span class="label label-primary"><i class="fa fa-fw fa-clock-o"></i>' + timetable.activities[i].starts_at + " - " + timetable.activities[i].ends_at + '</span> ' + (timetable.activities[i].place != null ? '<span class="label label-success"><i class="fa fa-fw fa-map-marker"></i>' + timetable.activities[i].place.location + '</span>' : '') + ' <span class="label label-danger"><i class="fa fa-fw fa-tag"></i>' + timetable.activities[i].category + '</span>' + ' <span class="label label-default">godziny: ' + (activityCounter[activityCounterIndex] + " - " + (activityCounter[activityCounterIndex] += devPlan.getClassHoursCounter(timetable.activities[i].starts_at, timetable.activities[i].ends_at))) + '</span>' + '<br/>';
 
             j = i;
             do {

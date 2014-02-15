@@ -136,13 +136,13 @@ var TimetableViewSettings = (function () {
         TimetableViewSettings.tutor = status;
         return TimetableViewSettings;
     };
-    TimetableViewSettings.counter = false;
-    TimetableViewSettings.hour = false;
-    TimetableViewSettings.category = false;
-    TimetableViewSettings.bell = false;
-    TimetableViewSettings.location = false;
-    TimetableViewSettings.group = false;
-    TimetableViewSettings.tutor = false;
+    TimetableViewSettings.counter = true;
+    TimetableViewSettings.hour = true;
+    TimetableViewSettings.category = true;
+    TimetableViewSettings.bell = true;
+    TimetableViewSettings.location = true;
+    TimetableViewSettings.group = true;
+    TimetableViewSettings.tutor = true;
     return TimetableViewSettings;
 })();
 
@@ -331,7 +331,25 @@ var devPlan = (function () {
         var activityCounterIndex = "";
         var j = 0;
         for (var i = 0; i < timetable.activities.length; i++) {
-            activityCounterIndex = timetable.activities[i].group + timetable.activities[i].name + timetable.activities[i].category + timetable.activities[i].tutor;
+            j = i;
+            var groups = [];
+            do {
+                if (timetable.activities[j].group != null) {
+                    groups[groups.length] = timetable.activities[j].group;
+                }
+            } while(timetable.activities[++j] != null && timetable.activities[i].name == timetable.activities[j].name && timetable.activities[i].ends_at_timestamp == timetable.activities[j].ends_at_timestamp);
+
+            var indexgroup = "";
+            groups = groups.sort(function (a, b) {
+                return a.name > b.name;
+            });
+
+            for (var k = 0; k < groups.length; k++) {
+                indexgroup = indexgroup + groups[k].name;
+            }
+
+            activityCounterIndex = indexgroup + '-' + timetable.activities[i].name + '-' + timetable.activities[i].category + '-' + (timetable.activities[i].tutor != null ? timetable.activities[i].tutor.id + '' : '');
+            console.log(activityCounterIndex);
 
             if (activityCounter[activityCounterIndex] == undefined) {
                 activityCounter[activityCounterIndex] = new ActivityHourCounter();
@@ -345,10 +363,7 @@ var devPlan = (function () {
                 date = timetable.activities[i].date;
             }
 
-            data = data + '<li id="' + i + '" class="list-group-item">' + '<p class="h5">' + '<strong class="pull-left">';
-            if (TimetableViewSettings.counter) {
-                data = data + '<span title="Licznik zajęć">( ' + ++activityCounter[activityCounterIndex].counter + ' )</span> ';
-            }
+            data = data + '<li id="' + i + '" class="list-group-item">' + '<p class="h5">' + '<strong>';
 
             data = data + '<span title="Nazwa przedmiotu">' + timetable.activities[i].name + '</span></strong>';
 
@@ -363,11 +378,15 @@ var devPlan = (function () {
             }
 
             if (TimetableViewSettings.location) {
-                data = data + (timetable.activities[i].place != null ? '<span class="label label-success" title="Lokalizacja zajęć"><i class="fa fa-fw fa-map-marker"></i>' + timetable.activities[i].place.location + '</span>' : '');
+                data = data + (timetable.activities[i].place != null ? '<span class="label label-success" title="Lokalizacja zajęć"><i class="fa fa-fw fa-map-marker"></i>' + timetable.activities[i].place.location + '</span> ' : '');
             }
 
             if (TimetableViewSettings.category) {
                 data = data + '<span class="label label-danger" title="Typ zajęć"><i class="fa fa-fw fa-tag"></i>' + timetable.activities[i].category + '</span> ';
+            }
+
+            if (TimetableViewSettings.counter) {
+                data = data + '<span class="label label-info" title="Licznik zajęć">' + ++activityCounter[activityCounterIndex].counter + '</span> ';
             }
 
             if (TimetableViewSettings.hour) {
@@ -376,16 +395,14 @@ var devPlan = (function () {
 
             if (TimetableViewSettings.group) {
                 data = data + '<br/>';
-
-                j = i;
-                do {
-                    if (j > i) {
-                        data = data + " | ";
+                for (var j = 0; j < groups.length; j++) {
+                    if (groups[j] != null) {
+                        data = data + '<small><a href="timetable.html?timetable=g' + groups[j].id + '" title="Plan zajęć dla ' + groups[j].name + '">' + groups[j].name + "</a></small> ";
+                        if (j < (groups.length - 1)) {
+                            data = data + ' | ';
+                        }
                     }
-                    if (timetable.activities[j].group != null) {
-                        data = data + '<small><a href="timetable.html?timetable=g' + timetable.activities[j].group.id + '" title="Plan zajęć dla ' + timetable.activities[j].group.name + '">' + timetable.activities[j].group.name + "</a></small>";
-                    }
-                } while(timetable.activities[++j] != null && timetable.activities[i].name == timetable.activities[j].name && timetable.activities[i].ends_at_timestamp == timetable.activities[j].ends_at_timestamp);
+                }
             }
             data = data + '</p><div class="clearfix"></div>' + "</li>";
         }

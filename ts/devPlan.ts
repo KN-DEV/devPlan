@@ -168,13 +168,13 @@ class ActivityHourCounter
 
 class TimetableViewSettings
 {
-    static counter: boolean = false;
-    static hour: boolean = false;
-    static category: boolean = false;
-    static bell: boolean = false;
-    static location: boolean = false;
-    static group: boolean = false;
-    static tutor: boolean = false;
+    static counter: boolean = true;
+    static hour: boolean = true;
+    static category: boolean = true;
+    static bell: boolean = true;
+    static location: boolean = true;
+    static group: boolean = true;
+    static tutor: boolean = true;
 
     /**
      * 
@@ -596,13 +596,40 @@ class devPlan
         for ( var i = 0; i < timetable.activities.length; i++ )
         {
 
-            activityCounterIndex = timetable.activities[i].group + timetable.activities[i].name + timetable.activities[i].category + timetable.activities[i].tutor;
+            /**
+                        * zajęcia dla wielu grup - lista grup
+                        */
+            j = i;
+            var groups: Cash.Group[] = [];
+            do
+            {
+                if ( timetable.activities[j].group != null )
+                {
+                    groups[groups.length] = timetable.activities[j].group;
+                }
+            } while ( timetable.activities[++j] != null &&
+                timetable.activities[i].name == timetable.activities[j].name &&
+                timetable.activities[i].ends_at_timestamp == timetable.activities[j].ends_at_timestamp );
+
+            var indexgroup: string = "";
+            groups = groups.sort( ( a: any, b: any ) => { return a.name > b.name; });
+
+            for ( var k = 0; k < groups.length; k++ )
+            {
+                indexgroup = indexgroup + groups[k].name;
+            }
+
+            activityCounterIndex = indexgroup + '-' +
+            timetable.activities[i].name + '-' +
+            timetable.activities[i].category + '-' +
+          (  timetable.activities[i].tutor != null ? timetable.activities[i].tutor.id + '' : '');
+            console.log( activityCounterIndex );
 
             if ( activityCounter[activityCounterIndex] == undefined )
             {
                 activityCounter[activityCounterIndex] = new ActivityHourCounter();
             }
-           
+
             /**
              * zajęcia dla wielu grup - opuszcza kolejne
              */
@@ -626,11 +653,8 @@ class devPlan
             data = data +
             '<li id="' + i + '" class="list-group-item">' +
             '<p class="h5">' +
-            '<strong class="pull-left">';
-            if ( TimetableViewSettings.counter )
-            {
-                data = data + '<span title="Licznik zajęć">( ' + ++activityCounter[activityCounterIndex].counter + ' )</span> ';
-            }
+            '<strong>';
+
 
             data = data + '<span title="Nazwa przedmiotu">' +
             timetable.activities[i].name +
@@ -653,7 +677,6 @@ class devPlan
             ( timetable.activities[i].notes != null ? '<p>Notatka: ' + timetable.activities[i].notes + '</p>' : '' ) +
             '<p>';
 
-
             if ( TimetableViewSettings.bell )
             {
                 data = data + '<span class="label label-primary" title="Czas rozpoczęcia i zakończenia zajęć"><i class="fa fa-fw fa-bell"></i>' +
@@ -667,7 +690,7 @@ class devPlan
                 //            '<a href="timetable.html?timetable=p' + timetable.activities[i].place.id + '">' +
                 timetable.activities[i].place.location +
                 //            '</a>'+ 
-                '</span>'
+                '</span> '
                 : '' );
             }
 
@@ -676,6 +699,11 @@ class devPlan
                 data = data + '<span class="label label-danger" title="Typ zajęć"><i class="fa fa-fw fa-tag"></i>' +
                 timetable.activities[i].category +
                 '</span> ';
+            }
+
+            if ( TimetableViewSettings.counter )
+            {
+                data = data + '<span class="label label-info" title="Licznik zajęć">' + ++activityCounter[activityCounterIndex].counter + '</span> ';
             }
 
             if ( TimetableViewSettings.hour )
@@ -688,27 +716,22 @@ class devPlan
             if ( TimetableViewSettings.group )
             {
                 data = data + '<br/>';
-                /**
-                 * zajęcia dla wielu grup - lista grup
-                 */
-                j = i;
-                do
+                for ( var j = 0; j < groups.length; j++ )
                 {
-                    if ( j > i )
+                    if ( groups[j] != null )
                     {
-                        data = data + " | ";
+                        data = data + '<small><a href="timetable.html?timetable=g' + groups[j].id + '" title="Plan zajęć dla ' + groups[j].name + '">' + groups[j].name + "</a></small> ";
+                        if ( j < ( groups.length - 1 ) )
+                        {
+                            data = data + ' | ';
+                        }
                     }
-                    if ( timetable.activities[j].group != null )
-                    {
-                        data = data + '<small><a href="timetable.html?timetable=g' + timetable.activities[j].group.id + '" title="Plan zajęć dla ' + timetable.activities[j].group.name + '">' + timetable.activities[j].group.name + "</a></small>";
-                    }
-                } while ( timetable.activities[++j] != null &&
-                    timetable.activities[i].name == timetable.activities[j].name &&
-                    timetable.activities[i].ends_at_timestamp == timetable.activities[j].ends_at_timestamp );
+                }
             }
             data = data + '</p><div class="clearfix"></div>' +
             "</li>";
         }
+
 
         $( "#timetable-results" ).append( data );
     }

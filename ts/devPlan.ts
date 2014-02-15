@@ -158,6 +158,15 @@ interface DatumPlace
     id: number;
     location: string;
 }
+
+interface ActivityHoursCounter
+{
+    name: string;
+    category: string;
+    tutor: number;
+    group: number;
+    hours: number;
+}
 /**
  * devPlan App
  */
@@ -208,10 +217,10 @@ class devPlan
                 {
                     param.tutor_id[param.tutor_id.length] = parseInt( timetable[i].slice( 1 ).toString() );
                 }
-//                if ( timetable[i].toString().toLowerCase().indexOf( "p" ) != -1 )
-//                {
-//                    param.place_id[param.place_id.length] = parseInt( timetable[i].slice( 1 ).toString() );
-//                }
+                //                if ( timetable[i].toString().toLowerCase().indexOf( "p" ) != -1 )
+                //                {
+                //                    param.place_id[param.place_id.length] = parseInt( timetable[i].slice( 1 ).toString() );
+                //                }
             }
             $.when
                 ( Cash.Api.registerTimetable( param ) )
@@ -436,8 +445,13 @@ class devPlan
     }
 
 
+
+
     static showTimetable( timetable: Cash.Timetable ): void
     {
+
+
+
         var data = "";
         $( "#timetable-results" ).empty();
 
@@ -446,9 +460,20 @@ class devPlan
 
         var date = "";
 
+
+
+
+        var activityCounter: number[] = [];
+        var activityCounterIndex: string = "";
         var j = 0;
         for ( var i = 0; i < timetable.activities.length; i++ )
         {
+
+            activityCounterIndex = timetable.activities[i].group + timetable.activities[i].name + timetable.activities[i].category + timetable.activities[i].tutor.id;
+            if (activityCounter[activityCounterIndex] == undefined )
+            {
+                activityCounter[activityCounterIndex] = 0;
+            }
             /**
              * zajęcia dla wielu grup - opuszcza kolejne
              */
@@ -461,35 +486,21 @@ class devPlan
             if ( date < timetable.activities[i].date )
             {
                 data = data + '<li class="list-group-item list-group-item-success">' +
-                '<h3 id="' + timetable.activities[i].date + '">' +
+                '<p id="' + timetable.activities[i].date + '" class="h2">' +
                 timetable.activities[i].day_of_week + ' ' + timetable.activities[i].date +
 
-                '</h3>' +
+                '</p>' +
                 '</li>';
                 date = timetable.activities[i].date;
             }
             data = data +
             '<li id="' + i + '" class="list-group-item">' +
             '<p class="h5">' +
-            '<strong>' +
+            '<strong class="pull-left">' +
             timetable.activities[i].name +
             '</strong>' +
-            '<span class="pull-right label label-danger">' +
-            timetable.activities[i].category +
-            '<span>' +
-            '</p><div class="clearfix"></div>' +
 
-            ( timetable.activities[i].notes != null ? '<p>Notatka: ' + timetable.activities[i].notes + '</p>' : '' ) +
-            '<p><i class="fa fa-fw fa-clock-o"></i>' +
-            timetable.activities[i].starts_at + " - " + timetable.activities[i].ends_at + ' ' +
 
-            ( timetable.activities[i].place != null ?
-            '<i class="fa fa-fw fa-building-o"></i><!--<a href="timetable.html?timetable=p' + timetable.activities[i].place.id + '">--!>' +
-            timetable.activities[i].place.location + '<!--</a>--!>' : "" ) +
-
-            '<small class="text-muted"> ( godzin lekcyjnych:' +
-            devPlan.getClassHoursCounter( timetable.activities[i].starts_at, timetable.activities[i].ends_at ) +
-            ' )</small>' +
             '<span class="pull-right">' +
             ( timetable.activities[i].tutor != null ?
             '<a href="timetable.html?timetable=t' + timetable.activities[i].tutor.id + '">' + timetable.activities[i].tutor.name + "</a> " : "" ) +
@@ -498,6 +509,31 @@ class devPlan
             '<a href="' + timetable.activities[i].tutor.moodle_url + '" title="Wizytówka E-Uczelnia"><i class="fa fa-globe fa-fw"></i></a>' : "" ) +
 
             "</span>" +
+
+            '</p><div class="clearfix"></div>' +
+
+            ( timetable.activities[i].notes != null ? '<p>Notatka: ' + timetable.activities[i].notes + '</p>' : '' ) +
+            '<p>' +
+            //Time
+            '<span class="label label-primary"><i class="fa fa-fw fa-clock-o"></i>' +
+            timetable.activities[i].starts_at + " - " + timetable.activities[i].ends_at + '</span> ' +
+            //Place
+            ( timetable.activities[i].place != null ?
+            '<span class="label label-success"><i class="fa fa-fw fa-map-marker"></i>' +
+            //            '<a href="timetable.html?timetable=p' + timetable.activities[i].place.id + '">' +
+            timetable.activities[i].place.location +
+            //            '</a>'+ 
+            '</span>'
+            : '' ) +
+            //Category     
+            ' <span class="label label-danger"><i class="fa fa-fw fa-tag"></i>' +
+            timetable.activities[i].category +
+            '</span>' +
+            //Hours
+            ' <span class="label label-default">godziny: ' +
+          (  activityCounter[activityCounterIndex] + " - " + (activityCounter[activityCounterIndex] += devPlan.getClassHoursCounter( timetable.activities[i].starts_at, timetable.activities[i].ends_at )) )+
+            '</span>' +
+
             '<br/>';
             /**
              * zajęcia dla wielu grup - lista grup

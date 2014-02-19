@@ -347,8 +347,6 @@ module devPlan {
                         activityCounter[activityCounterIndex] = new ActivityHourCounter();
                     }
 
-
-
                     if (
                         activity.getDate() >= Settings.getCurrentDate()
                         || Settings.getTimetableType() == 0) {
@@ -383,12 +381,15 @@ module devPlan {
                             data = data +
                             '<li id="activity-' + i + '" class="list-group-item activity">' +
                             '<p class="h5">' +
-                            Generate.nameInformation(timetable.getActivities()[i]) +
+                            Generate.nameInformation(timetable.getActivities()[i]) + '<wbr>' +
                             Generate.tutorInformation(timetable.getActivities()[i]);
                             '</p>';
 
-                            data = data + '<p class="h6">' + Generate.noteInformation(timetable.getActivities()[i]) + '</p><div class="clearfix"></div>';
-
+                            if (Settings.getActivityNote() && activity.getNotes() != null) {
+                                data = data + '<p class="h6">' +
+                                Generate.noteInformation(timetable.getActivities()[i]) +
+                                '</p><div class="clearfix"></div>';
+                            }
                             if (Settings.getActivityBell() ||
                                 Settings.getActivityLocation() ||
                                 Settings.getActivityCategory() ||
@@ -396,28 +397,28 @@ module devPlan {
                                 Settings.getClassHourCounter()) {
                                 data = data + '<p class="h6">' +
 
-                                Generate.bellInformation(timetable.getActivities()[i]) +
-                                Generate.locationInformation(timetable.getActivities()[i]) +
-                                Generate.categoryInformation(timetable.getActivities()[i]);
+                                Generate.bellInformation(timetable.getActivities()[i]) + '<wbr>' +
+                                Generate.locationInformation(timetable.getActivities()[i]) + '<wbr>' +
+                                Generate.categoryInformation(timetable.getActivities()[i]) + '<wbr>';
 
 
 
                                 if (Settings.getClassCounter()) {
-                                    data = data + '<span class="label label-info pull-right" title="Zajęcia z koleji: ' + activityCounter[activityCounterIndex].counter + '"><i class="fa fa-fw fa-info-circle"></i>' + activityCounter[activityCounterIndex].counter + '</span> ';
+                                    data = data + '<span class="label label-info pull-right" title="Zajęcia z koleji: ' + activityCounter[activityCounterIndex].counter + '"><i class="fa fa-fw fa-info-circle"></i>' + activityCounter[activityCounterIndex].counter + '</span><wbr>';
                                 }
 
                                 if (Settings.getClassHourCounter()) {
-                                    data = data + ' <span class="label label-default pull-right" title="Ilość jednostek lekcyjnych:"><i class="fa fa-fw fa-clock-o"></i>' +
+                                    data = data + '<span class="label label-default pull-right" title="Ilość jednostek lekcyjnych:"><i class="fa fa-fw fa-clock-o"></i>' +
                                     (activityCounter[activityCounterIndex].hour - activity.getNumberOfSchoolLessons()) + " - " + activityCounter[activityCounterIndex].hour +
                                     '</span> ';
                                 }
-                                data = data + '</p>';
+                                data = data + '</p><div class="clearfix"></div>';
                             }
                             if (Settings.getActivityGroup()) {
                                 data = data + '<p class="h6">';
                                 for (var j = 0; j < groups.length; j++) {
                                     if (groups[j] != null) {
-                                        data = data + '<a href="timetable.html?timetable=g' + groups[j].getId() + '" title="Plan zajęć dla ' + groups[j].getName() + '">' + groups[j].getName() + "</a>";
+                                        data = data + '<a href="timetable.html?timetable=g' + groups[j].getId() + '" title="Plan zajęć dla ' + groups[j].getName() + '">' + groups[j].getName() + "</a>" + '<wbr>';
                                         if (j < (groups.length - 1)) {
                                             data = data + ' | ';
                                         }
@@ -425,7 +426,7 @@ module devPlan {
                                 }
                                 data = data + '</p>';
                             }
-                            //   data = data + '</p><div class="clearfix"></div>';
+                            data = data + '<div class="clearfix"></div>';
                             data = data + '</li>';
                         }
                     }

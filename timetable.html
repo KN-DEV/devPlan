@@ -26,12 +26,22 @@
 			<div class="row">
 				<div class="col-lg-12">
 					<div class="navbar-header">
+
 						<button type="button"
-							class="navbar-btn btn btn-default visible-xs pull-right"
+							class="navbar-btn btn btn-link visible-xs pull-right"
+							data-toggle="collapse" data-parent="#accordion"
+							href="#timetable-panel">
+							<i class="fa fa-gears"></i>
+						</button>
+
+						<button type="button"
+							class="navbar-btn btn btn-link visible-xs pull-right"
 							data-toggle="collapse"
 							data-target="#bs-example-navbar-collapse-1">
 							<i class="fa fa-align-justify"></i>
 						</button>
+
+
 						<a class="navbar-brand" href="index.html" title="devPlan"><strong>devPlan</strong></a>
 					</div>
 					<div class="collapse navbar-collapse"
@@ -40,6 +50,9 @@
 						<ul class="nav navbar-nav navbar-right">
 							<li><a href="timetable.html" title="Mój plan">Mój plan</a></li>
 							<li class="visible-xs"><a href="search.html" title="Szukaj">Szukaj</a></li>
+						<li class="hidden-xs">	<a class=""
+								data-toggle="collapse" data-parent="#accordion"
+								href="#timetable-panel"> <i class="fa fa-gears"></i></a></li>
 						</ul>
 						<form class="navbar-form navbar-right hidden-xs"
 							action="search.html" method="get" role="search">
@@ -63,22 +76,23 @@
 		<div class="row">
 			<div class="col-lg-8 col-lg-offset-2">
 
-				<div id="timetable-panel" class="panel panel-default">
+				<div id="timetable-panel"
+					class=" panel-collapse collapse panel panel-default">
 					<!-- Default panel contents -->
 					<div class="panel-heading">
 						<h4>
-							<span id="panel-title">Plan zajęć</span> <a
-								data-toggle="collapse" data-parent="#accordion"
-								href="#collapseOne"><i class="fa fa-fw fa-gears pull-right"></i></a>
+							<span id="panel-title">Plan zajęć</span><small> Ustawienia</small>
 						</h4>
 					</div>
 
-					<div id="collapseOne" class="panel-collapse collapse panel-body">
+					<div class="panel-body">
 
-						<ul class="nav nav-tabs">
-							<li class="active"><a href="#search" data-toggle="tab">Przeszukiwanie</a></li>
-							<li><a href="#view" data-toggle="tab">Widok</a></li>
-							<li><a href="#messages" data-toggle="tab">Twój devPlan</a></li>
+						<ul class="nav nav-pills">
+							<li class="active"><small></small><a href="#search"
+								data-toggle="tab">Przeszukiwanie</a></small></li>
+							<li><a href="#view" data-toggle="tab"><small>Widok</a></small></li>
+							<li><a href="#messages" data-toggle="tab"><small>Twój
+										devPlan</a></small></li>
 
 						</ul>
 						<div class="tab-content">
@@ -86,11 +100,12 @@
 							<div class="tab-pane active" id="search">
 
 								<div class="form-group">
-									<input id="activityNameFilter" type="text" class="form-control"
-										name="activityNameFilter"
-										placeholder="Filtruj po nazwie przedmiotu, wykładowcy, grupie lub dacie"
-										onkeyup="console.log(this.value);devPlan.Settings.setActivityNameFilter(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
-
+									<p>
+										<input id="activityNameFilter" type="text"
+											class="form-control" name="activityNameFilter"
+											placeholder="Filtruj po nazwie przedmiotu, wykładowcy, grupie lub dacie"
+											onkeyup="console.log(this.value);devPlan.Settings.setActivityNameFilter(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
+									</p>
 								</div>
 							</div>
 							<div class="tab-pane active" id="view">

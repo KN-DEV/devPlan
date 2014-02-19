@@ -658,7 +658,7 @@ var devPlan;
             if (activity.getName().length > 0) {
                 return '<strong>' + '<span title="Przedmiot: ' + activity.getName() + '">' + activity.getName() + '</span>' + '</strong>';
             }
-            return '<strong>' + '<span title="Przedmiot: ' + activity.getName() + '">' + 'Brak nazwy' + '</span>' + '</strong>';
+            return '<strong>' + '<span title="Przedmiot: ' + activity.getName() + '">' + 'Brak zajeć' + '</span>' + '</strong>';
         };
 
         Generate.bellInformation = function (activity) {
@@ -684,7 +684,7 @@ var devPlan;
 
         Generate.tutorInformation = function (activity) {
             if (devPlan.Settings.getActivityTutor()) {
-                return '' + (activity.getTutor().getMoodleUrl() != null ? '<a class="pull-right" href="' + activity.getTutor().getMoodleUrl() + '" title=" ' + activity.getTutor().getName() + ' - Wizytówka E-Uczelna "><i class="fa fa-globe fa-fw"></i></a>' : "") + '<a class="pull-right" href="timetable.html?timetable=t' + activity.getTutor().id + '" title="devPlan  ' + activity.getTutor().getName() + '">' + activity.getTutor().getName() + '</a>';
+                return '<small><a class="pull-right" href="timetable.html?timetable=t' + activity.getTutor().id + '" title="devPlan  ' + activity.getTutor().getName() + '">' + activity.getTutor().getName() + '</a>' + (activity.getTutor().getMoodleUrl() != null ? '<a class="pull-right" href="' + activity.getTutor().getMoodleUrl() + '" title=" ' + activity.getTutor().getName() + ' - Wizytówka E-Uczelna "><i class="fa fa-globe fa-fw"></i></a>' : "") + '</small>';
             }
             return '';
         };
@@ -905,28 +905,29 @@ var devPlan;
                             ++activityCounter[activityCounterIndex].counter;
                             activityCounter[activityCounterIndex].hour += activity.getNumberOfSchoolLessons();
 
-                            data = data + '<li id="activity-' + i + '" class="list-group-item activity">' + '<p class="h5">' + devPlan.Generate.nameInformation(timetable.getActivities()[i]) + devPlan.Generate.tutorInformation(timetable.getActivities()[i]);
+                            data = data + '<li id="activity-' + i + '" class="list-group-item activity">' + '<p class="h5">' + devPlan.Generate.nameInformation(timetable.getActivities()[i]) + '<wbr>' + devPlan.Generate.tutorInformation(timetable.getActivities()[i]);
                             '</p>';
 
-                            data = data + '<p class="h6">' + devPlan.Generate.noteInformation(timetable.getActivities()[i]) + '</p><div class="clearfix"></div>';
-
+                            if (devPlan.Settings.getActivityNote() && activity.getNotes() != null) {
+                                data = data + '<p class="h6">' + devPlan.Generate.noteInformation(timetable.getActivities()[i]) + '</p><div class="clearfix"></div>';
+                            }
                             if (devPlan.Settings.getActivityBell() || devPlan.Settings.getActivityLocation() || devPlan.Settings.getActivityCategory() || devPlan.Settings.getClassCounter() || devPlan.Settings.getClassHourCounter()) {
-                                data = data + '<p class="h6">' + devPlan.Generate.bellInformation(timetable.getActivities()[i]) + devPlan.Generate.locationInformation(timetable.getActivities()[i]) + devPlan.Generate.categoryInformation(timetable.getActivities()[i]);
+                                data = data + '<p class="h6">' + devPlan.Generate.bellInformation(timetable.getActivities()[i]) + '<wbr>' + devPlan.Generate.locationInformation(timetable.getActivities()[i]) + '<wbr>' + devPlan.Generate.categoryInformation(timetable.getActivities()[i]) + '<wbr>';
 
                                 if (devPlan.Settings.getClassCounter()) {
-                                    data = data + '<span class="label label-info pull-right" title="Zajęcia z koleji: ' + activityCounter[activityCounterIndex].counter + '"><i class="fa fa-fw fa-info-circle"></i>' + activityCounter[activityCounterIndex].counter + '</span> ';
+                                    data = data + '<span class="label label-info pull-right" title="Zajęcia z koleji: ' + activityCounter[activityCounterIndex].counter + '"><i class="fa fa-fw fa-info-circle"></i>' + activityCounter[activityCounterIndex].counter + '</span><wbr>';
                                 }
 
                                 if (devPlan.Settings.getClassHourCounter()) {
-                                    data = data + ' <span class="label label-default pull-right" title="Ilość jednostek lekcyjnych:"><i class="fa fa-fw fa-clock-o"></i>' + (activityCounter[activityCounterIndex].hour - activity.getNumberOfSchoolLessons()) + " - " + activityCounter[activityCounterIndex].hour + '</span> ';
+                                    data = data + '<span class="label label-default pull-right" title="Ilość jednostek lekcyjnych:"><i class="fa fa-fw fa-clock-o"></i>' + (activityCounter[activityCounterIndex].hour - activity.getNumberOfSchoolLessons()) + " - " + activityCounter[activityCounterIndex].hour + '</span> ';
                                 }
-                                data = data + '</p>';
+                                data = data + '</p><div class="clearfix"></div>';
                             }
                             if (devPlan.Settings.getActivityGroup()) {
                                 data = data + '<p class="h6">';
                                 for (var j = 0; j < groups.length; j++) {
                                     if (groups[j] != null) {
-                                        data = data + '<a href="timetable.html?timetable=g' + groups[j].getId() + '" title="Plan zajęć dla ' + groups[j].getName() + '">' + groups[j].getName() + "</a>";
+                                        data = data + '<a href="timetable.html?timetable=g' + groups[j].getId() + '" title="Plan zajęć dla ' + groups[j].getName() + '">' + groups[j].getName() + "</a>" + '<wbr>';
                                         if (j < (groups.length - 1)) {
                                             data = data + ' | ';
                                         }
@@ -934,7 +935,7 @@ var devPlan;
                                 }
                                 data = data + '</p>';
                             }
-
+                            data = data + '<div class="clearfix"></div>';
                             data = data + '</li>';
                         }
                     }

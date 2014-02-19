@@ -38,7 +38,7 @@ module devPlan {
             }
             return '<strong>' +
                 '<span title="Przedmiot: ' + activity.getName() + '">' +
-                'Brak nazwy' +
+                'Brak zajeć' +
                 '</span>' +
                 '</strong>';
         }
@@ -86,11 +86,11 @@ module devPlan {
         static tutorInformation(activity: Cash.Activity): string {
 
             if (Settings.getActivityTutor()) {
-                return '' + (activity.getTutor().getMoodleUrl() != null ?
+                return '<small><a class="pull-right" href="timetable.html?timetable=t' + activity.getTutor().id +
+                    '" title="devPlan  ' + activity.getTutor().getName() + '">' + activity.getTutor().getName() + '</a>' + (activity.getTutor().getMoodleUrl() != null ?
                     '<a class="pull-right" href="' + activity.getTutor().getMoodleUrl() +
-                    '" title=" ' + activity.getTutor().getName() + ' - Wizytówka E-Uczelna "><i class="fa fa-globe fa-fw"></i></a>' : "") +
-                    '<a class="pull-right" href="timetable.html?timetable=t' + activity.getTutor().id +
-                    '" title="devPlan  ' + activity.getTutor().getName() + '">' + activity.getTutor().getName() + '</a>';
+                    '" title=" ' + activity.getTutor().getName() + ' - Wizytówka E-Uczelna "><i class="fa fa-globe fa-fw"></i></a>' : "")+'</small>';
+
             }
             return '';
         }

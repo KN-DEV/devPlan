@@ -608,7 +608,7 @@ var devPlan;
             var date = new Date();
             var month = date.getMonth() + 1;
             if (month <= 9) {
-                return date.getFullYear() + '-0' + 5 + '-' + date.getDate();
+                return date.getFullYear() + '-0' + month + '-' + date.getDate();
             } else {
                 return date.getFullYear() + '-' + month + '-' + date.getDate();
             }

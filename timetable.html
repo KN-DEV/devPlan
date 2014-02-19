@@ -18,14 +18,7 @@
 <link href="assets/css/typeahead.css" rel="stylesheet">
 <link href="assets/css/landing-page.css" rel="stylesheet">
 <link href="assets/css/custom.css" rel="stylesheet">
-<script src="assets/js/jquery-1.10.2.js"></script>
-<script src="assets/js/jquery.cookie.js"></script>
-<script src="assets/js/bootstrap.min.js"></script>
-<script src="assets/js/typeahead.min.js"></script>
-<script src="assets/js/devPlan.js"></script>
-<script type="text/javascript">
-	new devPlan();
-</script>
+
 </head>
 <body>
 	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -74,92 +67,96 @@
 					<!-- Default panel contents -->
 					<div class="panel-heading">
 						<h4>
-							<span id="panel-title">Plan zajęć</span><a data-toggle="collapse"
-								data-parent="#accordion" href="#collapseOne"><i
-								class="fa fa-fw fa-gears pull-right"></i></a>
+							<span id="panel-title">Plan zajęć</span> <a
+								data-toggle="collapse" data-parent="#accordion"
+								href="#collapseOne"><i class="fa fa-fw fa-gears pull-right"></i></a>
 						</h4>
 					</div>
 
 					<div id="collapseOne" class="panel-collapse collapse panel-body">
-						<!-- Nav tabs -->
-						<ul class="nav nav-tabs">
-							<li class="active"><a href="#view" data-toggle="tab">Widok
-							</a></li>
-							<li><a href="#timetables" data-toggle="tab">Wybrane
-									plany</a></li>
-						</ul>
 
-						<!-- Tab panes -->
-						<div class="tab-content">
-							<div class="tab-pane active" id="view">
-
-								<form role="view">
-									<div class="checkbox">
-										<label> <input type="checkbox" name="couter"
-											onClick="TimetableViewSettings.setCounterStatus(!TimetableViewSettings.getCounterStatus()).save(); devPlan.showTimetable(devPlan.getTimetable());">
-											Informacja o numerze zajęć
-										</label>
-									</div>
-									<div class="checkbox">
-										<label> <input type="checkbox" name="hour"
-											onClick="TimetableViewSettings.setHourStatus(!TimetableViewSettings.getHourStatus()).save(); devPlan.showTimetable(devPlan.getTimetable());">
-											Informacja o ilości godzin lekcyjnych
-										</label>
-									</div>
-									<div class="checkbox">
-										<label> <input type="checkbox" name="location"
-											onClick="TimetableViewSettings.setLocationStatus(!TimetableViewSettings.getLocationStatus()).save(); devPlan.showTimetable(devPlan.getTimetable());">
-											Informacja o miejscu zajęć
-										</label>
-									</div>
-									<div class="checkbox">
-										<label> <input type="checkbox" name="category"
-											onClick="TimetableViewSettings.setCategoryStatus(!TimetableViewSettings.getCategoryStatus()).save(); devPlan.showTimetable(devPlan.getTimetable());">
-											Informacja o kategorii zajęć
-										</label>
-									</div>
-									<div class="checkbox">
-										<label> <input type="checkbox" name="bell"
-											onClick="TimetableViewSettings.setBellStatus(!TimetableViewSettings.getBellStatus()).save(); devPlan.showTimetable(devPlan.getTimetable());">
-											Informcja o godzinie zajęć
-										</label>
-									</div>
-									<div class="checkbox">
-										<label> <input type="checkbox" name="group"
-											onClick="TimetableViewSettings.setGroupStatus(!TimetableViewSettings.getGroupStatus()).save(); devPlan.showTimetable(devPlan.getTimetable());">
-
-											Informcja o grupie z którą są zajęcia
-										</label>
-									</div>
-									<div class="checkbox">
-										<label> <input type="checkbox" name="tutor"
-											onClick="TimetableViewSettings.setTutorStatus(!TimetableViewSettings.getTutorStatus()).save(); devPlan.showTimetable(devPlan.getTimetable());">
-											Informcja prowadzącym zajęcia
-										</label>
-									</div>
-
-								</form>
-							</div>
-
-							<div class="tab-pane" id="timetables">
-								<p>Wybrane plany zajęć</p>
-							</div>
+						<div class="form-group">
+							<input id="activityNameFilter" type="text" class="form-control"
+							 name="activityNameFilter"
+							 placeholder="Filtruj po nazwie przedmiotu, wykładowcy, grupie lub dacie"
+								onkeyup="console.log(this.value);devPlan.Settings.setActivityNameFilter(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
 
 						</div>
-					</div>
+												<div class="radio">
+													<label> <input type="radio" name="timetableType"
+														id="timetableType_1" value="1"
+														onClick="devPlan.Settings.setTimetableType(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
+														Wyświetl zajecia które Cię czekają
+													</label>
+												</div>
+												<div class="radio">
+													<label> <input type="radio"  name="timetableType"
+														id="timetableType_0" value="0"
+														onClick="devPlan.Settings.setTimetableType(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
+														Wyświetl pełen plan zajęć
+													</label>
+												</div>
 
-					<div id="timetable-panel-spinner" class="panel-body">
-						<p class="text-center">
-							<i class="fa fa fa-spinner fa-spin fa-5x"></i>
-						</p>
+						<div class="checkbox">
+							<label> <input id="activityTutor" type="checkbox"
+								onClick="devPlan.Settings.setActivityTutor(!devPlan.Settings.getActivityTutor()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
+								Wyświetlaj informacje o prowadzącym
+							</label>
+						</div>
+						<div class="checkbox">
+							<label> <input id="activityNote" type="checkbox"
+								onClick="devPlan.Settings.setActivityNote(!devPlan.Settings.getActivityNote()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
+								Wyświetlaj notatki do zajęć
+							</label>
+						</div>
+						<div class="checkbox">
+							<label> <input id="activityBell" type="checkbox" s
+								onClick="devPlan.Settings.setActivityBell(!devPlan.Settings.getActivityBell()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
+								Wyświetlaj godzine rozpoczęci i zakończenia zajęć
+							</label>
+						</div>
+						<div class="checkbox">
+							<label> <input id="activityLocation" type="checkbox"
+								onClick="devPlan.Settings.setActivityLocation(!devPlan.Settings.getActivityLocation()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
+								Wyświetlaj informacje o lokalizacji zajęć
+							</label>
+						</div>
+						<div class="checkbox">
+							<label> <input id="activityCategory" type="checkbox"
+								onClick="devPlan.Settings.setActivityCategory(!devPlan.Settings.getActivityCategory()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
+								Wyświetlaj informacje o typie zajęć
+							</label>
+						</div>
+						<div class="checkbox">
+							<label> <input id="activityGroup" type="checkbox"
+								onClick="devPlan.Settings.setActivityGroup(!devPlan.Settings.getActivityGroup()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
+
+								Wyświetlaj informacje o grupach uczestniczących w zajęciach.
+							</label>
+						</div>
+						<div class="checkbox">
+							<label> <input id="classCounter" type="checkbox"
+								onClick="devPlan.Settings.setClassCounter(!devPlan.Settings.getClassCounter()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
+								Wyświetlaj informacje na tamat numeru kolejnych zajęć
+							</label>
+						</div>
+						<div class="checkbox">
+							<label> <input id="classHourCounter" type="checkbox"
+								onClick="devPlan.Settings.setClassHourCounter(!devPlan.Settings.getClassHourCounter()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
+								Wyświetlaj informacje na temat ilośći godzin lekcyjnych
+							</label>
+						</div>
 					</div>
-					<ul id="timetable-results" class="list-group"></ul>
-					<div class="panel-footer"></div>
 				</div>
+				<div id="timetable-panel-spinner" class="panel-body">
+					<p class="text-center">
+						<i class="fa fa-cog fa-spin fa-5x"></i>
+					</p>
+				</div>
+				<ul id="timetable-results" class="list-group"></ul>
 			</div>
 		</div>
 	</div>
-
 	<!-- Modal -->
 	<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
 		aria-labelledby="myModalLabel" aria-hidden="true">
@@ -182,16 +179,13 @@
 								</button>
 							</span>
 						</div>
-
 					</div>
-
 					<div class="form-group">
 						<div class="input-group">
 
 							<button type="button" class="btn btn-danger" title="Dodaj">
 								<i class="fa fa-fw fa-plus"></i>
 							</button>
-
 						</div>
 					</div>
 				</div>
@@ -227,5 +221,14 @@
 			</div>
 		</div>
 	</footer>
+	<script src="assets/js/jquery-1.10.2.js"></script>
+	<script src="assets/js/jquery.cookie.js"></script>
+	<script src="assets/js/bootstrap.min.js"></script>
+	<script src="assets/js/typeahead.min.js"></script>
+	<script src="assets/js/devPlan.js"></script>
+	<script type="text/javascript">
+		new devPlan.Init();
+	</script>
+	<script src="assets/js/analytics.js"></script>
 </body>
 </html>

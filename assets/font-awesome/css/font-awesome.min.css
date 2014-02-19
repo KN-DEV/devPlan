@@ -112,7 +112,11 @@
 -moz-transform
 
 
+
+
 :rotate(359deg)
+
+
 
 
 }
@@ -126,7 +130,11 @@
 -webkit-transform
 
 
+
+
 :rotate(359deg)
+
+
 
 
 }
@@ -140,7 +148,11 @@
 -o-transform
 
 
+
+
 :rotate(359deg)
+
+
 
 
 }
@@ -154,7 +166,11 @@
 -ms-transform
 
 
+
+
 :rotate(359deg)
+
+
 
 
 }
@@ -168,7 +184,11 @@ keyframes spin { 0%{
 transform
 
 
+
+
 :rotate(359deg)
+
+
 
 
 }

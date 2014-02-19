@@ -115,20 +115,24 @@
 -moz-transform
 
 
+
+
 :
 
+
  
+
 
 rotate
 
 
+
+
 (359
 deg
+
+
 );
-
-
-  
-
 }
 }
 @
@@ -141,20 +145,24 @@ deg
 -webkit-transform
 
 
+
+
 :
 
+
  
+
 
 rotate
 
 
+
+
 (359
 deg
+
+
 );
-
-
-  
-
 }
 }
 @
@@ -167,20 +175,24 @@ deg
 -o-transform
 
 
+
+
 :
 
+
  
+
 
 rotate
 
 
+
+
 (359
 deg
+
+
 );
-
-
-  
-
 }
 }
 @
@@ -193,20 +205,24 @@ deg
 -ms-transform
 
 
+
+
 :
 
+
  
+
 
 rotate
 
 
+
+
 (359
 deg
+
+
 );
-
-
-  
-
 }
 }
 @
@@ -219,20 +235,24 @@ keyframes spin { 0% {
 transform
 
 
+
+
 :
 
+
  
+
 
 rotate
 
 
+
+
 (359
 deg
+
+
 );
-
-
-  
-
 }
 }
 .fa-rotate-90 {

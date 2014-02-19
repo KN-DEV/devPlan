@@ -4,6 +4,24 @@
 	padding: 30px 0;
 }
 
-li:hover.list-group-item {
-	background-color: #e7e7e7;
+li:hover.list-group-item.activity {
+	background-color: #f5f5f5;
+}
+
+
+li:nth-child(2n).list-group-item.activity {
+	background: #f9f9f9;
+}
+
+li:nth-child(2n):hover.list-group-item.activity {
+	background-color: #f5f5f5;
+}
+
+li.list-group-item .date >p {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+li.list-group-item .activity>p {
+	margin-top: 5px;
+	margin-bottom: 5px;
 }

@@ -124,9 +124,10 @@ textarea.input-group.input-group-sm .twitter-typeahead .tt-query,textarea.input-
 	height: auto;
 }
 
-.input-group.input-group-sm .twitter-typeahead:not (:first-child ):not (:last-child
-	) .tt-query,.input-group.input-group-sm .twitter-typeahead:not (:first-child
-	):not (:last-child ) .tt-hint {
+.input-group.input-group-sm .twitter-typeahead:not (:first-child ):not 
+	(:last-child
+	 ) .tt-query,.input-group.input-group-sm .twitter-typeahead:not (:first-child
+	 ):not (:last-child ) .tt-hint {
 	border-radius: 0;
 }
 
@@ -171,9 +172,10 @@ textarea.input-group.input-group-lg .twitter-typeahead .tt-query,textarea.input-
 	height: auto;
 }
 
-.input-group.input-group-lg .twitter-typeahead:not (:first-child ):not (:last-child
-	) .tt-query,.input-group.input-group-lg .twitter-typeahead:not (:first-child
-	):not (:last-child ) .tt-hint {
+.input-group.input-group-lg .twitter-typeahead:not (:first-child ):not 
+	(:last-child
+	 ) .tt-query,.input-group.input-group-lg .twitter-typeahead:not (:first-child
+	 ):not (:last-child ) .tt-hint {
 	border-radius: 0;
 }
 

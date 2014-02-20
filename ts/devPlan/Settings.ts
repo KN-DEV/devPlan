@@ -252,7 +252,6 @@ module devPlan {
                 Settings.setActivityTutor(data.activityTutor);
                 Settings.setTimetableType(data.timetableType);
                 //Settings.setActivityNameFilter(data.activityNameFilter);
-                console.log("devPlan settings loaded");
             }
             if (Settings.getClassCounter()) {
                 $("#classCounter").attr("checked", "checked");
@@ -278,11 +277,8 @@ module devPlan {
             if (Settings.getActivityTutor()) {
                 $("#activityTutor").attr("checked", "checked");
             }
-
             $('#timetableType_' + Settings.getTimetableType()).attr("checked", "checked");
-
             $('#activityNameFilter').attr('value', Settings.getActivityNameFilter());
-
             return Settings;
         }
         /**
@@ -304,17 +300,18 @@ module devPlan {
             };
             $.cookie.json = true;
             $.cookie('devPlan.Settings', data);
-            console.log("devPlan settings saved");
             return Settings;
         }
         /**
-            * Returns param from url
-            */
+         * Returns param from url
+         */
         static getUrlParam(key: string): string {
             var result = new RegExp(key + "=([^&]*)", "i").exec(window.location.search.replace(/\+/g, " "));
             return result && decodeURIComponent(result[1]) || "";
         }
-
+        /**
+         * 
+         */
         static getCurrentDate(): string {
             var date = new Date();
             var month = date.getMonth() + 1;
@@ -324,6 +321,16 @@ module devPlan {
             else {
                 return date.getFullYear() + '-' + month + '-' + date.getDate();
             }
+        }
+
+        static addTimetableParam(item: string) {
+            return "";
+        }
+        static setDevPlan(): void {
+
+            $(".devPlanTypeahead").each((index) => {
+
+            });
         }
     }
 }

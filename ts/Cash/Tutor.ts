@@ -18,9 +18,9 @@ module Cash {
          */
         constructor(object: Cash.TutorInterface = { id: 0, name: "", moodle_url: "" }) {
 
-            this.setId((object.id) == null ? 0 : object.id);
-            this.setName((object == null) ? "" : object.name);
-            this.setMoodleUrl((object == null) ? "" : object.moodle_url);
+            this.setId((object.id == null) ? 0 : object.id);
+            this.setName((object.name == null) ? "" : object.name);
+            this.setMoodleUrl((object.moodle_url == null) ? "" : object.moodle_url);
         }
 
 

@@ -23,7 +23,7 @@ module Cash {
         public access_url: string = "";
         public params: Cash.Params = new Cash.Params();
         public activities: Cash.Activity[] = [];
-
+        public resource_versions: any[];
 
 
         constructor(object: Cash.TimetableInterface = { _id: "", access_url: "", params: new Cash.Params(), activities: [] }) {

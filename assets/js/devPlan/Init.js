@@ -19,7 +19,8 @@ var devPlan;
                     tutor_id: [],
                     place_id: []
                 };
-                var timetable = devPlan.Settings.getUrlParam('timetable').match(/[gtp][0-9]*/gi);
+                var query = devPlan.Settings.getUrlParam('timetable');
+                var timetable = query.match(/[gtp][0-9]*/gi);
 
                 for (var i = 0; i < timetable.length; i++) {
                     if (timetable[i].toString().toLowerCase().indexOf("g") != -1) {
@@ -29,7 +30,9 @@ var devPlan;
                         param.tutor_id[param.tutor_id.length] = parseInt(timetable[i].slice(1).toString());
                     }
                 }
+
                 $.when(Cash.Api.registerTimetable(param)).done(function (response) {
+                    console.log("After call registerTimetable: " + new Date().getTime());
                     Init.showTimetable(Init.setTimetable(response).getTimetable());
                     $("#timetable-panel-spinner").remove();
                 });
@@ -38,23 +41,36 @@ var devPlan;
             if ($("#search-panel-input").length) {
                 $("#search-panel-input").attr('value', devPlan.Settings.getUrlParam('search'));
             }
+
             $.when(Cash.Api.getGroupsList(), Cash.Api.getTutorsList()).done(function (groups, tutors) {
                 Init.setGroups(groups[0]);
                 Init.setTutors(tutors[0]);
 
                 $("#search-input").removeAttr('disabled').attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn').attr('data-provide', "typeahead");
 
-                $("#search-input").typeahead([
-                    {
-                        name: "groups",
-                        local: Init.generateTypeaheadDatumsForGroups(Init.getGroups())
-                    }, {
-                        name: "tutors",
-                        local: Init.generateTypeaheadDatumsForTutors(Init.getTutors())
-                    }
-                ]);
-                $("#search-button").removeAttr("disabled").empty().append("Szukaj");
+                var data = [];
+                for (var i = 0; i < Init.getGroups().length; i++) {
+                    data[data.length] = Init.getGroups()[i].getName();
+                }
+                for (i = 0; i < Init.getTutors().length; i++) {
+                    data[data.length] = Init.getTutors()[i].getName();
+                }
 
+                $("#search-input").typeahead({ source: data });
+
+                $(".devPlanTypeahead").each(function (index) {
+                    $('#' + index + '.devPlanTypeahead').removeAttr('disabled').attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn').attr('data-provide', "typeahead");
+
+                    $('#' + index + '.devPlanTypeahead').typeahead({
+                        source: data,
+                        updater: function (item) {
+                            $("#devPlan").append('<span class="label label-default">' + item + ' <a ><i class="fa fa-minus"></i></a></span><wbr>');
+                            devPlan.Settings.addTimetableParam(item);
+                        }
+                    });
+                });
+
+                $("#search-button").removeAttr("disabled").empty().append("Szukaj");
                 if ($("#search-panel-input").length) {
                     $("#search-panel-input").attr('value', devPlan.Settings.getUrlParam('search')).attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn').removeAttr("disabled");
                     $("#search-panel .panel-body").remove();
@@ -76,6 +92,19 @@ var devPlan;
             return Init;
         };
 
+        Init.searchGroup = function (name) {
+            var id;
+            var counter;
+            var group;
+            for (var i = 0; i < Init.getGroups().length; i++) {
+                if (Init.getGroups()[i].getName().toLocaleLowerCase() == name.toLowerCase()) {
+                    id = Init.getGroups()[i].getId();
+                    counter++;
+                }
+            }
+            return counter > 1 ? 0 : id;
+        };
+
         Init.getTutors = function () {
             return Init.tutors;
         };
@@ -88,6 +117,19 @@ var devPlan;
                 return a.getName() - b.getName();
             });
             return Init;
+        };
+
+        Init.searchTutor = function (name) {
+            var id;
+            var counter;
+            var group;
+            for (var i = 0; i < Init.getTutors().length; i++) {
+                if (Init.getTutors()[i].getName().toLocaleLowerCase() == name.toLowerCase()) {
+                    id = Init.getTutors()[i].getId();
+                    counter++;
+                }
+            }
+            return counter > 1 ? 0 : id;
         };
 
         Init.getTimetable = function () {
@@ -156,11 +198,9 @@ var devPlan;
                 console.log("Too short query");
             }
         };
-
         Init.showTimetable = function (timetable) {
             var data = "";
             var date = "";
-
             $("#timetable-results").empty();
 
             if (timetable.getActivities().length > 0) {
@@ -246,10 +286,10 @@ var devPlan;
                     }
                 }
                 if (data.length == 0 && devPlan.Settings.getActivityNameFilter().length > 0) {
-                    data = data + '<li id="' + i + '" class="list-group-item"><p class="h3">Brak wyników</p>';
+                    data = data + '<li class="list-group-item"><p class="h4 text-center">Brak wyników</p>';
                 }
             } else {
-                data = data + '<li id="' + i + '" class="list-group-item"><p class="h3">Przykro nam. Taki devPlan nie istnieje.</p>';
+                data = data + '<li class="list-group-item"><p class="h4 text-center">Przykro nam. Ten devPlan nie posiada żadnych zajęć.</p>';
             }
             $("#timetable-results").append(data);
         };

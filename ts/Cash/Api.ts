@@ -56,24 +56,23 @@ module Cash {
         /**
          * Registers timetable
          */
-        public static registerTimetable(Params: Cash.Params): JQueryXHR {
+        public static registerTimetable(timetableParams: Cash.Params): JQueryXHR {
             return $.ajax({
                 url: Cash.Api.host + "timetables",
                 type: "POST",
                 dataType: 'json',
-                data: Params
+                data: timetableParams,
             });
         }
         /**
          * 
          */
-        public static getTimetable(Params: Cash.Params): JQueryXHR {
+        public static getTimetable(query: string): JQueryXHR {
             return $.ajax({
-                url: Cash.Api.host + "places",
+                url: Cash.Api.host + "timetables/" + query,
                 type: "GET",
-                dataType: 'json'
+                dataType: 'json',
             });
-
         }
     }
 }

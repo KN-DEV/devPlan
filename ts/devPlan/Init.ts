@@ -1,14 +1,8 @@
 /// <reference path="../DefinitelyTyped/jquery/jquery.d.ts" />
 /// <reference path="../DefinitelyTyped/typeahead/typeahead.d.ts" />
-
 /// <reference path="../DefinitelyTyped/jquery.cookie/jquery.cookie.d.ts" />
-
 /// <reference path="../Cash/Timetable.ts" />
 /// <reference path="../Cash/Api.ts" />
-
-
-
-
 /// <reference path="Settings.ts" />
 /// <reference path="Generate.ts" />
 /// <reference path="typeahead.ts" />
@@ -16,6 +10,10 @@
 /**
  * devPlan App
  */
+
+interface JQuery {
+    typeahead(x: any): any;
+}
 module devPlan {
     /**
  * 
@@ -24,7 +22,9 @@ module devPlan {
         hour: number = 0;
         counter: number = 0;
     }
-
+    /**
+     * 
+     */
     export class Init {
 
         /**
@@ -53,7 +53,8 @@ module devPlan {
                     tutor_id: [],
                     place_id: []
                 };
-                var timetable = Settings.getUrlParam('timetable').match(/[gtp][0-9]*/gi);
+                var query = Settings.getUrlParam('timetable');
+                var timetable = query.match(/[gtp][0-9]*/gi);
 
                 for (var i = 0; i < timetable.length; i++) {
                     if (timetable[i].toString().toLowerCase().indexOf("g") != -1) {
@@ -67,9 +68,10 @@ module devPlan {
                     //                    param.place_id[param.place_id.length] = parseInt( timetable[i].slice( 1 ).toString() );
                     //                }
                 }
-                $.when
-                    (Cash.Api.registerTimetable(param))
-                    .done((response: Cash.Timetable) => {
+
+                $.when(Cash.Api.registerTimetable(param))
+                    .done((response: any) => {
+                        console.log("After call registerTimetable: " + new Date().getTime());
                         Init.showTimetable(Init.setTimetable(response).getTimetable());
                         $("#timetable-panel-spinner").remove();
                     });
@@ -78,6 +80,7 @@ module devPlan {
             if ($("#search-panel-input").length) {
                 $("#search-panel-input").attr('value', Settings.getUrlParam('search'));
             }
+
             $.when(
                 Cash.Api.getGroupsList(),
                 Cash.Api.getTutorsList()
@@ -85,6 +88,7 @@ module devPlan {
                 ).done((groups: any, tutors: any
                 //            , places
                     ) => {
+
                     /*
                      * Typeahead
                      */
@@ -96,24 +100,40 @@ module devPlan {
                         .attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn')
                         .attr('data-provide', "typeahead");
 
-                    $("#search-input").typeahead([
-                        {
-                            name: "groups",
-                            local: Init.generateTypeaheadDatumsForGroups(Init.getGroups()),
-                        }, {
-                            name: "tutors",
-                            local: Init.generateTypeaheadDatumsForTutors(Init.getTutors()),
-                        }
-                        //                    , {
-                        //                        name: "places",
-                        //                        local:Init.generateTypeaheadDatumsForPlaces(Init.Init.getPlaces() ),
-                        //                    }
-                    ]);
+                    var data: string[] = [];
+                    for (var i = 0; i < Init.getGroups().length; i++) {
+                        data[data.length] = Init.getGroups()[i].getName();
+                    }
+                    for (i = 0; i < Init.getTutors().length; i++) {
+                        data[data.length] = Init.getTutors()[i].getName();
+                    }
+                    /**
+                     * Navbar search
+                     */
+                    $("#search-input").typeahead({ source: data });
+
+                    /**
+                     * 
+                     */
+                    $(".devPlanTypeahead").each((index) => {
+
+                        $('#' + index + '.devPlanTypeahead').removeAttr('disabled')
+                            .attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn')
+                            .attr('data-provide', "typeahead");
+
+                        $('#' + index + '.devPlanTypeahead').typeahead({
+                            source: data,
+                            updater: (item: any) => {
+                                $("#devPlan").append('<span class="label label-default">' + item + ' <a ><i class="fa fa-minus"></i></a></span><wbr>');
+                                Settings.addTimetableParam(item);
+                            }
+                        });
+                    });
+
                     $("#search-button")
                         .removeAttr("disabled")
                         .empty()
                         .append("Szukaj");
-
                     if ($("#search-panel-input").length) {
                         $("#search-panel-input")
                             .attr('value', Settings.getUrlParam('search'))
@@ -141,12 +161,30 @@ module devPlan {
             return Init;
         }
 
+
+        static searchGroup(name: string): number {
+            var id: number;
+            var counter: number;
+            var group: any;
+            for (var i = 0; i < Init.getGroups().length; i++) {
+                if (Init.getGroups()[i].getName().toLocaleLowerCase() == name.toLowerCase()) {
+                    id = Init.getGroups()[i].getId();
+                    counter++;
+                }
+            }
+            return counter > 1 ? 0 : id;
+        }
+
+
+
+
         /**
          *
          */
         static getTutors(): Cash.Tutor[] {
             return Init.tutors;
         }
+
 
         /**
          *
@@ -158,6 +196,20 @@ module devPlan {
             Init.tutors = Init.getTutors().sort((a: any, b: any) => {return a.getName() - b.getName() });
             return Init;
         }
+
+        static searchTutor(name: string): number {
+            var id: number;
+            var counter: number;
+            var group: any;
+            for (var i = 0; i < Init.getTutors().length; i++) {
+                if (Init.getTutors()[i].getName().toLocaleLowerCase() == name.toLowerCase()) {
+                    id = Init.getTutors()[i].getId();
+                    counter++;
+                }
+            }
+            return counter > 1 ? 0 : id;
+        }
+
         //        /**
         //         *
         //         */
@@ -180,20 +232,21 @@ module devPlan {
         //            return Init;
         //        }
         /**
-         * 
+         *
          */
         static getTimetable(): Cash.Timetable {
             //        console.log(Init.timetable);
             return Init.timetable;
         }
         /**
-         * 
+         *
          */
         static setTimetable(timetable: Cash.TimetableInterface) {
 
             Init.timetable = new Cash.Timetable(timetable);
             return Init;
         }
+
 
         /**
          *
@@ -280,9 +333,6 @@ module devPlan {
                 //                    '</li>';
                 //                }
                 //            }
-
-
-
                 $("#search-panel-body").attr("display", "none");
                 if (data.length == 0) {
                     data = "<tr><td class='text-center'>Brak wyników. Spróbuj jeszcze raz ;)</td</td>";
@@ -292,15 +342,9 @@ module devPlan {
                 console.log("Too short query");
             }
         }
-
-
-
-
         static showTimetable(timetable: Cash.Timetable): void {
-
             var data = "";
             var date = "";
-
             $("#timetable-results").empty();
 
             if (timetable.getActivities().length > 0) {
@@ -432,12 +476,10 @@ module devPlan {
                     }
                 }
                 if (data.length == 0 && Settings.getActivityNameFilter().length > 0) {
-                    data = data + '<li id="' + i + '" class="list-group-item"><p class="h3">Brak wyników</p>';
+                    data = data + '<li class="list-group-item"><p class="h4 text-center">Brak wyników</p>';
                 }
             } else {
-
-
-                data = data + '<li id="' + i + '" class="list-group-item"><p class="h3">Przykro nam. Taki devPlan nie istnieje.</p>';
+                data = data + '<li class="list-group-item"><p class="h4 text-center">Przykro nam. Ten devPlan nie posiada żadnych zajęć.</p>';
             }
             $("#timetable-results").append(data);
         }

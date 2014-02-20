@@ -113,14 +113,14 @@
 									<label> <input type="radio" name="timetableType"
 										id="timetableType_1" value="1"
 										onClick="devPlan.Settings.setTimetableType(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
-										Wyświetl zajecia które Cię czekają
+										Wyświetlaj tylko nadchodzące zajęcia
 									</label>
 								</div>
 								<div class="radio">
 									<label> <input type="radio" name="timetableType"
 										id="timetableType_0" value="0"
 										onClick="devPlan.Settings.setTimetableType(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
-										Wyświetl pełen plan zajęć
+										Wyświetlaj cały plan zajęć
 									</label>
 								</div>
 
@@ -139,7 +139,7 @@
 								<div class="checkbox">
 									<label> <input id="activityBell" type="checkbox" s
 										onClick="devPlan.Settings.setActivityBell(!devPlan.Settings.getActivityBell()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
-										Wyświetlaj godzine rozpoczęci i zakończenia zajęć
+										Wyświetlaj godzinę rozpoczęcia i zakończenia zajęć
 									</label>
 								</div>
 								<div class="checkbox">
@@ -158,7 +158,7 @@
 									<label> <input id="activityGroup" type="checkbox"
 										onClick="devPlan.Settings.setActivityGroup(!devPlan.Settings.getActivityGroup()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
 
-										Wyświetlaj informacje o grupach uczestniczących w zajęciach.
+										Wyświetlaj informacje o grupach uczestniczących w zajęciach
 									</label>
 								</div>
 								<div class="checkbox">
@@ -170,7 +170,7 @@
 								<div class="checkbox">
 									<label> <input id="classHourCounter" type="checkbox"
 										onClick="devPlan.Settings.setClassHourCounter(!devPlan.Settings.getClassHourCounter()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
-										Wyświetlaj informacje na temat ilośći godzin lekcyjnych
+										Wyświetlaj informacje na temat ilości godzin lekcyjnych
 									</label>
 								</div>
 							</div>

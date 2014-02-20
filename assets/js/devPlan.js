@@ -301,6 +301,16 @@ var Cash;
             this.tutor_id = [];
             this.place_id = [];
         }
+        Params.prototype.toString = function () {
+            var data = "";
+            for (var i = 0; i < this.group_id.length; i++) {
+                data = data + this.group_id[i];
+            }
+            for (var i = 0; i < this.tutor_id.length; i++) {
+                data = data + this.tutor_id[i];
+            }
+            return data;
+        };
         return Params;
     })();
     Cash.Params = Params;
@@ -401,13 +411,7 @@ var Cash;
                 url: Cash.Api.host + "timetables",
                 type: "POST",
                 dataType: 'json',
-                data: timetableParams,
-                success: function (data) {
-                    console.log("registerTimetable success:" + new Date().getTime(), data);
-                },
-                error: function (data) {
-                    console.log("registerTimetable error:" + new Date().getTime(), data);
-                }
+                data: timetableParams
             });
         };
 
@@ -415,13 +419,7 @@ var Cash;
             return $.ajax({
                 url: Cash.Api.host + "timetables/" + query,
                 type: "GET",
-                dataType: 'json',
-                success: function (data) {
-                    console.log("getTimetable success:" + new Date().getTime(), data);
-                },
-                error: function (data) {
-                    console.log("getTimetable error:" + new Date().getTime(), data.status);
-                }
+                dataType: 'json'
             });
         };
         Api.host = "http://cash.dev.uek.krakow.pl/v0_1/";
@@ -556,8 +554,6 @@ var devPlan;
                 Settings.setActivityGroup(data.activityGroup);
                 Settings.setActivityTutor(data.activityTutor);
                 Settings.setTimetableType(data.timetableType);
-
-                console.log("devPlan settings loaded");
             }
             if (Settings.getClassCounter()) {
                 $("#classCounter").attr("checked", "checked");
@@ -583,11 +579,8 @@ var devPlan;
             if (Settings.getActivityTutor()) {
                 $("#activityTutor").attr("checked", "checked");
             }
-
             $('#timetableType_' + Settings.getTimetableType()).attr("checked", "checked");
-
             $('#activityNameFilter').attr('value', Settings.getActivityNameFilter());
-
             return Settings;
         };
 
@@ -607,7 +600,6 @@ var devPlan;
             };
             $.cookie.json = true;
             $.cookie('devPlan.Settings', data);
-            console.log("devPlan settings saved");
             return Settings;
         };
 
@@ -626,9 +618,29 @@ var devPlan;
             }
         };
 
+        Settings.addTimetableParam = function (item) {
+            var g = devPlan.Init.searchGroup(item);
+            var t = devPlan.Init.searchTutor(item);
+            if (g > 0 && t == null) {
+                console.log("Group:" + item);
+                $("#devPlanParams").append('<button id="g' + g + '" class="devPlanParam btn btn-xs btn-info" >' + item + '' + '</button><wbr>');
+
+                Settings.timetableParams.group_id[Settings.timetableParams.group_id.length] = g;
+            }
+            if (t > 0 && g == null) {
+                console.log("Tutor:" + item);
+
+                $("#devPlanParams").append('<span class="label label-success" type="t" value="' + t + '">' + item + ' <a ><i class="fa fa-minus"></i></a></span><wbr>');
+
+                Settings.timetableParams.tutor_id[Settings.timetableParams.tutor_id.length] = t;
+            }
+        };
+        Settings.removeTimetablePAram = function (item, type) {
+            $('#' + type + item).remove();
+            console.log(type, item);
+        };
         Settings.setDevPlan = function () {
             $(".devPlanTypeahead").each(function (index) {
-                console.log($('#' + index + '.devPlanTypeahead').attr("value"));
             });
         };
         Settings.classCounter = false;
@@ -765,14 +777,11 @@ var devPlan;
                 for (var i = 0; i < Init.getGroups().length; i++) {
                     data[data.length] = Init.getGroups()[i].getName();
                 }
-                console.log(Init.getTutors());
-                for (var i = 0; i < Init.getTutors().length; i++) {
+                for (i = 0; i < Init.getTutors().length; i++) {
                     data[data.length] = Init.getTutors()[i].getName();
                 }
 
-                $("#search-input").typeahead({
-                    source: data
-                });
+                $("#search-input").typeahead({ source: data });
 
                 $(".devPlanTypeahead").each(function (index) {
                     $('#' + index + '.devPlanTypeahead').removeAttr('disabled').attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn').attr('data-provide', "typeahead");
@@ -780,16 +789,16 @@ var devPlan;
                     $('#' + index + '.devPlanTypeahead').typeahead({
                         source: data,
                         updater: function (item) {
-                            $("#devPlan").append('<span class="label label-default">' + item + ' <a ><i class="fa fa-minus"></i></a></span><wbr>');
-
-                            console.log(Init.searchGroup(item), item);
-                            console.log(Init.searchTutor(item), item);
+                            devPlan.Settings.addTimetableParam(item);
                         }
                     });
                 });
 
-                $("#search-button").removeAttr("disabled").empty().append("Szukaj");
+                $('.devPlanParam').click(function (e) {
+                    $(e.target).remove();
+                });
 
+                $("#search-button").removeAttr("disabled").empty().append("Szukaj");
                 if ($("#search-panel-input").length) {
                     $("#search-panel-input").attr('value', devPlan.Settings.getUrlParam('search')).attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn').removeAttr("disabled");
                     $("#search-panel .panel-body").remove();

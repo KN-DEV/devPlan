@@ -124,10 +124,13 @@ module devPlan {
                         $('#' + index + '.devPlanTypeahead').typeahead({
                             source: data,
                             updater: (item: any) => {
-                                $("#devPlan").append('<span class="label label-default">' + item + ' <a ><i class="fa fa-minus"></i></a></span><wbr>');
                                 Settings.addTimetableParam(item);
                             }
                         });
+                    });
+
+                    $('.devPlanParam').click(function(e) {
+                        $(e.target).remove();
                     });
 
                     $("#search-button")

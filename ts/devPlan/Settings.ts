@@ -324,7 +324,29 @@ module devPlan {
         }
 
         static addTimetableParam(item: string) {
-            return "";
+
+            var g = Init.searchGroup(item);
+            var t = Init.searchTutor(item);
+            if (g > 0 && t == null) {
+                console.log("Group:" + item);
+                $("#devPlanParams").append('<button id="g' + g + '" class="devPlanParam btn btn-xs btn-info" >' + item + '' +
+                    '</button><wbr>');
+
+
+                Settings.timetableParams.group_id[Settings.timetableParams.group_id.length] = g;
+            }
+            if (t > 0 && g == null) {
+                console.log("Tutor:" + item);
+
+                $("#devPlanParams").append('<span class="label label-success" type="t" value="' + t + '">' + item + ' <a ><i class="fa fa-minus"></i></a></span><wbr>');
+
+                Settings.timetableParams.tutor_id[Settings.timetableParams.tutor_id.length] = t;
+            }
+
+        }
+        static removeTimetablePAram(item: string, type: string) {
+            $('#' + type + item).remove();
+            console.log(type, item);
         }
         static setDevPlan(): void {
 

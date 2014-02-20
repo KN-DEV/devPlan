@@ -64,10 +64,13 @@ var devPlan;
                     $('#' + index + '.devPlanTypeahead').typeahead({
                         source: data,
                         updater: function (item) {
-                            $("#devPlan").append('<span class="label label-default">' + item + ' <a ><i class="fa fa-minus"></i></a></span><wbr>');
                             devPlan.Settings.addTimetableParam(item);
                         }
                     });
+                });
+
+                $('.devPlanParam').click(function (e) {
+                    $(e.target).remove();
                 });
 
                 $("#search-button").removeAttr("disabled").empty().append("Szukaj");

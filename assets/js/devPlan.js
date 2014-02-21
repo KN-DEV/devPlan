@@ -808,12 +808,15 @@ var devPlan;
             param = devPlan.Settings.getTimetableParams();
             console.log(param);
 
-            $.when(Cash.Api.registerTimetable(param)).done(function (response) {
-                console.log("After call registerTimetable: " + new Date().getTime());
-                Init.showTimetable(Init.setTimetable(response).getTimetable());
-                $("#timetable-panel-spinner").remove();
-            });
-
+            if (param.toString() == new Cash.Params().toString()) {
+                $("#timetable-panel-spinner-icon").empty().append('<button class="btn btn-primary"' + 'data-toggle="modal" data-target="#myModal">' + 'Stwórz swój devPlan' + '</button>');
+            } else {
+                $.when(Cash.Api.registerTimetable(param)).done(function (response) {
+                    console.log("After call registerTimetable: " + new Date().getTime());
+                    Init.showTimetable(Init.setTimetable(response).getTimetable());
+                    $("#timetable-panel-spinner").remove();
+                });
+            }
             if ($("#search-panel-input").length) {
                 $("#search-panel-input").attr('value', devPlan.Settings.getUrlParam('search'));
             }

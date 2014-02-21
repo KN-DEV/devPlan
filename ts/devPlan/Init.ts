@@ -77,14 +77,26 @@ module devPlan {
             console.log(param);
 
 
+            if (param.toString() == new Cash.Params().toString()) {
+                $("#timetable-panel-spinner-icon")
+                    .empty()
+                    .append('<button class="btn btn-primary"' +
+                    'data-toggle="modal" data-target="#myModal">' +
+                    'Stwórz swój devPlan' +
+                    '</button>');
 
-            $.when(Cash.Api.registerTimetable(param))
-                .done((response: any) => {
-                    console.log("After call registerTimetable: " + new Date().getTime());
-                    Init.showTimetable(Init.setTimetable(response).getTimetable());
-                    $("#timetable-panel-spinner").remove();
-                });
+                //timetable-panel-spinner-icon
+            } else {
 
+
+                $.when(Cash.Api.registerTimetable(param))
+                    .done((response: any) => {
+                        console.log("After call registerTimetable: " + new Date().getTime());
+                        Init.showTimetable(Init.setTimetable(response).getTimetable());
+                        $("#timetable-panel-spinner").remove();
+                    });
+
+            }
             if ($("#search-panel-input").length) {
                 $("#search-panel-input").attr('value', Settings.getUrlParam('search'));
             }
@@ -119,11 +131,11 @@ module devPlan {
                      * Navbar search
                      */
 
-      
+
                     $("#search-input").typeahead({ source: data });
 
-                    
-                                  Settings.loadTimetableParam();
+
+                    Settings.loadTimetableParam();
                     /**
                      * 
                      */

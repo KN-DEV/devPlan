@@ -28,7 +28,7 @@
 							class="navbar-btn btn btn-link visible-xs pull-right"
 							data-toggle="collapse" data-parent="#accordion"
 							href="#timetable-panel">
-							<i class="fa fa-gears"></i>
+							<i class="fa fa-gear"></i>
 						</button>
 						<button type="button"
 							class="navbar-btn btn btn-link visible-xs pull-right"
@@ -85,21 +85,17 @@
 								<ul class="nav nav-pills nav-justified">
 									<li class="active"><a href="#search" data-toggle="tab">Przeszukiwanie</a></li>
 									<li><a href="#view" data-toggle="tab">Widok</a></li>
-									<li><a href="#devPlan" data-toggle="tab">devPlan</a></li>
+									<li><a data-toggle="modal" data-target="#myModal">devPlan</a></li>
 								</ul>
 							</div>
 						</div>
-
 						<div class="row">
 							<div class="col-lg-12">
 								<div class="tab-content">
 									<div id="search" class="tab-pane active">
 										<fieldset>
 											<p class="h4">Przeszukuj</p>
-
-
 											<div class="form-group">
-
 												<input id="activityNameFilter" type="text"
 													class="form-control" name="activityNameFilter"
 													placeholder="Filtruj po nazwie przedmiotu, wykładowcy, grupie lub dacie"
@@ -175,30 +171,14 @@
 											</div>
 										</fieldset>
 									</div>
-									<div class="tab-pane" id="devPlan">
-										<fieldset>
-											<p class="h4">Twój devPlan</p>
-											<p id="devPlanParams" class="lead"></p>
 
-											<div class="form-group">
-												<label>Wprowadz nazwe grupy lub wykładowcy</label> <input
-													id="0" autocomplete="off" disabled="disabled" value=""
-													name="devPlanTypeahead[]" type="text"
-													class="form-control devPlanTypeahead"
-													placeholder="KrDzIs3011Io / dr Paweł Wołoszyn" />
-											</div>
-											<div class="form-group">
-											<button class="btn btn-success" onclick="devPlan.Settings.save()">Zapisz devPlan</button>
-											</div>
-										</fieldset>
-									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 				<div id="timetable-panel-spinner" class="panel-body">
-					<p class="text-center">
+					<p id="timetable-panel-spinner-icon" class="text-center">
 						<i class="fa fa-cog fa-spin fa-5x"></i>
 					</p>
 				</div>
@@ -217,31 +197,26 @@
 					<h4 class="modal-title" id="myModalLabel">Stwórz swój plan</h4>
 				</div>
 				<div class="modal-body">
-					<div class="form-group">
-						<label for="exampleInputEmail1">Email address</label>
-						<div class="input-group">
-							<input id="group" name="group.1" data-provide="typeahead"
-								autocomplete="off" type="text" class="form-control"
-								placeholder="Enter email"> <span class="input-group-btn">
-								<button type="button" class="btn btn-danger" title="Usuń">
-									<i class="fa fa-fw fa-trash-o"></i>
-								</button>
-							</span>
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="input-group">
-							<button type="button" class="btn btn-danger" title="Dodaj">
-								<i class="fa fa-fw fa-plus"></i>
-							</button>
-						</div>
+					<div class="tab-pane" id="devPlan">
+						<fieldset>
+							<p class="h4">Twój devPlan</p>
+							<p id="devPlanParams" class="lead"></p>
+
+							<div class="form-group">
+								<label>Wprowadz nazwe grupy lub wykładowcy</label> <input id="0"
+									autocomplete="off" disabled="disabled" value=""
+									name="devPlanTypeahead[]" type="text"
+									class="form-control devPlanTypeahead"
+									placeholder="KrDzIs3011Io / dr Paweł Wołoszyn" />
+							</div>
+							<div class="form-group"></div>
+						</fieldset>
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal"
-						title="Anuluj">Close</button>
-					<button type="button" class="btn btn-primary" title="Zapisz">
-						<i class="fa fa-fw fa-save"></i>
+					<button class="btn btn-primary"
+						onclick="devPlan.Settings.save();window.location.replace('timetable.html')">
+						<i class="fa fa-fw fa-save"></i> Zapisz devPlan
 					</button>
 				</div>
 			</div>

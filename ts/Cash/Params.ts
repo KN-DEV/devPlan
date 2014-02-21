@@ -20,11 +20,15 @@ module Cash {
 
         toString() {
             var data: string = "";
-            for (var i = 0; i < this.group_id.length; i++) {
-                data = data + this.group_id[i];
+            if (this.group_id != null) {
+                for (var i = 0; i < this.group_id.length; i++) {
+                    data = data + this.group_id[i];
+                }
             }
-            for (var i = 0; i < this.tutor_id.length; i++) {
-                data = data + this.tutor_id[i];
+            if (this.tutor_id != null) {
+                for (var i = 0; i < this.tutor_id.length; i++) {
+                    data = data + this.tutor_id[i];
+                }
             }
             return data;
         }

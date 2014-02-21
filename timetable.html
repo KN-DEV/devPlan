@@ -95,8 +95,11 @@
 								<div class="tab-content">
 									<div id="search" class="tab-pane active">
 										<fieldset>
-											<legend>Przeszukiwanie</legend>
+											<p class="h4">Przeszukuj</p>
+
+
 											<div class="form-group">
+
 												<input id="activityNameFilter" type="text"
 													class="form-control" name="activityNameFilter"
 													placeholder="Filtruj po nazwie przedmiotu, wykładowcy, grupie lub dacie"
@@ -106,7 +109,7 @@
 									</div>
 									<div class="tab-pane" id="view">
 										<fieldset>
-											<legend>Filtry widoku</legend>
+											<p class="h4">Ustawienia widoku</p>
 											<div class="radio">
 												<label> <input type="radio" name="timetableType"
 													id="timetableType_1" value="1"
@@ -174,13 +177,18 @@
 									</div>
 									<div class="tab-pane" id="devPlan">
 										<fieldset>
-											<legend>Stwórz nowy devPlan</legend>
-											<p id="devPlanParams" class="h4"></p>
+											<p class="h4">Twój devPlan</p>
+											<p id="devPlanParams" class="lead"></p>
+
 											<div class="form-group">
-												<input id="0" autocomplete="off" disabled="disabled"
-													value="" name="devPlanTypeahead[]" type="text"
+												<label>Wprowadz nazwe grupy lub wykładowcy</label> <input
+													id="0" autocomplete="off" disabled="disabled" value=""
+													name="devPlanTypeahead[]" type="text"
 													class="form-control devPlanTypeahead"
 													placeholder="KrDzIs3011Io / dr Paweł Wołoszyn" />
+											</div>
+											<div class="form-group">
+											<button class="btn btn-success" onclick="devPlan.Settings.save()">Zapisz devPlan</button>
 											</div>
 										</fieldset>
 									</div>

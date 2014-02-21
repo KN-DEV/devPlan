@@ -303,11 +303,15 @@ var Cash;
         }
         Params.prototype.toString = function () {
             var data = "";
-            for (var i = 0; i < this.group_id.length; i++) {
-                data = data + this.group_id[i];
+            if (this.group_id != null) {
+                for (var i = 0; i < this.group_id.length; i++) {
+                    data = data + this.group_id[i];
+                }
             }
-            for (var i = 0; i < this.tutor_id.length; i++) {
-                data = data + this.tutor_id[i];
+            if (this.tutor_id != null) {
+                for (var i = 0; i < this.tutor_id.length; i++) {
+                    data = data + this.tutor_id[i];
+                }
             }
             return data;
         };
@@ -554,6 +558,7 @@ var devPlan;
                 Settings.setActivityGroup(data.activityGroup);
                 Settings.setActivityTutor(data.activityTutor);
                 Settings.setTimetableType(data.timetableType);
+                Settings.setTimetableParams(data.timetableParams);
             }
             if (Settings.getClassCounter()) {
                 $("#classCounter").attr("checked", "checked");
@@ -581,7 +586,16 @@ var devPlan;
             }
             $('#timetableType_' + Settings.getTimetableType()).attr("checked", "checked");
             $('#activityNameFilter').attr('value', Settings.getActivityNameFilter());
+
             return Settings;
+        };
+        Settings.loadTimetableParam = function () {
+            Settings.timetableParams.group_id.forEach(function (value) {
+                Settings.addTimetableParam(devPlan.Init.getGroups()[--value].getName());
+            });
+            Settings.timetableParams.tutor_id.forEach(function (value) {
+                Settings.addTimetableParam(devPlan.Init.getTutors()[--value].getName());
+            });
         };
 
         Settings.save = function () {
@@ -621,23 +635,56 @@ var devPlan;
         Settings.addTimetableParam = function (item) {
             var g = devPlan.Init.searchGroup(item);
             var t = devPlan.Init.searchTutor(item);
+            var test = true;
             if (g > 0 && t == null) {
-                console.log("Group:" + item);
-                $("#devPlanParams").append('<button id="g' + g + '" class="devPlanParam btn btn-xs btn-info" >' + item + '' + '</button><wbr>');
+                $("#devPlanParams").append('<button id="g' + g + '" class="devPlanParam btn btn-xs btn-info" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + g + '" type="g">' + item + '' + '</button><wbr> ');
 
-                Settings.timetableParams.group_id[Settings.timetableParams.group_id.length] = g;
+                for (var i = 0; i < Settings.timetableParams.group_id.length; i++) {
+                    if (Settings.timetableParams.group_id[i] == g) {
+                        test = false;
+                    }
+                }
+                if (test) {
+                    Settings.timetableParams.group_id[Settings.timetableParams.group_id.length] = g;
+                }
             }
             if (t > 0 && g == null) {
-                console.log("Tutor:" + item);
+                for (var i = 0; i < Settings.timetableParams.tutor_id.length; i++) {
+                    if (Settings.timetableParams.tutor_id[i] == t) {
+                        test = false;
+                    }
+                }
+                $("#devPlanParams").append('<button id="t' + t + '" class="devPlanParam btn btn-xs btn-success" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + t + '" type="t">' + item + '' + '</button><wbr> ');
 
-                $("#devPlanParams").append('<span class="label label-success" type="t" value="' + t + '">' + item + ' <a ><i class="fa fa-minus"></i></a></span><wbr>');
-
-                Settings.timetableParams.tutor_id[Settings.timetableParams.tutor_id.length] = t;
+                if (test) {
+                    Settings.timetableParams.tutor_id[Settings.timetableParams.tutor_id.length] = t;
+                }
             }
+
+            console.log(Settings.timetableParams);
         };
-        Settings.removeTimetablePAram = function (item, type) {
-            $('#' + type + item).remove();
-            console.log(type, item);
+        Settings.removeTimetableParam = function (item) {
+            var newTimetableParams = new Cash.Params();
+            var item = $(item);
+            console.log(item.attr("value"), item.attr("type"));
+            if (item.attr("type") == "g") {
+                for (var i = 0; i < Settings.timetableParams.group_id.length; i++) {
+                    if (Settings.timetableParams.group_id[i] != parseInt(item.attr("value"))) {
+                        newTimetableParams.group_id[newTimetableParams.group_id.length] = Settings.timetableParams.group_id[i];
+                    }
+                }
+            }
+            if (item.attr("type") == "t") {
+                for (var i = 0; i < Settings.timetableParams.tutor_id.length; i++) {
+                    if (Settings.timetableParams.tutor_id[i] != parseInt(item.attr("value"))) {
+                        newTimetableParams.tutor_id[newTimetableParams.tutor_id.length] = Settings.timetableParams.tutor_id[i];
+                    }
+                }
+            }
+            Settings.timetableParams = newTimetableParams;
+            item.remove();
+
+            console.log(Settings.timetableParams);
         };
         Settings.setDevPlan = function () {
             $(".devPlanTypeahead").each(function (index) {
@@ -756,12 +803,16 @@ var devPlan;
                     }
                 }
 
-                $.when(Cash.Api.registerTimetable(param)).done(function (response) {
-                    console.log("After call registerTimetable: " + new Date().getTime());
-                    Init.showTimetable(Init.setTimetable(response).getTimetable());
-                    $("#timetable-panel-spinner").remove();
-                });
+                devPlan.Settings.setTimetableParams(param);
             }
+            param = devPlan.Settings.getTimetableParams();
+            console.log(param);
+
+            $.when(Cash.Api.registerTimetable(param)).done(function (response) {
+                console.log("After call registerTimetable: " + new Date().getTime());
+                Init.showTimetable(Init.setTimetable(response).getTimetable());
+                $("#timetable-panel-spinner").remove();
+            });
 
             if ($("#search-panel-input").length) {
                 $("#search-panel-input").attr('value', devPlan.Settings.getUrlParam('search'));
@@ -783,19 +834,18 @@ var devPlan;
 
                 $("#search-input").typeahead({ source: data });
 
+                devPlan.Settings.loadTimetableParam();
+
                 $(".devPlanTypeahead").each(function (index) {
                     $('#' + index + '.devPlanTypeahead').removeAttr('disabled').attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn').attr('data-provide', "typeahead");
 
                     $('#' + index + '.devPlanTypeahead').typeahead({
                         source: data,
+                        limit: 15,
                         updater: function (item) {
                             devPlan.Settings.addTimetableParam(item);
                         }
                     });
-                });
-
-                $('.devPlanParam').click(function (e) {
-                    $(e.target).remove();
                 });
 
                 $("#search-button").removeAttr("disabled").empty().append("Szukaj");

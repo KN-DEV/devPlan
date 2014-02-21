@@ -69,13 +69,21 @@ module devPlan {
                     //                }
                 }
 
-                $.when(Cash.Api.registerTimetable(param))
-                    .done((response: any) => {
-                        console.log("After call registerTimetable: " + new Date().getTime());
-                        Init.showTimetable(Init.setTimetable(response).getTimetable());
-                        $("#timetable-panel-spinner").remove();
-                    });
+                Settings.setTimetableParams(param);
+
+
             }
+            param = Settings.getTimetableParams();
+            console.log(param);
+
+
+
+            $.when(Cash.Api.registerTimetable(param))
+                .done((response: any) => {
+                    console.log("After call registerTimetable: " + new Date().getTime());
+                    Init.showTimetable(Init.setTimetable(response).getTimetable());
+                    $("#timetable-panel-spinner").remove();
+                });
 
             if ($("#search-panel-input").length) {
                 $("#search-panel-input").attr('value', Settings.getUrlParam('search'));
@@ -110,8 +118,12 @@ module devPlan {
                     /**
                      * Navbar search
                      */
+
+      
                     $("#search-input").typeahead({ source: data });
 
+                    
+                                  Settings.loadTimetableParam();
                     /**
                      * 
                      */
@@ -123,14 +135,11 @@ module devPlan {
 
                         $('#' + index + '.devPlanTypeahead').typeahead({
                             source: data,
+                            limit: 15,
                             updater: (item: any) => {
                                 Settings.addTimetableParam(item);
                             }
                         });
-                    });
-
-                    $('.devPlanParam').click(function(e) {
-                        $(e.target).remove();
                     });
 
                     $("#search-button")

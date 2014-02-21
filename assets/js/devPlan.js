@@ -1092,15 +1092,7 @@ function sendIssue() {
             email: document.getElementById("issueEmail").getAttribute("value"),
             content: document.getElementById("issueContent").getAttribute("value"),
             device: "Browser",
-            device_information: {
-                browserCodeName: navigator.appCodeName,
-                browserName: navigator.appName,
-                browserVersion: navigator.appVersion,
-                browserCookie: navigator.cookieEnabled,
-                platform: navigator.platform,
-                userAgentHeader: navigator.userAgent,
-                userAgentLanguage: navigator.systemLanguage
-            }
+            device_information: navigator
         }
     });
 }

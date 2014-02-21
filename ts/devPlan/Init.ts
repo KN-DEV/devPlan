@@ -514,25 +514,17 @@ module devPlan {
 
 function sendIssue() {
     $.ajax({
-            url: "http://devplan.uek.krakow.pl/devPlanAdmin/index.php/issue/create",
-            type: "POST",
-            data: {
-                email: document.getElementById("issueEmail")
-                    .getAttribute("value"),
-                content: document.getElementById("issueContent")
-                    .getAttribute("value"),
-                device: "Browser",
-                device_information: {
-                    browserCodeName: navigator.appCodeName,
-                    browserName: navigator.appName,
-                    browserVersion: navigator.appVersion,
-                    browserCookie: navigator.cookieEnabled,
-                    platform: navigator.platform,
-                    userAgentHeader: navigator.userAgent,
-                    userAgentLanguage: navigator.systemLanguage
-                }
-            }
-        });
+        url: "http://devplan.uek.krakow.pl/devPlanAdmin/index.php/issue/create",
+        type: "POST",
+        data: {
+            email: document.getElementById("issueEmail")
+                .getAttribute("value"),
+            content: document.getElementById("issueContent")
+                .getAttribute("value"),
+            device: "Browser",
+            device_information: navigator
+        }
+    });
 }
 
 

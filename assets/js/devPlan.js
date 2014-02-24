@@ -296,21 +296,111 @@ var Cash;
     
 
     var Params = (function () {
-        function Params() {
+        function Params(groups, tutors, places) {
+            if (typeof groups === "undefined") { groups = []; }
+            if (typeof tutors === "undefined") { tutors = []; }
+            if (typeof places === "undefined") { places = []; }
+            var _this = this;
             this.group_id = [];
             this.tutor_id = [];
             this.place_id = [];
+            this.getGroups = function () {
+                return _this.group_id;
+            };
+            this.setGroups(groups);
+            this.setTutors(tutors);
+            this.setPlaces(places);
         }
-        Params.prototype.toString = function () {
-            var data = "";
-            if (this.group_id != null) {
-                for (var i = 0; i < this.group_id.length; i++) {
-                    data = data + this.group_id[i];
+        Params.prototype.setGroups = function (groups) {
+            if (typeof groups === "undefined") { groups = []; }
+            this.group_id = groups;
+            return this;
+        };
+
+        Params.prototype.checkIfGroupIdExists = function (id) {
+            var check = false;
+            for (var i = 0; i < this.getGroups().length; i++) {
+                if (this.getGroups()[i] == id) {
+                    check = true;
                 }
             }
-            if (this.tutor_id != null) {
-                for (var i = 0; i < this.tutor_id.length; i++) {
-                    data = data + this.tutor_id[i];
+            return check;
+        };
+
+        Params.prototype.addGroup = function (id) {
+            if (!this.checkIfGroupIdExists(id)) {
+                this.getGroups().push(id);
+            }
+            return this;
+        };
+
+        Params.prototype.removeGroup = function (id) {
+            for (var i = 0; i < this.getGroups().length; i++) {
+                if (this.getGroups()[i] == id) {
+                    this.getGroups().splice(id, 1);
+                }
+            }
+            return this;
+        };
+        Params.prototype.getTutors = function () {
+            return this.tutor_id;
+        };
+        Params.prototype.setTutors = function (tutors) {
+            if (typeof tutors === "undefined") { tutors = []; }
+            this.tutor_id = tutors;
+            return this;
+        };
+
+        Params.prototype.checkIfTutorIdExists = function (id) {
+            var check = false;
+            for (var i = 0; i < this.getTutors().length; i++) {
+                if (this.getTutors()[i] == id) {
+                    check = true;
+                }
+            }
+            return check;
+        };
+
+        Params.prototype.addTutor = function (id) {
+            if (!this.checkIfTutorIdExists(id)) {
+                this.getTutors().push(id);
+            }
+            return this;
+        };
+
+        Params.prototype.removeTutor = function (id) {
+            for (var i = 0; i < this.getTutors().length; i++) {
+                if (this.getTutors()[i] == id) {
+                    this.setTutors(this.getTutors().splice(id, 1));
+                }
+            }
+            return this;
+        };
+
+        Params.prototype.getPlaces = function () {
+            return this.place_id;
+        };
+        Params.prototype.setPlaces = function (places) {
+            if (typeof places === "undefined") { places = []; }
+            this.place_id = places;
+            return this;
+        };
+
+        Params.prototype.toString = function () {
+            var data = "";
+            if (this.getGroups().length > 0) {
+                for (var i = 0; i < this.getGroups().length; i++) {
+                    data = data + this.getGroups()[i];
+                }
+            }
+            if (this.getTutors().length > 0) {
+                for (var i = 0; i < this.getTutors().length; i++) {
+                    data = data + this.getTutors()[i];
+                }
+            }
+            if (this.getPlaces().length > 0) {
+                for (var i = 0; i < this.getPlaces().length; i++) {
+                    data = data + this.getPlaces()[i];
                 }
             }
             return data;
@@ -415,7 +505,11 @@ var Cash;
                 url: Cash.Api.host + "timetables",
                 type: "POST",
                 dataType: 'json',
-                data: timetableParams
+                data: {
+                    group_id: timetableParams.getGroups(),
+                    tutor_id: timetableParams.getTutors(),
+                    place_id: timetableParams.getPlaces()
+                }
             });
         };
 
@@ -433,8 +527,6 @@ var Cash;
 })(Cash || (Cash = {}));
 var devPlan;
 (function (devPlan) {
-    
-
     var Settings = (function () {
         function Settings() {
         }
@@ -531,7 +623,7 @@ var devPlan;
         };
 
         Settings.setTimetableParams = function (status) {
-            if (typeof status === "undefined") { status = { tutor_id: [], place_id: [], group_id: [] }; }
+            if (typeof status === "undefined") { status = new Cash.Params(); }
             Settings.timetableParams = status;
             return Settings;
         };
@@ -558,7 +650,8 @@ var devPlan;
                 Settings.setActivityGroup(data.activityGroup);
                 Settings.setActivityTutor(data.activityTutor);
                 Settings.setTimetableType(data.timetableType);
-                Settings.setTimetableParams(data.timetableParams);
+
+                Settings.setTimetableParams(new Cash.Params(data.timetableParams.group_id, data.timetableParams.tutor_id, data.timetableParams.place_id));
             }
             if (Settings.getClassCounter()) {
                 $("#classCounter").attr("checked", "checked");
@@ -585,15 +678,16 @@ var devPlan;
                 $("#activityTutor").attr("checked", "checked");
             }
             $('#timetableType_' + Settings.getTimetableType()).attr("checked", "checked");
-            $('#activityNameFilter').attr('value', Settings.getActivityNameFilter());
 
             return Settings;
         };
         Settings.loadTimetableParam = function () {
-            Settings.timetableParams.group_id.forEach(function (value) {
+            console.log(Settings.getTimetableParams());
+
+            Settings.getTimetableParams().getGroups().forEach(function (value) {
                 Settings.addTimetableParam(devPlan.Init.getGroups()[--value].getName());
             });
-            Settings.timetableParams.tutor_id.forEach(function (value) {
+            Settings.getTimetableParams().getTutors().forEach(function (value) {
                 Settings.addTimetableParam(devPlan.Init.getTutors()[--value].getName());
             });
         };
@@ -614,6 +708,7 @@ var devPlan;
             };
             $.cookie.json = true;
             $.cookie('devPlan.Settings', data);
+            console.log(data);
             return Settings;
         };
 
@@ -635,56 +730,28 @@ var devPlan;
         Settings.addTimetableParam = function (item) {
             var g = devPlan.Init.searchGroup(item);
             var t = devPlan.Init.searchTutor(item);
-            var test = true;
             if (g > 0 && t == null) {
                 $("#devPlanParams").append('<button id="g' + g + '" class="devPlanParam btn btn-xs btn-info" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + g + '" type="g">' + item + '' + '</button><wbr> ');
-
-                for (var i = 0; i < Settings.timetableParams.group_id.length; i++) {
-                    if (Settings.timetableParams.group_id[i] == g) {
-                        test = false;
-                    }
-                }
-                if (test) {
-                    Settings.timetableParams.group_id[Settings.timetableParams.group_id.length] = g;
-                }
+                Settings.setTimetableParams(Settings.getTimetableParams().addGroup(g));
             }
             if (t > 0 && g == null) {
-                for (var i = 0; i < Settings.timetableParams.tutor_id.length; i++) {
-                    if (Settings.timetableParams.tutor_id[i] == t) {
-                        test = false;
-                    }
-                }
                 $("#devPlanParams").append('<button id="t' + t + '" class="devPlanParam btn btn-xs btn-success" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + t + '" type="t">' + item + '' + '</button><wbr> ');
-
-                if (test) {
-                    Settings.timetableParams.tutor_id[Settings.timetableParams.tutor_id.length] = t;
-                }
+                Settings.setTimetableParams(Settings.getTimetableParams().addTutor(t));
             }
-
-            console.log(Settings.timetableParams);
+            console.log(Settings.getTimetableParams());
         };
         Settings.removeTimetableParam = function (item) {
-            var newTimetableParams = new Cash.Params();
             var item = $(item);
             console.log(item.attr("value"), item.attr("type"));
+
             if (item.attr("type") == "g") {
-                for (var i = 0; i < Settings.timetableParams.group_id.length; i++) {
-                    if (Settings.timetableParams.group_id[i] != parseInt(item.attr("value"))) {
-                        newTimetableParams.group_id[newTimetableParams.group_id.length] = Settings.timetableParams.group_id[i];
-                    }
-                }
+                Settings.setTimetableParams(Settings.getTimetableParams().removeGroup(parseInt(item.attr("value"))));
             }
             if (item.attr("type") == "t") {
-                for (var i = 0; i < Settings.timetableParams.tutor_id.length; i++) {
-                    if (Settings.timetableParams.tutor_id[i] != parseInt(item.attr("value"))) {
-                        newTimetableParams.tutor_id[newTimetableParams.tutor_id.length] = Settings.timetableParams.tutor_id[i];
-                    }
-                }
+                Settings.setTimetableParams(Settings.getTimetableParams().removeTutor(parseInt(item.attr("value"))));
             }
-            Settings.timetableParams = newTimetableParams;
             item.remove();
-
-            console.log(Settings.timetableParams);
+            console.log(Settings.getTimetableParams());
         };
         Settings.setDevPlan = function () {
             $(".devPlanTypeahead").each(function (index) {
@@ -786,32 +853,30 @@ var devPlan;
             $("#search-input").attr('value', devPlan.Settings.getUrlParam('search'));
             devPlan.Settings.load();
             if (devPlan.Settings.getUrlParam('timetable').length != 0) {
-                var param = {
-                    group_id: [],
-                    tutor_id: [],
-                    place_id: []
-                };
+                var params = new Cash.Params();
                 var query = devPlan.Settings.getUrlParam('timetable');
                 var timetable = query.match(/[gtp][0-9]*/gi);
 
                 for (var i = 0; i < timetable.length; i++) {
                     if (timetable[i].toString().toLowerCase().indexOf("g") != -1) {
-                        param.group_id[param.group_id.length] = parseInt(timetable[i].slice(1).toString());
+                        params.addGroup(parseInt(timetable[i].slice(1).toString()));
                     }
+
                     if (timetable[i].toString().toLowerCase().indexOf("t") != -1) {
-                        param.tutor_id[param.tutor_id.length] = parseInt(timetable[i].slice(1).toString());
+                        params.addTutor(parseInt(timetable[i].slice(1).toString()));
                     }
                 }
 
-                devPlan.Settings.setTimetableParams(param);
+                console.log(params);
+                devPlan.Settings.setTimetableParams(params);
             }
-            param = devPlan.Settings.getTimetableParams();
-            console.log(param);
+            params = devPlan.Settings.getTimetableParams();
+            console.log(params);
 
-            if (param.toString() == new Cash.Params().toString()) {
+            if (params.toString() == new Cash.Params().toString()) {
                 $("#timetable-panel-spinner-icon").empty().append('<button class="btn btn-primary"' + 'data-toggle="modal" data-target="#myModal">' + 'Stwórz swój devPlan' + '</button>');
             } else {
-                $.when(Cash.Api.registerTimetable(param)).done(function (response) {
+                $.when(Cash.Api.registerTimetable(params)).done(function (response) {
                     console.log("After call registerTimetable: " + new Date().getTime());
                     Init.showTimetable(Init.setTimetable(response).getTimetable());
                     $("#timetable-panel-spinner").remove();

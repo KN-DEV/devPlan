@@ -48,20 +48,19 @@ module devPlan {
             $("#search-input").attr('value', Settings.getUrlParam('search'));
             Settings.load();
             if (Settings.getUrlParam('timetable').length != 0) {
-                var param: Cash.Params = {
-                    group_id: [],
-                    tutor_id: [],
-                    place_id: []
-                };
+                var params: Cash.Params = new Cash.Params();
                 var query = Settings.getUrlParam('timetable');
                 var timetable = query.match(/[gtp][0-9]*/gi);
 
+
+
                 for (var i = 0; i < timetable.length; i++) {
                     if (timetable[i].toString().toLowerCase().indexOf("g") != -1) {
-                        param.group_id[param.group_id.length] = parseInt(timetable[i].slice(1).toString());
+                        params.addGroup(parseInt(timetable[i].slice(1).toString()));
                     }
+
                     if (timetable[i].toString().toLowerCase().indexOf("t") != -1) {
-                        param.tutor_id[param.tutor_id.length] = parseInt(timetable[i].slice(1).toString());
+                        params.addTutor(parseInt(timetable[i].slice(1).toString()));
                     }
                     //                if ( timetable[i].toString().toLowerCase().indexOf( "p" ) != -1 )
                     //                {
@@ -69,15 +68,16 @@ module devPlan {
                     //                }
                 }
 
-                Settings.setTimetableParams(param);
+                console.log(params);
+                Settings.setTimetableParams(params);
 
 
             }
-            param = Settings.getTimetableParams();
-            console.log(param);
+            params = Settings.getTimetableParams();
+            console.log(params);
 
 
-            if (param.toString() == new Cash.Params().toString()) {
+            if (params.toString() == new Cash.Params().toString()) {
                 $("#timetable-panel-spinner-icon")
                     .empty()
                     .append('<button class="btn btn-primary"' +
@@ -89,7 +89,7 @@ module devPlan {
             } else {
 
 
-                $.when(Cash.Api.registerTimetable(param))
+                $.when(Cash.Api.registerTimetable(params))
                     .done((response: any) => {
                         console.log("After call registerTimetable: " + new Date().getTime());
                         Init.showTimetable(Init.setTimetable(response).getTimetable());

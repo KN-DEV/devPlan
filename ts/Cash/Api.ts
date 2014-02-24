@@ -61,7 +61,11 @@ module Cash {
                 url: Cash.Api.host + "timetables",
                 type: "POST",
                 dataType: 'json',
-                data: timetableParams,
+                data: {
+                    group_id: timetableParams.getGroups(),
+                    tutor_id: timetableParams.getTutors(),
+                    place_id: timetableParams.getPlaces()
+                },
             });
         }
         /**

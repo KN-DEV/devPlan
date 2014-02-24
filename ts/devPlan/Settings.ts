@@ -6,53 +6,7 @@
 module devPlan {
     /**
      * 
-     */
-    export interface SettingsInterface {
-        /**
-       *
-       */
-        classCounter: boolean;
-        /**
-         *
-         */
-        classHourCounter: boolean;
-        /**
-         *
-         */
-        activityCategory: boolean;
-        /**
-         *
-         */
-        activityBell: boolean;
-        /**
-         *
-         */
-        activityLocation: boolean;
-        /**
-         *
-         */
-        activityNote: boolean;
-        /**
-         *
-         */
-        activityGroup: boolean;
-        /**
-         *
-         */
-        activityTutor: boolean;
-        /**
-         *
-         */
-        timetableType: number;
-        /**
-         * 
-         */
-        timetableParams: Cash.Params;
-        /**
-         * 
-         */
-        activityNameFilter: string;
-    }
+
     /**
      * 
      */
@@ -96,7 +50,7 @@ module devPlan {
         /**
          * 
          */
-        private static timetableParams: Cash.Params = new Cash.Params();
+       public static timetableParams: Cash.Params = new Cash.Params();
         /**
          * 
          */
@@ -222,7 +176,7 @@ module devPlan {
         /**
          *
          */
-        static setTimetableParams(status: Cash.Params = { tutor_id: [], place_id: [], group_id: [] }): Settings {
+        static setTimetableParams(status: Cash.Params = new Cash.Params()): Settings {
             Settings.timetableParams = status;
             return Settings;
         }
@@ -241,7 +195,7 @@ module devPlan {
          */
         static load(): Settings {
             $.cookie.json = true;
-            var data: SettingsInterface = $.cookie('devPlan.Settings');
+            var data: any = $.cookie('devPlan.Settings');
             if (data) {
                 Settings.setClassCounter(data.classCounter);
                 Settings.setClassHourCounter(data.classHourCounter);
@@ -252,7 +206,10 @@ module devPlan {
                 Settings.setActivityGroup(data.activityGroup);
                 Settings.setActivityTutor(data.activityTutor);
                 Settings.setTimetableType(data.timetableType);
-                Settings.setTimetableParams(data.timetableParams);
+                
+                
+                
+                Settings.setTimetableParams(new Cash.Params(data.timetableParams.group_id,data.timetableParams.tutor_id,data.timetableParams.place_id));
                 //Settings.setActivityNameFilter(data.activityNameFilter);
             }
             if (Settings.getClassCounter()) {
@@ -280,17 +237,18 @@ module devPlan {
                 $("#activityTutor").attr("checked", "checked");
             }
             $('#timetableType_' + Settings.getTimetableType()).attr("checked", "checked");
-            $('#activityNameFilter').attr('value', Settings.getActivityNameFilter());
-
+          //  $('#activityNameFilter').attr('value', Settings.getActivityNameFilter());
+          //  console.log(data);
 
             return Settings;
         }
         static loadTimetableParam() {
-
-            Settings.timetableParams.group_id.forEach((value: number) => {
+console.log(    Settings.getTimetableParams());
+            
+            Settings.getTimetableParams().getGroups().forEach((value: number) => {
                 Settings.addTimetableParam(Init.getGroups()[--value].getName());
             });
-            Settings.timetableParams.tutor_id.forEach((value: number) => {
+            Settings.getTimetableParams().getTutors().forEach((value: number) => {
                 Settings.addTimetableParam(Init.getTutors()[--value].getName());
             });
 
@@ -304,7 +262,7 @@ module devPlan {
          *
          */
         static save(): Settings {
-            var data: SettingsInterface = {
+            var data: Settings = {
                 classCounter: Settings.getClassCounter(),
                 classHourCounter: Settings.getClassHourCounter(),
                 activityCategory: Settings.getActivityCategory(),
@@ -319,6 +277,7 @@ module devPlan {
             };
             $.cookie.json = true;
             $.cookie('devPlan.Settings', data);
+            console.log(data);
             return Settings;
         }
         /**
@@ -343,70 +302,33 @@ module devPlan {
         }
 
         static addTimetableParam(item: string) {
-
             var g = Init.searchGroup(item);
             var t = Init.searchTutor(item);
-            var test = true;
             if (g > 0 && t == null) {
-
                 $("#devPlanParams").append('<button id="g' + g + '" class="devPlanParam btn btn-xs btn-info" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + g + '" type="g">' + item + '' +
                     '</button><wbr> ');
-
-                for (var i = 0; i < Settings.timetableParams.group_id.length; i++) {
-                    if (Settings.timetableParams.group_id[i] == g) {
-                        test = false;
-                    }
-
-                }
-                if (test) {
-                    Settings.timetableParams.group_id[Settings.timetableParams.group_id.length] = g;
-                }
+                Settings.setTimetableParams(Settings.getTimetableParams().addGroup(g))
             }
             if (t > 0 && g == null) {
-
-                for (var i = 0; i < Settings.timetableParams.tutor_id.length; i++) {
-                    if (Settings.timetableParams.tutor_id[i] == t) {
-                        test = false;
-                    }
-                }
                 $("#devPlanParams").append('<button id="t' + t + '" class="devPlanParam btn btn-xs btn-success" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + t + '" type="t">' + item + '' +
                     '</button><wbr> ');
-
-                if (test) {
-
-                    Settings.timetableParams.tutor_id[Settings.timetableParams.tutor_id.length] = t;
-                }
+                Settings.setTimetableParams(Settings.getTimetableParams().addTutor(t));
             }
-
-            console.log(Settings.timetableParams);
+            console.log(Settings.getTimetableParams());
 
         }
         static removeTimetableParam(item: JQuery) {
-            var newTimetableParams: Cash.Params = new Cash.Params();
             var item: JQuery = $(item);
             console.log(item.attr("value"), item.attr("type"));
+
             if (item.attr("type") == "g") {
-                for (var i = 0; i < Settings.timetableParams.group_id.length; i++) {
-                    if (Settings.timetableParams.group_id[i] != parseInt(item.attr("value"))) {
-                        newTimetableParams.group_id[newTimetableParams.group_id.length] = Settings.timetableParams.group_id[i];
-                    }
-                }
+                Settings.setTimetableParams(Settings.getTimetableParams().removeGroup(parseInt(item.attr("value"))));
             }
             if (item.attr("type") == "t") {
-                for (var i = 0; i < Settings.timetableParams.tutor_id.length; i++) {
-                    if (Settings.timetableParams.tutor_id[i] != parseInt(item.attr("value"))) {
-                        newTimetableParams.tutor_id[newTimetableParams.tutor_id.length] = Settings.timetableParams.tutor_id[i];
-                    }
-                }
-
-
-
+                Settings.setTimetableParams(Settings.getTimetableParams().removeTutor(parseInt(item.attr("value"))));
             }
-            Settings.timetableParams = newTimetableParams;
             item.remove();
-
-            console.log(Settings.timetableParams);
-
+            console.log(Settings.getTimetableParams());
         }
         static setDevPlan(): void {
 

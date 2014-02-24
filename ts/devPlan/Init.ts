@@ -121,16 +121,16 @@ module devPlan {
                     for (i = 0; i < Init.getTutors().length; i++) {
                         data.push(Init.getTutors()[i].getName());
                     }
-                    
+
                     /**
                      * Navbar search
                      */
                     $("#search-input").typeahead({
                         source: data,
-                        items:15,
+                        items: 15,
                         updater: (item: any) => {
-                         
-                            
+
+
                             window.location.replace('timetable.html?timetable=g' + Init.searchGroup(item));
                         }
                     });
@@ -157,8 +157,8 @@ module devPlan {
                         });
                     });
 
-                 
-                    
+
+
                     if ($("#search-panel-input").length) {
                         $("#search-panel-input")
                             .attr('value', Settings.getUrlParam('search'))
@@ -444,10 +444,8 @@ function sendIssue() {
         url: "http://devplan.uek.krakow.pl/devPlanAdmin/index.php/issue/create",
         type: "POST",
         data: {
-            email: document.getElementById("issueEmail")
-                .getAttribute("value"),
-            content: document.getElementById("issueContent")
-                .getAttribute("value"),
+            email: $("#issueEmail").val(),
+            content: $("#issueContent").val(),
             device: "Browser",
             device_information: navigator
         }

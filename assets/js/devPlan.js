@@ -790,13 +790,13 @@ var devPlan;
                 activityNameFilter: ''
             };
             $.cookie.json = true;
-            $.cookie('devPlan.Settings', data);
+            $.cookie('devPlan.Settings', data, { expires: 1000 });
             return Settings;
         };
 
         Settings.saveTimetable = function () {
             $.cookie.json = true;
-            $.cookie('devPlan.Params', Settings.getTimetableParams());
+            $.cookie('devPlan.Params', Settings.getTimetableParams(), { expires: 180 });
             return Settings;
         };
 
@@ -1215,9 +1215,10 @@ function sendIssue() {
     $.ajax({
         url: "http://devplan.uek.krakow.pl/devPlanAdmin/index.php/issue/create",
         type: "POST",
+        crossDomain: true,
         data: {
-            email: document.getElementById("issueEmail").getAttribute("value"),
-            content: document.getElementById("issueContent").getAttribute("value"),
+            email: $("#issueEmail").val(),
+            content: $("#issueContent").val(),
             device: "Browser",
             device_information: navigator
         }

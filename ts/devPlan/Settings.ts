@@ -277,13 +277,13 @@ module devPlan {
                 activityNameFilter: ''
             };
             $.cookie.json = true;
-            $.cookie('devPlan.Settings', data);
+            $.cookie('devPlan.Settings', data,{expires:1000});
             return Settings;
         }
 
         static saveTimetable(): Settings {
             $.cookie.json = true;
-            $.cookie('devPlan.Params', Settings.getTimetableParams());
+            $.cookie('devPlan.Params', Settings.getTimetableParams(),{expires:180});
             return Settings;
         }
         /**

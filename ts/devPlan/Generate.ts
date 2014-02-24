@@ -48,7 +48,7 @@ module devPlan {
         static bellInformation(activity: Cash.Activity): string {
             if (Settings.getActivityBell()) {
                 return '<strong>' +
-                    '<span class="" title="Zajęcia rozpoczynają się o: ' + activity.starts_at + ' i kończą o ' + activity.ends_at + '">' +
+                    '<span class="" title="Zajęcia rozpoczynają się o: ' + activity.getStartsAt() + ' i kończą o ' + activity.getEndsAt() + '">' +
                     '<i class="fa fa-fw fa-bell"></i>' +
                     activity.getStartsAt() + " - " + activity.getEndsAt() +
                     '</span>' +

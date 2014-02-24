@@ -50,7 +50,7 @@ module devPlan {
         /**
          * 
          */
-       public static timetableParams: Cash.Params = new Cash.Params();
+        public static timetableParams: Cash.Params = new Cash.Params();
         /**
          * 
          */
@@ -206,10 +206,11 @@ module devPlan {
                 Settings.setActivityGroup(data.activityGroup);
                 Settings.setActivityTutor(data.activityTutor);
                 Settings.setTimetableType(data.timetableType);
-                
-                
-                
-                Settings.setTimetableParams(new Cash.Params(data.timetableParams.group_id,data.timetableParams.tutor_id,data.timetableParams.place_id));
+
+            }
+            var data: any = $.cookie('devPlan.Params');
+            if (data) {
+                Settings.setTimetableParams(new Cash.Params(data.group_id, data.tutor_id, data.place_id));
                 //Settings.setActivityNameFilter(data.activityNameFilter);
             }
             if (Settings.getClassCounter()) {
@@ -237,26 +238,26 @@ module devPlan {
                 $("#activityTutor").attr("checked", "checked");
             }
             $('#timetableType_' + Settings.getTimetableType()).attr("checked", "checked");
-          //  $('#activityNameFilter').attr('value', Settings.getActivityNameFilter());
-          //  console.log(data);
+            //  $('#activityNameFilter').attr('value', Settings.getActivityNameFilter());
+
 
             return Settings;
         }
         static loadTimetableParam() {
-console.log(    Settings.getTimetableParams());
-            
-            Settings.getTimetableParams().getGroups().forEach((value: number) => {
-                Settings.addTimetableParam(Init.getGroups()[--value].getName());
+            Settings.getTimetableParams().getGroups().forEach((index: number, item: number) => {
+                for (var i = 0; i < Init.getGroups().length; i++) {
+                    if (Init.getGroups()[i].getId() == index) {
+                        Settings.addTimetableParam(Init.getGroups()[i].getName());
+                    }
+                }
             });
-            Settings.getTimetableParams().getTutors().forEach((value: number) => {
-                Settings.addTimetableParam(Init.getTutors()[--value].getName());
+            Settings.getTimetableParams().getTutors().forEach((index: number, item: number) => {
+                for (var i = 0; i < Init.getTutors().length; i++) {
+                    if (Init.getTutors()[i].getId() == index) {
+                        Settings.addTimetableParam(Init.getTutors()[i].getName());
+                    }
+                }
             });
-
-
-            //            
-            //            for (var i = 0; i < Settings.timetableParams.tutor_id.length; i++) {
-            //          //      Settings.addTimetableParam(Init.getTutors()[Settings.timetableParams.tutor_id[i]].getName());
-            //            }
         }
         /**
          *
@@ -277,7 +278,12 @@ console.log(    Settings.getTimetableParams());
             };
             $.cookie.json = true;
             $.cookie('devPlan.Settings', data);
-            console.log(data);
+            return Settings;
+        }
+
+        static saveTimetable(): Settings {
+            $.cookie.json = true;
+            $.cookie('devPlan.Params', Settings.getTimetableParams());
             return Settings;
         }
         /**
@@ -300,7 +306,9 @@ console.log(    Settings.getTimetableParams());
                 return date.getFullYear() + '-' + month + '-' + date.getDate();
             }
         }
-
+        /**
+         * 
+         */
         static addTimetableParam(item: string) {
             var g = Init.searchGroup(item);
             var t = Init.searchTutor(item);
@@ -314,13 +322,10 @@ console.log(    Settings.getTimetableParams());
                     '</button><wbr> ');
                 Settings.setTimetableParams(Settings.getTimetableParams().addTutor(t));
             }
-            console.log(Settings.getTimetableParams());
 
         }
         static removeTimetableParam(item: JQuery) {
             var item: JQuery = $(item);
-            console.log(item.attr("value"), item.attr("type"));
-
             if (item.attr("type") == "g") {
                 Settings.setTimetableParams(Settings.getTimetableParams().removeGroup(parseInt(item.attr("value"))));
             }
@@ -328,7 +333,6 @@ console.log(    Settings.getTimetableParams());
                 Settings.setTimetableParams(Settings.getTimetableParams().removeTutor(parseInt(item.attr("value"))));
             }
             item.remove();
-            console.log(Settings.getTimetableParams());
         }
         static setDevPlan(): void {
 

@@ -26,12 +26,6 @@
 					<div class="navbar-header">
 						<button type="button"
 							class="navbar-btn btn btn-link visible-xs pull-right"
-							data-toggle="collapse" data-parent="#accordion"
-							href="#timetable-panel">
-							<i class="fa fa-gear"></i>
-						</button>
-						<button type="button"
-							class="navbar-btn btn btn-link visible-xs pull-right"
 							data-toggle="collapse"
 							data-target="#bs-example-navbar-collapse-1">
 							<i class="fa fa-align-justify"></i>
@@ -40,27 +34,33 @@
 					</div>
 					<div class="collapse navbar-collapse"
 						id="bs-example-navbar-collapse-1">
-
+						
+						
 						<ul class="nav navbar-nav navbar-right">
-							<li><a href="timetable.html" title="Mój plan">Mój plan</a></li>
-							<li class="visible-xs"><a href="search.html" title="Szukaj">Szukaj</a></li>
 							<li class="hidden-xs"><a class="" data-toggle="collapse"
 								data-parent="#accordion" href="#timetable-panel"> <i
 									class="fa fa-gears"></i></a></li>
 						</ul>
+
+						<div class="navbar-form navbar-right hidden-xs">
+							<a href="timetable.html" class="btn btn-success">Mój devPlan</a>
+						</div>
+						<ul class="nav navbar-nav navbar-right">
+							<li><a href="search.html" title="Szukaj">Szukaj</a></li>
+							<li class="visible-xs"><a href="timetable.html"
+								title="Mój plan">Mój plan</a></li>
+							
+						</ul>
 						<form class="navbar-form navbar-right hidden-xs"
 							action="search.html" method="get" role="search">
-							<div class="form-group">
+							<div id="navbar-search" class="form-group">
 								<input id="search-input" name="search" autocomplete="off"
-									disabled="disabled" type="text" class="form-control"
+									disabled="disabled" type="text" class="form-control" size="50"
 									placeholder="KrDzIs3011Io / dr Paweł Wołoszyn" />
 							</div>
-							<button id="search-button" type="submit" class="btn btn-success"
-								disabled>
-								<i class="fa fa-fw fa-spin fa-refresh"></i>
-							</button>
 						</form>
 
+						<p class="navbar-text navbar-right hidden-xs">Szybki devPlan:</p>
 					</div>
 				</div>
 			</div>
@@ -97,9 +97,27 @@
 											<div class="form-group">
 												<input id="activityNameFilter" type="text"
 													class="form-control" name="activityNameFilter"
-													placeholder="Filtruj po nazwie przedmiotu, wykładowcy, grupie lub dacie"
+													placeholder="Filtruj po nazwie przedmiotu"
 													onkeyup="console.log(this.value);devPlan.Settings.setActivityNameFilter(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
 											</div>
+											<!-- 											<div class="form-group"> -->
+											<!-- 												<input id="activityNameFilter" type="text" -->
+											<!-- 													class="form-control" name="activityNameFilter" -->
+											<!-- 													placeholder="Filtruj po wykładowcy" -->
+											<!-- 													onkeyup="console.log(this.value);devPlan.Settings.setActivityNameFilter(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());"> -->
+											<!-- 											</div> -->
+											<!-- 											<div class="form-group"> -->
+											<!-- 												<input id="activityNameFilter" type="text" -->
+											<!-- 													class="form-control" name="activityNameFilter" -->
+											<!-- 													placeholder="Filtruj po nazwie grupy" -->
+											<!-- 													onkeyup="console.log(this.value);devPlan.Settings.setActivityNameFilter(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());"> -->
+											<!-- 											</div> -->
+											<!-- 											<div class="form-group"> -->
+											<!-- 												<input id="activityNameFilter" type="text" -->
+											<!-- 													class="form-control" name="activityNameFilter" -->
+											<!-- 													placeholder="Filtruj po dacie" -->
+											<!-- 													onkeyup="console.log(this.value);devPlan.Settings.setActivityNameFilter(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());"> -->
+											<!-- 											</div> -->
 										</fieldset>
 									</div>
 									<div class="tab-pane" id="view">
@@ -214,7 +232,7 @@
 				</div>
 				<div class="modal-footer">
 					<button class="btn btn-primary"
-						onclick="devPlan.Settings.save();window.location.replace('timetable.html')">
+						onclick="devPlan.Settings.saveTimetable();window.location.replace('timetable.html')">
 						<i class="fa fa-fw fa-save"></i> Zapisz devPlan
 					</button>
 				</div>
@@ -224,8 +242,8 @@
 		<!-- /.modal-dialog -->
 	</div>
 	<!-- /.modal -->
-	
-	
+
+
 
 	<!-- Modal -->
 	<div class="modal fade" id="issue" tabindex="-1" role="dialog"
@@ -271,7 +289,7 @@
 						<li><a href="search.html">Szukaj</a></li>
 						<li class="footer-menu-divider">&sdot;</li>
 						<li><a href="timetable.html">Mój plan</a></li>
-							<li><a data-toggle="modal" data-target="#issue" class="">Zgłoś
+						<li><a data-toggle="modal" data-target="#issue" class="">Zgłoś
 								błąd</a></li>
 					</ul>
 					<p class="copyright text-muted small">

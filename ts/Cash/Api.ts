@@ -3,11 +3,6 @@
 * Cash service
 */
 module Cash {
-
-
-
-
-
     /**
      * Cash API implementation
      */
@@ -17,19 +12,17 @@ module Cash {
          */
         private static host: string = "http://cash.dev.uek.krakow.pl/v0_1/";
         /**
-         * Settings for ajax request
-         */
-
-
-        /**
          * Gets list of all groups available in cash service
          */
         public static getGroupsList(): JQueryXHR {
             return $.ajax({
                 url: Cash.Api.host + "groups",
                 type: "GET",
-                dataType: 'json'
-
+                dataType: 'json',
+                success: (data) => {
+                },
+                error: () => {
+                }
             });
         }
         /**
@@ -39,7 +32,11 @@ module Cash {
             return $.ajax({
                 url: Cash.Api.host + "tutors",
                 type: "GET",
-                dataType: 'json'
+                dataType: 'json',
+                success: (data) => {
+                },
+                error: () => {
+                }
             });
         }
         /**
@@ -49,8 +46,11 @@ module Cash {
             return $.ajax({
                 url: Cash.Api.host + "places",
                 type: "GET",
-                dataType: 'json'
-
+                dataType: 'json',
+                success: (data) => {
+                },
+                error: () => {
+                }
             });
         }
         /**
@@ -66,16 +66,24 @@ module Cash {
                     tutor_id: timetableParams.getTutors(),
                     place_id: timetableParams.getPlaces()
                 },
+                success: (data: any) => {
+                },
+                error: () => {
+                }
             });
         }
         /**
          * 
          */
-        public static getTimetable(query: string): JQueryXHR {
+        public static getTimetable(params: Cash.Params): JQueryXHR {
             return $.ajax({
-                url: Cash.Api.host + "timetables/" + query,
+                url: Cash.Api.host + "timetables/" + params.toString(),
                 type: "GET",
                 dataType: 'json',
+                success: (data: any) => {
+                },
+                error: () => {
+                }
             });
         }
     }

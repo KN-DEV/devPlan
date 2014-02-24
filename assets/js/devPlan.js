@@ -313,7 +313,9 @@ var Cash;
         }
         Params.prototype.setGroups = function (groups) {
             if (typeof groups === "undefined") { groups = []; }
-            this.group_id = groups;
+            this.group_id = groups.sort(function (a, b) {
+                return a - b;
+            });
             return this;
         };
 
@@ -330,6 +332,9 @@ var Cash;
         Params.prototype.addGroup = function (id) {
             if (!this.checkIfGroupIdExists(id)) {
                 this.getGroups().push(id);
+                this.setGroups(this.getGroups().sort(function (a, b) {
+                    return a - b;
+                }));
             }
             return this;
         };
@@ -342,12 +347,16 @@ var Cash;
             }
             return this;
         };
+
         Params.prototype.getTutors = function () {
             return this.tutor_id;
         };
+
         Params.prototype.setTutors = function (tutors) {
             if (typeof tutors === "undefined") { tutors = []; }
-            this.tutor_id = tutors;
+            this.tutor_id = tutors.sort(function (a, b) {
+                return a - b;
+            });
             return this;
         };
 
@@ -364,6 +373,9 @@ var Cash;
         Params.prototype.addTutor = function (id) {
             if (!this.checkIfTutorIdExists(id)) {
                 this.getTutors().push(id);
+                this.setTutors(this.getTutors().sort(function (a, b) {
+                    return a - b;
+                }));
             }
             return this;
         };
@@ -380,30 +392,77 @@ var Cash;
         Params.prototype.getPlaces = function () {
             return this.place_id;
         };
+
         Params.prototype.setPlaces = function (places) {
             if (typeof places === "undefined") { places = []; }
-            this.place_id = places;
+            this.place_id = places.sort(function (a, b) {
+                return a - b;
+            });
             return this;
+        };
+
+        Params.prototype.checkIfPlaceIdExists = function (id) {
+            var check = false;
+            for (var i = 0; i < this.getPlaces().length; i++) {
+                if (this.getPlaces()[i] == id) {
+                    check = true;
+                }
+            }
+            return check;
+        };
+
+        Params.prototype.addPlace = function (id) {
+            if (!this.checkIfPlaceIdExists(id)) {
+                this.getPlaces().push(id);
+                this.setPlaces(this.getPlaces().sort(function (a, b) {
+                    return a - b;
+                }));
+            }
+            return this;
+        };
+
+        Params.prototype.removePlace = function (id) {
+            for (var i = 0; i < this.getPlaces().length; i++) {
+                if (this.getPlaces()[i] == id) {
+                    this.setPlaces(this.getPlaces().splice(id, 1));
+                }
+            }
+            return this;
+        };
+
+        Params.prototype.isEmpty = function () {
+            return this.getGroups().length == 0 && this.getTutors().length == 0 && this.getPlaces().length == 0;
         };
 
         Params.prototype.toString = function () {
             var data = "";
-            if (this.getGroups().length > 0) {
-                for (var i = 0; i < this.getGroups().length; i++) {
-                    data = data + this.getGroups()[i];
-                }
+            for (var i = 0; i < this.getGroups().length; i++) {
+                data = data + 'g' + this.getGroups()[i];
             }
-            if (this.getTutors().length > 0) {
-                for (var i = 0; i < this.getTutors().length; i++) {
-                    data = data + this.getTutors()[i];
-                }
+            for (var i = 0; i < this.getTutors().length; i++) {
+                data = data + 't' + this.getTutors()[i];
             }
-            if (this.getPlaces().length > 0) {
-                for (var i = 0; i < this.getPlaces().length; i++) {
-                    data = data + this.getPlaces()[i];
-                }
+            for (var i = 0; i < this.getPlaces().length; i++) {
+                data = data + 'p' + this.getPlaces()[i];
             }
             return data;
+        };
+
+        Params.fromString = function (query) {
+            var params = new Cash.Params();
+            var timetable = query.match(/[gtp][0-9]*/gi);
+            for (var i = 0; i < timetable.length; i++) {
+                if (timetable[i].toString().toLowerCase().indexOf("g") != -1) {
+                    params.addGroup(parseInt(timetable[i].slice(1).toString()));
+                }
+                if (timetable[i].toString().toLowerCase().indexOf("t") != -1) {
+                    params.addTutor(parseInt(timetable[i].slice(1).toString()));
+                }
+                if (timetable[i].toString().toLowerCase().indexOf("p") != -1) {
+                    params.addTutor(parseInt(timetable[i].slice(1).toString()));
+                }
+            }
+            return params;
         };
         return Params;
     })();
@@ -413,14 +472,6 @@ var Cash;
 (function (Cash) {
     
 
-    var TimetableStatistics = (function () {
-        function TimetableStatistics() {
-            this.couter = [];
-        }
-        return TimetableStatistics;
-    })();
-    Cash.TimetableStatistics = TimetableStatistics;
-
     var Timetable = (function () {
         function Timetable(object) {
             if (typeof object === "undefined") { object = { _id: "", access_url: "", params: new Cash.Params(), activities: [] }; }
@@ -428,6 +479,7 @@ var Cash;
             this.access_url = "";
             this.params = new Cash.Params();
             this.activities = [];
+            this.resource_versions = [];
             this.setId(object._id);
             this.setAccessUrl(object.access_url);
             this.setParams(object.params);
@@ -440,9 +492,11 @@ var Cash;
         Timetable.prototype.setId = function (id) {
             this._id = id;
         };
+
         Timetable.prototype.getAccessUrl = function () {
             return this.access_url;
         };
+
         Timetable.prototype.setAccessUrl = function (access_url) {
             this.access_url = access_url;
         };
@@ -450,22 +504,23 @@ var Cash;
         Timetable.prototype.getParams = function () {
             return this.params;
         };
+
         Timetable.prototype.setParams = function (params) {
             this.params = params;
         };
+
         Timetable.prototype.getActivities = function () {
             return this.activities;
         };
 
         Timetable.prototype.setActivities = function (activities) {
-            if (activities.length > 0) {
-                for (var i = 0; i < activities.length; i++) {
-                    this.activities[this.getActivities().length] = new Cash.Activity(activities[i]);
-                }
-                this.activities = this.getActivities().sort(function (a, b) {
-                    return a.getStartsAtTimestamp() - b.getStartsAtTimestamp();
-                });
-            }
+            var _this = this;
+            activities.forEach(function (activity, index) {
+                _this.activities.push(new Cash.Activity(activity));
+            });
+            this.activities = this.getActivities().sort(function (a, b) {
+                return a.getStartsAtTimestamp() - b.getStartsAtTimestamp();
+            });
         };
         return Timetable;
     })();
@@ -480,7 +535,11 @@ var Cash;
             return $.ajax({
                 url: Cash.Api.host + "groups",
                 type: "GET",
-                dataType: 'json'
+                dataType: 'json',
+                success: function (data) {
+                },
+                error: function () {
+                }
             });
         };
 
@@ -488,7 +547,11 @@ var Cash;
             return $.ajax({
                 url: Cash.Api.host + "tutors",
                 type: "GET",
-                dataType: 'json'
+                dataType: 'json',
+                success: function (data) {
+                },
+                error: function () {
+                }
             });
         };
 
@@ -496,7 +559,11 @@ var Cash;
             return $.ajax({
                 url: Cash.Api.host + "places",
                 type: "GET",
-                dataType: 'json'
+                dataType: 'json',
+                success: function (data) {
+                },
+                error: function () {
+                }
             });
         };
 
@@ -509,15 +576,23 @@ var Cash;
                     group_id: timetableParams.getGroups(),
                     tutor_id: timetableParams.getTutors(),
                     place_id: timetableParams.getPlaces()
+                },
+                success: function (data) {
+                },
+                error: function () {
                 }
             });
         };
 
-        Api.getTimetable = function (query) {
+        Api.getTimetable = function (params) {
             return $.ajax({
-                url: Cash.Api.host + "timetables/" + query,
+                url: Cash.Api.host + "timetables/" + params.toString(),
                 type: "GET",
-                dataType: 'json'
+                dataType: 'json',
+                success: function (data) {
+                },
+                error: function () {
+                }
             });
         };
         Api.host = "http://cash.dev.uek.krakow.pl/v0_1/";
@@ -650,8 +725,10 @@ var devPlan;
                 Settings.setActivityGroup(data.activityGroup);
                 Settings.setActivityTutor(data.activityTutor);
                 Settings.setTimetableType(data.timetableType);
-
-                Settings.setTimetableParams(new Cash.Params(data.timetableParams.group_id, data.timetableParams.tutor_id, data.timetableParams.place_id));
+            }
+            var data = $.cookie('devPlan.Params');
+            if (data) {
+                Settings.setTimetableParams(new Cash.Params(data.group_id, data.tutor_id, data.place_id));
             }
             if (Settings.getClassCounter()) {
                 $("#classCounter").attr("checked", "checked");
@@ -682,13 +759,19 @@ var devPlan;
             return Settings;
         };
         Settings.loadTimetableParam = function () {
-            console.log(Settings.getTimetableParams());
-
-            Settings.getTimetableParams().getGroups().forEach(function (value) {
-                Settings.addTimetableParam(devPlan.Init.getGroups()[--value].getName());
+            Settings.getTimetableParams().getGroups().forEach(function (index, item) {
+                for (var i = 0; i < devPlan.Init.getGroups().length; i++) {
+                    if (devPlan.Init.getGroups()[i].getId() == index) {
+                        Settings.addTimetableParam(devPlan.Init.getGroups()[i].getName());
+                    }
+                }
             });
-            Settings.getTimetableParams().getTutors().forEach(function (value) {
-                Settings.addTimetableParam(devPlan.Init.getTutors()[--value].getName());
+            Settings.getTimetableParams().getTutors().forEach(function (index, item) {
+                for (var i = 0; i < devPlan.Init.getTutors().length; i++) {
+                    if (devPlan.Init.getTutors()[i].getId() == index) {
+                        Settings.addTimetableParam(devPlan.Init.getTutors()[i].getName());
+                    }
+                }
             });
         };
 
@@ -708,7 +791,12 @@ var devPlan;
             };
             $.cookie.json = true;
             $.cookie('devPlan.Settings', data);
-            console.log(data);
+            return Settings;
+        };
+
+        Settings.saveTimetable = function () {
+            $.cookie.json = true;
+            $.cookie('devPlan.Params', Settings.getTimetableParams());
             return Settings;
         };
 
@@ -738,12 +826,9 @@ var devPlan;
                 $("#devPlanParams").append('<button id="t' + t + '" class="devPlanParam btn btn-xs btn-success" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + t + '" type="t">' + item + '' + '</button><wbr> ');
                 Settings.setTimetableParams(Settings.getTimetableParams().addTutor(t));
             }
-            console.log(Settings.getTimetableParams());
         };
         Settings.removeTimetableParam = function (item) {
             var item = $(item);
-            console.log(item.attr("value"), item.attr("type"));
-
             if (item.attr("type") == "g") {
                 Settings.setTimetableParams(Settings.getTimetableParams().removeGroup(parseInt(item.attr("value"))));
             }
@@ -751,7 +836,6 @@ var devPlan;
                 Settings.setTimetableParams(Settings.getTimetableParams().removeTutor(parseInt(item.attr("value"))));
             }
             item.remove();
-            console.log(Settings.getTimetableParams());
         };
         Settings.setDevPlan = function () {
             $(".devPlanTypeahead").each(function (index) {
@@ -807,7 +891,7 @@ var devPlan;
 
         Generate.bellInformation = function (activity) {
             if (devPlan.Settings.getActivityBell()) {
-                return '<strong>' + '<span class="" title="Zajęcia rozpoczynają się o: ' + activity.starts_at + ' i kończą o ' + activity.ends_at + '">' + '<i class="fa fa-fw fa-bell"></i>' + activity.getStartsAt() + " - " + activity.getEndsAt() + '</span>' + '</strong>';
+                return '<strong>' + '<span class="" title="Zajęcia rozpoczynają się o: ' + activity.getStartsAt() + ' i kończą o ' + activity.getEndsAt() + '">' + '<i class="fa fa-fw fa-bell"></i>' + activity.getStartsAt() + " - " + activity.getEndsAt() + '</span>' + '</strong>';
             }
             return '';
         };
@@ -837,6 +921,7 @@ var devPlan;
     devPlan.Generate = Generate;
 })(devPlan || (devPlan = {}));
 
+
 var devPlan;
 (function (devPlan) {
     var ActivityHourCounter = (function () {
@@ -852,36 +937,33 @@ var devPlan;
         function Init() {
             $("#search-input").attr('value', devPlan.Settings.getUrlParam('search'));
             devPlan.Settings.load();
+
+            var params;
             if (devPlan.Settings.getUrlParam('timetable').length != 0) {
-                var params = new Cash.Params();
-                var query = devPlan.Settings.getUrlParam('timetable');
-                var timetable = query.match(/[gtp][0-9]*/gi);
-
-                for (var i = 0; i < timetable.length; i++) {
-                    if (timetable[i].toString().toLowerCase().indexOf("g") != -1) {
-                        params.addGroup(parseInt(timetable[i].slice(1).toString()));
-                    }
-
-                    if (timetable[i].toString().toLowerCase().indexOf("t") != -1) {
-                        params.addTutor(parseInt(timetable[i].slice(1).toString()));
-                    }
-                }
-
-                console.log(params);
+                params = Cash.Params.fromString(devPlan.Settings.getUrlParam('timetable'));
                 devPlan.Settings.setTimetableParams(params);
+            } else {
+                params = devPlan.Settings.getTimetableParams();
             }
-            params = devPlan.Settings.getTimetableParams();
-            console.log(params);
 
-            if (params.toString() == new Cash.Params().toString()) {
+            if (params.isEmpty()) {
                 $("#timetable-panel-spinner-icon").empty().append('<button class="btn btn-primary"' + 'data-toggle="modal" data-target="#myModal">' + 'Stwórz swój devPlan' + '</button>');
             } else {
-                $.when(Cash.Api.registerTimetable(params)).done(function (response) {
-                    console.log("After call registerTimetable: " + new Date().getTime());
+                $.when(Cash.Api.getTimetable(params)).done(function (response) {
                     Init.showTimetable(Init.setTimetable(response).getTimetable());
                     $("#timetable-panel-spinner").remove();
+                }).fail(function () {
+                    $.when(Cash.Api.registerTimetable(params)).done(function (response) {
+                        console.log(new Date().getTime() + "done");
+                        Init.showTimetable(Init.setTimetable(response).getTimetable());
+
+                        $("#timetable-panel-spinner").remove();
+                    }).fail(function () {
+                        console.log("Registration timetable failed");
+                    });
                 });
             }
+
             if ($("#search-panel-input").length) {
                 $("#search-panel-input").attr('value', devPlan.Settings.getUrlParam('search'));
             }
@@ -894,13 +976,19 @@ var devPlan;
 
                 var data = [];
                 for (var i = 0; i < Init.getGroups().length; i++) {
-                    data[data.length] = Init.getGroups()[i].getName();
+                    data.push(Init.getGroups()[i].getName());
                 }
                 for (i = 0; i < Init.getTutors().length; i++) {
-                    data[data.length] = Init.getTutors()[i].getName();
+                    data.push(Init.getTutors()[i].getName());
                 }
 
-                $("#search-input").typeahead({ source: data });
+                $("#search-input").typeahead({
+                    source: data,
+                    items: 15,
+                    updater: function (item) {
+                        window.location.replace('timetable.html?timetable=g' + Init.searchGroup(item));
+                    }
+                });
 
                 devPlan.Settings.loadTimetableParam();
 
@@ -909,19 +997,21 @@ var devPlan;
 
                     $('#' + index + '.devPlanTypeahead').typeahead({
                         source: data,
-                        limit: 15,
+                        items: 15,
                         updater: function (item) {
                             devPlan.Settings.addTimetableParam(item);
+                            console.log("Selected: " + item);
                         }
                     });
                 });
 
-                $("#search-button").removeAttr("disabled").empty().append("Szukaj");
                 if ($("#search-panel-input").length) {
                     $("#search-panel-input").attr('value', devPlan.Settings.getUrlParam('search')).attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn').removeAttr("disabled");
                     $("#search-panel .panel-body").remove();
                     Init.showSearchResults(devPlan.Settings.getUrlParam("search"));
                 }
+            }).fail(function () {
+                console.log("Fail creating typeahead");
             });
         }
         Init.getGroups = function () {
@@ -929,8 +1019,9 @@ var devPlan;
         };
 
         Init.setGroups = function (groups) {
+            if (typeof groups === "undefined") { groups = []; }
             for (var i = 0; i < groups.length; i++) {
-                Init.groups[Init.getGroups().length] = new Cash.Group(groups[i]);
+                Init.groups.push(new Cash.Group(groups[i]));
             }
             Init.groups = Init.getGroups().sort(function (a, b) {
                 return a.getName() - b.getName();
@@ -956,8 +1047,9 @@ var devPlan;
         };
 
         Init.setTutors = function (tutors) {
+            if (typeof tutors === "undefined") { tutors = []; }
             for (var i = 0; i < tutors.length; i++) {
-                Init.tutors[Init.getTutors().length] = new Cash.Tutor(tutors[i]);
+                Init.tutors.push(new Cash.Tutor(tutors[i]));
             }
             Init.tutors = Init.getTutors().sort(function (a, b) {
                 return a.getName() - b.getName();
@@ -987,43 +1079,12 @@ var devPlan;
             return Init;
         };
 
-        Init.generateTypeaheadDatumsForGroups = function (groups) {
-            var data = [];
-            for (var i = 0; i < groups.length; i++) {
-                data[i] = {
-                    value: groups[i].getName(),
-                    tokens: groups[i].getName().replace(".", "").split(" "),
-                    id: groups[i].getId(),
-                    name: groups[i].getName()
-                };
-            }
-            ;
-            return data;
-        };
-
-        Init.generateTypeaheadDatumsForTutors = function (tutors) {
-            var data = [];
-            for (var i = 0; i < tutors.length; i++) {
-                data[i] = {
-                    value: tutors[i].getName(),
-                    tokens: tutors[i].getName().replace(".", "").split(" "),
-                    id: tutors[i].getId(),
-                    name: tutors[i].getName(),
-                    moodle_url: tutors[i].getMoodleUrl()
-                };
-            }
-            ;
-            return data;
-        };
-
         Init.showSearchResults = function (query) {
             if (typeof query === "undefined") { query = ""; }
             $("#search-results").empty();
             query = query.toString().toUpperCase();
-
             if (query.length >= 3) {
                 var data = '';
-
                 for (var i = 0; i < Init.getGroups().length; i++) {
                     if (Init.getGroups()[i].getName().toString().toUpperCase().indexOf(query) !== -1) {
                         data = data + '<li class="list-group-item">' + '<a href="timetable.html?timetable=g' + Init.getGroups()[i].getId() + '">' + Init.getGroups()[i].getName() + '</a>' + '</li>';
@@ -1044,6 +1105,7 @@ var devPlan;
                 console.log("Too short query");
             }
         };
+
         Init.showTimetable = function (timetable) {
             var data = "";
             var date = "";

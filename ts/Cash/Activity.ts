@@ -20,7 +20,7 @@ module Cash {
         state: number;
         tutor: Cash.Tutor;
     }
-    export class Activity implements Cash.ActivityInterface {
+    export class Activity {
         /**
          * 
          */
@@ -33,20 +33,20 @@ module Cash {
         ];
 
 
-        public category: string = "";
-        public date: string = "";
-        public day_of_week: string = "";
-        public ends_at: string = "";
-        public ends_at_timestamp: number = 0;
-        public group: Cash.Group = null;
-        public id: number = 0;
-        public name: string = "";
-        public notes: string = "";
-        public place: Cash.Place = null;
-        public starts_at: string = "";
-        public starts_at_timestamp: number = 0;
-        public state: number = 0;
-        public tutor: Cash.Tutor = null;
+        private category: string = "";
+        private date: string = "";
+        private day_of_week: string = "";
+        private ends_at: string = "";
+        private ends_at_timestamp: number = 0;
+        private group: Cash.Group = null;
+        private id: number = 0;
+        private name: string = "";
+        private notes: string = "";
+        private place: Cash.Place = null;
+        private starts_at: string = "";
+        private starts_at_timestamp: number = 0;
+        private state: number = 0;
+        private tutor: Cash.Tutor = null;
         /**
          * 
          */

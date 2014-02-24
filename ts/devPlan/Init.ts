@@ -14,6 +14,7 @@
 interface JQuery {
     typeahead(x: any): any;
 }
+
 module devPlan {
     /**
  * 
@@ -30,16 +31,16 @@ module devPlan {
         /**
          * Keeps list of groups from Cash service
          */
-        static groups: Cash.Group[] = [];
+        private static groups: Cash.Group[] = [];
 
         /**
          * Keeps list of tutors from Cash service
          */
-        static tutors: Cash.Tutor[] = [];
+        private static tutors: Cash.Tutor[] = [];
         /**
          * Keeps list of places from Cash service
          */
-        static places: Cash.Place[] = [];
+        private static places: Cash.Place[] = [];
         /**
          * 
          */
@@ -47,37 +48,25 @@ module devPlan {
         constructor() {
             $("#search-input").attr('value', Settings.getUrlParam('search'));
             Settings.load();
+
+            /**
+             * Check if GET['timetable'] exists
+             */
+            var params: Cash.Params;
             if (Settings.getUrlParam('timetable').length != 0) {
-                var params: Cash.Params = new Cash.Params();
-                var query = Settings.getUrlParam('timetable');
-                var timetable = query.match(/[gtp][0-9]*/gi);
-
-
-
-                for (var i = 0; i < timetable.length; i++) {
-                    if (timetable[i].toString().toLowerCase().indexOf("g") != -1) {
-                        params.addGroup(parseInt(timetable[i].slice(1).toString()));
-                    }
-
-                    if (timetable[i].toString().toLowerCase().indexOf("t") != -1) {
-                        params.addTutor(parseInt(timetable[i].slice(1).toString()));
-                    }
-                    //                if ( timetable[i].toString().toLowerCase().indexOf( "p" ) != -1 )
-                    //                {
-                    //                    param.place_id[param.place_id.length] = parseInt( timetable[i].slice( 1 ).toString() );
-                    //                }
-                }
-
-                console.log(params);
+                params = Cash.Params.fromString(Settings.getUrlParam('timetable'));
                 Settings.setTimetableParams(params);
-
-
+            } else {
+                params = Settings.getTimetableParams();
             }
-            params = Settings.getTimetableParams();
-            console.log(params);
 
-
-            if (params.toString() == new Cash.Params().toString()) {
+            /**
+             * Sprawdza czy istnieje jakikolwiek parametr do planu
+             */
+            if (params.isEmpty()) {
+                /**
+                 * Kręcące się kółko
+                 */
                 $("#timetable-panel-spinner-icon")
                     .empty()
                     .append('<button class="btn btn-primary"' +
@@ -85,36 +74,41 @@ module devPlan {
                     'Stwórz swój devPlan' +
                     '</button>');
 
-                //timetable-panel-spinner-icon
             } else {
-
-
-                $.when(Cash.Api.registerTimetable(params))
+                /**
+                 * Pobieranie planu zajęć
+                 */
+                $.when(Cash.Api.getTimetable(params))
                     .done((response: any) => {
-                        console.log("After call registerTimetable: " + new Date().getTime());
                         Init.showTimetable(Init.setTimetable(response).getTimetable());
                         $("#timetable-panel-spinner").remove();
-                    });
+                    }).fail(() => {
+                        $.when(Cash.Api.registerTimetable(params))
+                            .done((response: any) => {
+                                console.log(new Date().getTime() + "done");
+                                Init.showTimetable(Init.setTimetable(response).getTimetable());
 
+                                $("#timetable-panel-spinner").remove();
+                            }).fail(() => {
+                                console.log("Registration timetable failed");
+                            });
+                    });
             }
+
+            /**
+             * Zakładka szukaj
+             */
             if ($("#search-panel-input").length) {
                 $("#search-panel-input").attr('value', Settings.getUrlParam('search'));
             }
 
-            $.when(
-                Cash.Api.getGroupsList(),
-                Cash.Api.getTutorsList()
-            //            ,Cash.Api.getPlacesList()
-                ).done((groups: any, tutors: any
-                //            , places
-                    ) => {
 
-                    /*
-                     * Typeahead
-                     */
+            $.when(Cash.Api.getGroupsList(), Cash.Api.getTutorsList())
+                .done((groups: any, tutors: any) => {
+
                     Init.setGroups(groups[0]);
                     Init.setTutors(tutors[0]);
-                    //               Init.setPlaces( places[0] );
+
                     $("#search-input")
                         .removeAttr('disabled')
                         .attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn')
@@ -122,42 +116,49 @@ module devPlan {
 
                     var data: string[] = [];
                     for (var i = 0; i < Init.getGroups().length; i++) {
-                        data[data.length] = Init.getGroups()[i].getName();
+                        data.push(Init.getGroups()[i].getName());
                     }
                     for (i = 0; i < Init.getTutors().length; i++) {
-                        data[data.length] = Init.getTutors()[i].getName();
+                        data.push(Init.getTutors()[i].getName());
                     }
+                    
                     /**
                      * Navbar search
                      */
+                    $("#search-input").typeahead({
+                        source: data,
+                        items:15,
+                        updater: (item: any) => {
+                         
+                            
+                            window.location.replace('timetable.html?timetable=g' + Init.searchGroup(item));
+                        }
+                    });
 
-
-                    $("#search-input").typeahead({ source: data });
-
-
+                    /**
+                     * Add information about selected groups places and tutors
+                     */
                     Settings.loadTimetableParam();
                     /**
                      * 
                      */
                     $(".devPlanTypeahead").each((index) => {
-
                         $('#' + index + '.devPlanTypeahead').removeAttr('disabled')
                             .attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn')
                             .attr('data-provide', "typeahead");
 
                         $('#' + index + '.devPlanTypeahead').typeahead({
                             source: data,
-                            limit: 15,
+                            items: 15,
                             updater: (item: any) => {
                                 Settings.addTimetableParam(item);
+                                console.log("Selected: " + item);
                             }
                         });
                     });
 
-                    $("#search-button")
-                        .removeAttr("disabled")
-                        .empty()
-                        .append("Szukaj");
+                 
+                    
                     if ($("#search-panel-input").length) {
                         $("#search-panel-input")
                             .attr('value', Settings.getUrlParam('search'))
@@ -166,6 +167,8 @@ module devPlan {
                         $("#search-panel .panel-body").remove();
                         Init.showSearchResults(Settings.getUrlParam("search"));
                     }
+                }).fail(() => {
+                    console.log("Fail creating typeahead");
                 });
         }
         /**
@@ -177,16 +180,18 @@ module devPlan {
         /**
          *
          */
-        static setGroups(groups: Cash.GroupInterface[]): Init {
+        static setGroups(groups: Cash.Group[]= []): Init {
+
             for (var i = 0; i < groups.length; i++) {
-                Init.groups[Init.getGroups().length] = new Cash.Group(groups[i]);
+                Init.groups.push(new Cash.Group(groups[i]));
             }
             Init.groups = Init.getGroups().sort((a: any, b: any) => {return a.getName() - b.getName() });
             return Init;
         }
 
 
-        static searchGroup(name: string): number {
+
+        public static searchGroup(name: string): number {
             var id: number;
             var counter: number;
             var group: any;
@@ -198,30 +203,24 @@ module devPlan {
             }
             return counter > 1 ? 0 : id;
         }
-
-
-
-
         /**
          *
          */
         static getTutors(): Cash.Tutor[] {
             return Init.tutors;
         }
-
-
         /**
          *
          */
-        static setTutors(tutors: Cash.TutorInterface[]): Init {
+        static setTutors(tutors: Cash.Tutor[]= []): Init {
             for (var i = 0; i < tutors.length; i++) {
-                Init.tutors[Init.getTutors().length] = new Cash.Tutor(tutors[i]);
+                Init.tutors.push(new Cash.Tutor(tutors[i]));
             }
             Init.tutors = Init.getTutors().sort((a: any, b: any) => {return a.getName() - b.getName() });
             return Init;
         }
 
-        static searchTutor(name: string): number {
+        public static searchTutor(name: string): number {
             var id: number;
             var counter: number;
             var group: any;
@@ -233,100 +232,28 @@ module devPlan {
             }
             return counter > 1 ? 0 : id;
         }
-
-        //        /**
-        //         *
-        //         */
-        //        static getPlaces(): Cash.Place[] {
-        //            return Init.places;
-        //        }
-        //        /**
-        //         *
-        //         */
-        //        static setPlaces(places: Cash.Place[]): Init {
-        //            //        console.log(places);
-        //            //       Init.places = places.sort((a: any, b: any) => {return a.location - b.location });
-        //            //        return Init;
-        //            console.log(typeof places);
-        //            for (var i = 0; i < places.length; i++) {
-        //                Init.places[Init.getPlaces().length] = new Cash.Place(places[i]);
-        //            }
-        //
-        //            Init.places = Init.getPlaces().sort((a: any, b: any) => {return a.getLocation() - b.getLocation() });
-        //            return Init;
-        //        }
         /**
          *
          */
         static getTimetable(): Cash.Timetable {
-            //        console.log(Init.timetable);
             return Init.timetable;
         }
         /**
          *
          */
         static setTimetable(timetable: Cash.TimetableInterface) {
-
             Init.timetable = new Cash.Timetable(timetable);
             return Init;
         }
 
-
         /**
-         *
+         * 
          */
-        public static generateTypeaheadDatumsForGroups(groups: Cash.Group[]): DatumGroup[] {
-            var data: DatumGroup[] = [];
-            for (var i = 0; i < groups.length; i++) {
-                data[i] = {
-                    value: groups[i].getName(),
-                    tokens: groups[i].getName().replace(".", "").split(" "),
-                    id: groups[i].getId(),
-                    name: groups[i].getName()
-                };
-            };
-            return data;
-        }
-        /**
-         *
-         */
-        public static generateTypeaheadDatumsForTutors(tutors: Cash.Tutor[]): DatumTutor[] {
-            var data: DatumTutor[] = [];
-            for (var i = 0; i < tutors.length; i++) {
-                data[i] = {
-                    value: tutors[i].getName(),
-                    tokens: tutors[i].getName().replace(".", "").split(" "),
-                    id: tutors[i].getId(),
-                    name: tutors[i].getName(),
-                    moodle_url: tutors[i].getMoodleUrl()
-                };
-            };
-            return data;
-        }
-        //        /**
-        //         *
-        //         */
-        //        public static generateTypeaheadDatumsForPlaces(places: Cash.Place[]): DatumPlace[] {
-        //            var data: DatumPlace[] = [];
-        //            for (var i = 0; i < places.length; i++) {
-        //                data[i] = {
-        //                    value: places[i].getLocation(),
-        //                    tokens: places[i].getLocation().replace(".", "").split(" "),
-        //                    id: places[i].getId(),
-        //                    location: places[i].getLocation()
-        //                };
-        //            };
-        //            return data;
-        //        }
-
         static showSearchResults(query: string = ""): void {
             $("#search-results").empty();
             query = query.toString().toUpperCase();
-
             if (query.length >= 3) {
                 var data = '';
-
-
                 for (var i = 0; i < Init.getGroups().length; i++) {
                     if (Init.getGroups()[i].getName().toString().toUpperCase().indexOf(query) !== -1) {
                         data = data +
@@ -366,6 +293,9 @@ module devPlan {
                 console.log("Too short query");
             }
         }
+        /**
+         * 
+         */
         static showTimetable(timetable: Cash.Timetable): void {
             var data = "";
             var date = "";
@@ -380,7 +310,6 @@ module devPlan {
                 var j = 0;
                 for (var i = 0; i < timetable.getActivities().length; i++) {
                     activity = timetable.getActivities()[i];
-
                     /**
                      * zajęcia dla wielu grup - lista grup
                      */
@@ -398,11 +327,9 @@ module devPlan {
                      * 
                      */
                     var indexgroup = "";
-                    groups = groups.sort(
-                        (a: any, b: any): any => {
-                            return a.getName() >= b.getName();
-                        }
-                        );
+                    groups = groups.sort((a: any, b: any): any => {
+                        return a.getName() >= b.getName();
+                    });
 
                     for (var k = 0; k < groups.length; k++) {
                         indexgroup = indexgroup + groups[k].getName();

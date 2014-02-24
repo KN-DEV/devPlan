@@ -1215,12 +1215,12 @@ function sendIssue() {
     $.ajax({
         url: "http://devplan.uek.krakow.pl/devPlanAdmin/index.php/issue/create",
         type: "POST",
-        crossDomain: true,
+        dataType: 'json',
         data: {
-            email: $("#issueEmail").val(),
-            content: $("#issueContent").val(),
+            email: $("#issueEmail").val().toString(),
+            content: $("#issueContent").val().toString(),
             device: "Browser",
-            device_information: navigator
+            device_information: navigator.userAgent
         }
     });
 }

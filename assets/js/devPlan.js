@@ -533,9 +533,10 @@ var Cash;
         }
         Api.getGroupsList = function () {
             return $.ajax({
-                url: Cash.Api.host + "groups",
+                url: Cash.Api.host + "groups?_=" + new Date().getTime(),
                 type: "GET",
                 dataType: 'json',
+                cache: false,
                 success: function (data) {
                 },
                 error: function () {
@@ -545,9 +546,10 @@ var Cash;
 
         Api.getTutorsList = function () {
             return $.ajax({
-                url: Cash.Api.host + "tutors",
+                url: Cash.Api.host + "tutors?_=" + new Date().getTime(),
                 type: "GET",
                 dataType: 'json',
+                cache: false,
                 success: function (data) {
                 },
                 error: function () {
@@ -557,9 +559,10 @@ var Cash;
 
         Api.getPlacesList = function () {
             return $.ajax({
-                url: Cash.Api.host + "places",
+                url: Cash.Api.host + "places?_=" + new Date().getTime(),
                 type: "GET",
                 dataType: 'json',
+                cache: false,
                 success: function (data) {
                 },
                 error: function () {
@@ -572,6 +575,7 @@ var Cash;
                 url: Cash.Api.host + "timetables",
                 type: "POST",
                 dataType: 'json',
+                cache: false,
                 data: {
                     group_id: timetableParams.getGroups(),
                     tutor_id: timetableParams.getTutors(),
@@ -586,9 +590,10 @@ var Cash;
 
         Api.getTimetable = function (params) {
             return $.ajax({
-                url: Cash.Api.host + "timetables/" + params.toString(),
+                url: Cash.Api.host + "timetables/" + params.toString() + "?_=" + new Date().getTime(),
                 type: "GET",
                 dataType: 'json',
+                cache: false,
                 success: function (data) {
                 },
                 error: function () {

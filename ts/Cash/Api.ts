@@ -16,9 +16,10 @@ module Cash {
          */
         public static getGroupsList(): JQueryXHR {
             return $.ajax({
-                url: Cash.Api.host + "groups",
+                url: Cash.Api.host + "groups?_=" + new Date().getTime(),
                 type: "GET",
                 dataType: 'json',
+                cache: false,
                 success: (data) => {
                 },
                 error: () => {
@@ -30,9 +31,10 @@ module Cash {
          */
         public static getTutorsList(): JQueryXHR {
             return $.ajax({
-                url: Cash.Api.host + "tutors",
+                url: Cash.Api.host + "tutors?_=" + new Date().getTime(),
                 type: "GET",
                 dataType: 'json',
+                cache: false,
                 success: (data) => {
                 },
                 error: () => {
@@ -44,9 +46,10 @@ module Cash {
         */
         public static getPlacesList(): JQueryXHR {
             return $.ajax({
-                url: Cash.Api.host + "places",
+                url: Cash.Api.host + "places?_=" + new Date().getTime(),
                 type: "GET",
                 dataType: 'json',
+                cache: false,
                 success: (data) => {
                 },
                 error: () => {
@@ -58,9 +61,11 @@ module Cash {
          */
         public static registerTimetable(timetableParams: Cash.Params): JQueryXHR {
             return $.ajax({
+
                 url: Cash.Api.host + "timetables",
                 type: "POST",
                 dataType: 'json',
+                cache: false,
                 data: {
                     group_id: timetableParams.getGroups(),
                     tutor_id: timetableParams.getTutors(),
@@ -77,9 +82,10 @@ module Cash {
          */
         public static getTimetable(params: Cash.Params): JQueryXHR {
             return $.ajax({
-                url: Cash.Api.host + "timetables/" + params.toString(),
+                url: Cash.Api.host + "timetables/" + params.toString() + "?_=" + new Date().getTime(),
                 type: "GET",
                 dataType: 'json',
+                cache: false,
                 success: (data: any) => {
                 },
                 error: () => {

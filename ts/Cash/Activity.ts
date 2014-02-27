@@ -1,29 +1,136 @@
-/// <reference path="Group.ts" />
-/// <reference path="Tutor.ts" />
-/// <reference path="Place.ts" />
-
+/// <reference path="./Group.ts" />
+/// <reference path="./Tutor.ts" />
+/// <reference path="./Place.ts" />m
+/**
+ * 
+ */
 module Cash {
-    export interface ActivityInterface {
 
+    export interface ActivityInterface {
+        /**
+         *
+         */
         category: string;
+        /**
+         *
+         */
         date: string;
+        /**
+         *
+         */
         day_of_week: string;
+        /**
+         *
+         */
         ends_at: string;
+        /**
+         *
+         */
         ends_at_timestamp: number;
-        group: Cash.Group;
+        /**
+         *
+         */
+        group: Cash.GroupInterface;
+        /**
+         *
+         */
         id: number;
+        /**
+         *
+         */
         name: string;
+        /**
+         *
+         */
         notes: string;
-        place: Cash.Place;
+        /**
+         *
+         */
+        place: Cash.PlaceInterface;
+        /**
+         *
+         */
         starts_at: string;
+        /**
+         *
+         */
         starts_at_timestamp: number;
+        /**
+         *
+         */
         state: number;
-        tutor: Cash.Tutor;
+        /**
+         *
+         */
+        tutor: Cash.TutorInterface;
+        /**
+        *
+        */
+        alarms: string[];
     }
+    /**
+     * 
+     */
     export class Activity {
         /**
          * 
          */
+        private category: string = "";
+        /**
+         * 
+         */
+        private date: string = "";
+        /**
+         * 
+         */
+        private day_of_week: string = "";
+        /**
+         * 
+         */
+        private ends_at: string = "";
+        /**
+         * 
+         */
+        private ends_at_timestamp: number = 0;
+        /**
+         * 
+         */
+        private group: Cash.Group = new Cash.Group();
+        /**
+         * 
+         */
+        private id: number = 0;
+        /**
+         * 
+         */
+        private name: string = "";
+        /**
+         * 
+         */
+        private notes: string = "";
+        /**
+         * 
+         */
+        private place: Cash.Place = new Cash.Place();
+        /**
+         * 
+         */
+        private starts_at: string = "";
+        /**
+         * 
+         */
+        private starts_at_timestamp: number = 0;
+        /**
+         * 
+         */
+        private state: number = 0;
+        /**
+         * 
+         */
+        private tutor: Cash.Tutor = new Cash.Tutor();
+        /**
+        * 
+        */
         public static alarms = [
             "07:50", "08:35", "08:45", "09:30", "09:35", "10:20",
             "10:30", "11:15", "11:20", "12:05", "12:15", "13:00",
@@ -33,39 +140,12 @@ module Cash {
         ];
 
 
-        private category: string = "";
-        private date: string = "";
-        private day_of_week: string = "";
-        private ends_at: string = "";
-        private ends_at_timestamp: number = 0;
-        private group: Cash.Group = null;
-        private id: number = 0;
-        private name: string = "";
-        private notes: string = "";
-        private place: Cash.Place = null;
-        private starts_at: string = "";
-        private starts_at_timestamp: number = 0;
-        private state: number = 0;
-        private tutor: Cash.Tutor = null;
+
+
         /**
          * 
          */
-        constructor(object: Cash.ActivityInterface = {
-            category: "",
-            date: "",
-            day_of_week: "",
-            ends_at: "",
-            ends_at_timestamp: 0,
-            group: null,
-            id: 0,
-            name: "",
-            notes: "",
-            place: null,
-            starts_at: "",
-            starts_at_timestamp: 0,
-            state: 0,
-            tutor: null
-        }) {
+        constructor(object: Cash.ActivityInterface) {
             this.setCategory(object.category);
             this.setDate(object.date);
             this.setDayOfWeek(object.day_of_week);
@@ -81,7 +161,6 @@ module Cash {
             this.setState(object.state);
             this.setTutor(object.tutor);
         }
-
         /**
          * 
          */
@@ -267,7 +346,7 @@ module Cash {
          * Returns number of school lessons
          */
         public getNumberOfSchoolLessons(): number {
-            var counter = 0;
+            var counter: number = 0;
             for (var i = 0; i <= Cash.Activity.alarms.length; i++) {
                 if (Cash.Activity.alarms[i] == this.getStartsAt()) {
                     for (var j = i; j <= Cash.Activity.alarms.length; j++) {
@@ -278,7 +357,11 @@ module Cash {
                     break;
                 }
             }
-            return counter / 2;
+            return (counter / 2);
+        }
+
+        public static generateHash(activity: Cash.Activity): string {
+            return activity.getGroup().getId() + '-' + activity.getName() + '-' + activity.getCategory() + '-' + activity.getTutor().getId();
         }
     }
 }

@@ -277,13 +277,13 @@ module devPlan {
                 activityNameFilter: ''
             };
             $.cookie.json = true;
-            $.cookie('devPlan.Settings', data,{expires:1000});
+            $.cookie('devPlan.Settings', data, { expires: 1000 });
             return Settings;
         }
 
         static saveTimetable(): Settings {
             $.cookie.json = true;
-            $.cookie('devPlan.Params', Settings.getTimetableParams(),{expires:180});
+            $.cookie('devPlan.Params', Settings.getTimetableParams(), { expires: 180 });
             return Settings;
         }
         /**
@@ -310,18 +310,25 @@ module devPlan {
          * 
          */
         static addTimetableParam(item: string) {
-            var g = Init.searchGroup(item);
-            var t = Init.searchTutor(item);
-            if (g > 0 && t == null) {
-                $("#devPlanParams").append('<button id="g' + g + '" class="devPlanParam btn btn-xs btn-info" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + g + '" type="g">' + item + '' +
+            var g = Init.searchGroupId(item);
+            var t = Init.searchTutorId(item);
+            var p = Init.searchPlaceId(item);
+            if (g > 0 && t == 0 && p == 0) {
+                $("#devPlanParams").append('<button id="g' + g + '" class="devPlanParam btn btn-xs btn-primary" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + g + '" type="g">' + item + '' +
                     '</button><wbr> ');
                 Settings.setTimetableParams(Settings.getTimetableParams().addGroup(g))
             }
-            if (t > 0 && g == null) {
+            if (g == 0 && t > 0 && p == 0) {
                 $("#devPlanParams").append('<button id="t' + t + '" class="devPlanParam btn btn-xs btn-success" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + t + '" type="t">' + item + '' +
                     '</button><wbr> ');
                 Settings.setTimetableParams(Settings.getTimetableParams().addTutor(t));
             }
+            if (g == 0 && t == 0 && p > 0) {
+                $("#devPlanParams").append('<button id="t' + t + '" class="devPlanParam btn btn-xs btn-info" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + t + '" type="p">' + item + '' +
+                    '</button><wbr> ');
+                Settings.setTimetableParams(Settings.getTimetableParams().addPlace(p));
+            }
+            console.log("Added param", item);
 
         }
         static removeTimetableParam(item: JQuery) {
@@ -334,11 +341,6 @@ module devPlan {
             }
             item.remove();
         }
-        static setDevPlan(): void {
 
-            $(".devPlanTypeahead").each((index) => {
-
-            });
-        }
     }
 }

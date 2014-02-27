@@ -1,5 +1,15 @@
 module Cash {
-    export interface TutorInterface extends Cash.GroupInterface {
+
+
+    /**
+     * Model of Tutor data
+     */
+    export interface TutorInterface {
+        /**
+         * 
+         */
+        id: number;
+        name: string;
         moodle_url: string;
     }
     /**
@@ -16,8 +26,7 @@ module Cash {
         /**
          * 
          */
-        constructor(object: Cash.TutorInterface = { id: 0, name: "", moodle_url: "" }) {
-
+        constructor(object = { id: 0, name: "", moodle_url: "" }) {
             this.setId((object.id == null) ? 0 : object.id);
             this.setName((object.name == null) ? "" : object.name);
             this.setMoodleUrl((object.moodle_url == null) ? "" : object.moodle_url);

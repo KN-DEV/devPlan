@@ -20,7 +20,7 @@ module devPlan {
  * 
  */
     export class ActivityHourCounter {
-        hour: number = 0;
+        hour: number = 1;
         counter: number = 0;
     }
     /**
@@ -49,50 +49,55 @@ module devPlan {
             $("#search-input").attr('value', Settings.getUrlParam('search'));
             Settings.load();
 
-            /**
-             * Check if GET['timetable'] exists
-             */
-            var params: Cash.Params;
-            if (Settings.getUrlParam('timetable').length != 0) {
-                params = Cash.Params.fromString(Settings.getUrlParam('timetable'));
-                Settings.setTimetableParams(params);
-            } else {
-                params = Settings.getTimetableParams();
-            }
-
-            /**
-             * Sprawdza czy istnieje jakikolwiek parametr do planu
-             */
-            if (params.isEmpty()) {
+            if ($("#timetable-results").length == 1) {
                 /**
-                 * Kręcące się kółko
+                 * Check if GET['timetable'] exists
                  */
-                $("#timetable-panel-spinner-icon")
-                    .empty()
-                    .append('<button class="btn btn-primary"' +
-                    'data-toggle="modal" data-target="#myModal">' +
-                    'Stwórz swój devPlan' +
-                    '</button>');
+                var params: Cash.Params;
+                if (Settings.getUrlParam('timetable').length != 0) {
+                    params = Cash.Params.fromString(Settings.getUrlParam('timetable'));
+                    Settings.setTimetableParams(params);
+                } else {
+                    params = Settings.getTimetableParams();
+                }
 
-            } else {
                 /**
-                 * Pobieranie planu zajęć
-                 */
-                $.when(Cash.Api.getTimetable(params))
-                    .done((response: any) => {
-                        Init.showTimetable(Init.setTimetable(response).getTimetable());
-                        $("#timetable-panel-spinner").remove();
-                    }).fail(() => {
-                        $.when(Cash.Api.registerTimetable(params))
-                            .done((response: any) => {
-                                console.log(new Date().getTime() + "done");
-                                Init.showTimetable(Init.setTimetable(response).getTimetable());
+                 * Sprawdza czy istnieje jakikolwiek parametr do planu
+                    */
+                if (params.isEmpty() == true) {
+                    /**
+                     * Kręcące się kółko
+                     */
+                    $("#timetable-panel-spinner-icon")
+                        .empty()
+                        .append('<button class="btn btn-primary"' +
+                        'data-toggle="modal" data-target="#myModal">' +
+                        'Stwórz swój devPlan' +
+                        '</button>');
 
-                                $("#timetable-panel-spinner").remove();
-                            }).fail(() => {
-                                console.log("Registration timetable failed");
-                            });
-                    });
+                } else {
+                    $.when(Cash.Api.getTimetable(params))
+                        .done((response: any) => {
+                            Init.showTimetable(Init.setTimetable(response).getTimetable());
+                            $("#timetable-panel-spinner").remove();
+                        }).fail(() => {
+                            console.log("Pobranie planu zakończone niepowodzeniem.");
+                            $.when(Cash.Api.registerTimetable(params))
+                                .done((response: any) => {
+                                    console.log("Rejestracja planu zkończona powodzeniem.");
+                                    $.when(Cash.Api.getTimetable(params))
+                                        .done((response: any) => {
+                                            Init.showTimetable(Init.setTimetable(response).getTimetable());
+                                            $("#timetable-panel-spinner").remove();
+                                            console.log("Pobieranie planu po rejestracji zakończone powodzeniem.");
+                                        }).fail(() => {
+                                            console.log("Pobieranie planu po rejestracji zakończone niepowodzeniem.");
+                                        });
+                                }).fail(() => {
+                                    console.log("Rejestracja planu nie powiodła się");
+                                });
+                        });
+                }
             }
 
             /**
@@ -103,17 +108,21 @@ module devPlan {
             }
 
 
-            $.when(Cash.Api.getGroupsList(), Cash.Api.getTutorsList())
-                .done((groups: any, tutors: any) => {
+            $.when(Cash.Api.getGroupsList(), Cash.Api.getTutorsList(), Cash.Api.getPlacesList())
+                .done((groups: any, tutors: any, places: any) => {
 
                     Init.setGroups(groups[0]);
                     Init.setTutors(tutors[0]);
+                    Init.setPlaces(places[0]);
 
                     $("#search-input")
                         .removeAttr('disabled')
                         .attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn')
                         .attr('data-provide', "typeahead");
 
+                    /**
+                     *Tablica nazw dla typeahead
+                     */
                     var data: string[] = [];
                     for (var i = 0; i < Init.getGroups().length; i++) {
                         data.push(Init.getGroups()[i].getName());
@@ -121,6 +130,9 @@ module devPlan {
                     for (i = 0; i < Init.getTutors().length; i++) {
                         data.push(Init.getTutors()[i].getName());
                     }
+                    //                    for (i = 0; i < Init.getPlaces().length; i++) {
+                    //                        data.push(Init.getPlaces()[i].getLocation());
+                    //                    }
 
                     /**
                      * Navbar search
@@ -130,8 +142,23 @@ module devPlan {
                         items: 15,
                         updater: (item: any) => {
 
+                            var group: number = Init.searchGroupId(item);
+                            var tutor: number = Init.searchTutorId(item);
+                            var place: number = Init.searchPlaceId(item);
+                            console.log("navbar search", item, Init.searchGroupId(item), 'timetable.html?timetable=g' + group);
+                            console.log("navbar search", item, Init.searchTutorId(item), 'timetable.html?timetable=t' + tutor);
+                            console.log("navbar search", item, Init.searchPlaceId(item), 'timetable.html?timetable=p' + place);
 
-                            window.location.replace('timetable.html?timetable=g' + Init.searchGroup(item));
+                            if (group > 0 && tutor == 0 && place == 0) {
+                                window.location.replace('timetable.html?timetable=g' + group);
+                            }
+                            if (group == 0 && tutor > 0 && place == 0) {
+                                window.location.replace('timetable.html?timetable=t' + tutor);
+                            }
+                            if (group == 0 && tutor == 0 && place > 0) {
+                                window.location.replace('timetable.html?timetable=p' + place);
+                            }
+                            console.log("navbar search error", item);
                         }
                     });
 
@@ -156,8 +183,6 @@ module devPlan {
                             }
                         });
                     });
-
-
 
                     if ($("#search-panel-input").length) {
                         $("#search-panel-input")
@@ -191,17 +216,18 @@ module devPlan {
 
 
 
-        public static searchGroup(name: string): number {
+        public static searchGroupId(name: string): number {
             var id: number;
-            var counter: number;
-            var group: any;
+            var found: boolean = false;
+            console.log(name);
             for (var i = 0; i < Init.getGroups().length; i++) {
-                if (Init.getGroups()[i].getName().toLocaleLowerCase() == name.toLowerCase()) {
+                if (Init.getGroups()[i].getName().toString() == name.toString()) {
                     id = Init.getGroups()[i].getId();
-                    counter++;
+                    found = true;
+                    break;
                 }
             }
-            return counter > 1 ? 0 : id;
+            return found ? id : 0;
         }
         /**
          *
@@ -219,18 +245,55 @@ module devPlan {
             Init.tutors = Init.getTutors().sort((a: any, b: any) => {return a.getName() - b.getName() });
             return Init;
         }
-
-        public static searchTutor(name: string): number {
+        /**
+         *
+         */
+        public static searchTutorId(name: string): number {
             var id: number;
-            var counter: number;
-            var group: any;
+            var found: boolean = false;
+            console.log(name);
             for (var i = 0; i < Init.getTutors().length; i++) {
-                if (Init.getTutors()[i].getName().toLocaleLowerCase() == name.toLowerCase()) {
+                if (Init.getTutors()[i].getName().toUpperCase().toString() == name.toUpperCase().toString()) {
                     id = Init.getTutors()[i].getId();
-                    counter++;
+                    found = true;
+                    break;
                 }
             }
-            return counter > 1 ? 0 : id;
+            return found ? id : 0;
+        }
+
+        /**
+        *
+        */
+        static getPlaces(): Cash.Place[] {
+            return Init.places;
+        }
+        /**
+         *
+         */
+        static setPlaces(tutors: Cash.PlaceInterface[]= []): Init {
+            for (var i = 0; i < tutors.length; i++) {
+                Init.places.push(new Cash.Place(tutors[i]));
+            }
+            Init.places = Init.getPlaces().sort((a: any, b: any) => {return a.getLocation() - b.getLocation() });
+            return Init;
+        }
+
+        /**
+         *
+         */
+        public static searchPlaceId(name: string): number {
+            var id: number;
+            var found: boolean = false;
+            console.log(name);
+            for (var i = 0; i < Init.getPlaces().length; i++) {
+                if (Init.getPlaces()[i].getLocation().toUpperCase().toString() == name.toUpperCase().toString()) {
+                    id = Init.getPlaces()[i].getId();
+                    found = true;
+                    break;
+                }
+            }
+            return found ? id : 0;
         }
         /**
          *
@@ -247,7 +310,7 @@ module devPlan {
         }
 
         /**
-         * 
+         *
          */
         static showSearchResults(query: string = ""): void {
             $("#search-results").empty();
@@ -271,19 +334,16 @@ module devPlan {
                         '<a href="' + Init.getTutors()[i].getMoodleUrl() + '" title="Wizytówka E-Uczelnia"><i class="fa fa-globe fa-fw"></i></a>' +
                         '</span>' +
                         '</li>';
-
                     }
                 }
-                //            for ( var i = 0; i <Init.getPlaces().length; i++ )
-                //            {
-                //                if (Init.Init.getPlaces()[i].location.toString().toUpperCase().indexOf( query ) !== -1 )
-                //                {
-                //                    data = data +
-                //                    '<li class="list-group-item">' +
-                //                    '<a href="timetable.html?timetable=p' +Init.getPlaces()[i].id + '">' +Init.getPlaces()[i].location + '</a>' +
-                //                    '</li>';
-                //                }
-                //            }
+                for (var i = 0; i < Init.getPlaces().length; i++) {
+                    if (Init.getPlaces()[i].getLocation().toString().toUpperCase().indexOf(query) !== -1) {
+                        data = data +
+                        '<li class="list-group-item">' +
+                        '<a href="timetable.html?timetable=p' + Init.getPlaces()[i].getId() + '">' + Init.getPlaces()[i].getLocation() + '</a>' +
+                        '</li>';
+                    }
+                }
                 $("#search-panel-body").attr("display", "none");
                 if (data.length == 0) {
                     data = "<tr><td class='text-center'>Brak wyników. Spróbuj jeszcze raz ;)</td</td>";
@@ -294,7 +354,7 @@ module devPlan {
             }
         }
         /**
-         * 
+         *
          */
         static showTimetable(timetable: Cash.Timetable): void {
             var data = "";
@@ -327,40 +387,23 @@ module devPlan {
                      * 
                      */
                     var indexgroup = "";
-                    groups = groups.sort((a: any, b: any): any => {
-                        return a.getName() >= b.getName();
-                    });
-
+                    groups = groups.sort((a: any, b: any): any => { return a.getName() >= b.getName(); });
                     for (var k = 0; k < groups.length; k++) {
                         indexgroup = indexgroup + groups[k].getName();
                     }
-
-                    activityCounterIndex = indexgroup + '-' + activity.getName() + '-' +
-                    activity.getCategory() + '-' + (activity.getTutor() != null ? activity.getTutor().getId() + '' : '');
-
-                    if (activityCounter[activityCounterIndex] == undefined) {
-                        activityCounter[activityCounterIndex] = new ActivityHourCounter();
-                    }
-
-                    if (
-                        activity.getDate() >= Settings.getCurrentDate()
-                        || Settings.getTimetableType() == 0) {
-
-
-                        if (                            //(activity.getName().length == 0) ||
-                            (activity.getName().toLowerCase().indexOf(Settings.getActivityNameFilter().toLowerCase()) > -1) ||
-                            // (activity.getCategory().toLowerCase().indexOf(Settings.getActivityNameFilter().toLowerCase()) > -1) ||
+                    if (activity.getDate() >= Settings.getCurrentDate() || Settings.getTimetableType() == 0) {
+                        if ((activity.getName().toLowerCase().indexOf(Settings.getActivityNameFilter().toLowerCase()) > -1) ||
                             (activity.getTutor().getName().toLowerCase().indexOf(Settings.getActivityNameFilter().toLowerCase()) > -1) ||
                             (indexgroup.toLowerCase().indexOf(Settings.getActivityNameFilter().toLowerCase()) > -1) ||
-                            (activity.getDate().indexOf(Settings.getActivityNameFilter().toLowerCase()) > -1)
-                            ) {
-
+                            (activity.getDate().indexOf(Settings.getActivityNameFilter().toLowerCase()) > -1)) {
                             if (date != activity.getDate()) {
-                                data = data + Generate.dateInformation(activity);
+                                if (date != "") {
+                                    data = data + '</div>';
+                                }
+                                data = data + Generate.dateInformation(activity) +
+                                '<div id="' + activity.getDate() + '" class="activities collapse in">';
                                 date = activity.getDate();
                             }
-                            date = activity.getDate();
-
                             /**
                              * zajęcia dla wielu grup - opuszcza kolejne
                              */
@@ -369,51 +412,33 @@ module devPlan {
                                 activity.getEndsAtTimestamp() == timetable.getActivities()[i - 1].getEndsAtTimestamp()) {
                                 continue;
                             }
-
-                            ++activityCounter[activityCounterIndex].counter;
-                            activityCounter[activityCounterIndex].hour += activity.getNumberOfSchoolLessons();
-
                             data = data +
                             '<li id="activity-' + i + '" class="list-group-item activity">' +
                             '<p class="h5">' +
-                            Generate.nameInformation(timetable.getActivities()[i]) + '<wbr>' +
+                            Generate.nameInformation(timetable.getActivities()[i]) +
                             Generate.tutorInformation(timetable.getActivities()[i]);
                             '</p>';
-
                             if (Settings.getActivityNote() && activity.getNotes() != null) {
                                 data = data + '<p class="h6">' +
                                 Generate.noteInformation(timetable.getActivities()[i]) +
                                 '</p><div class="clearfix"></div>';
                             }
                             if (Settings.getActivityBell() ||
-                                Settings.getActivityLocation() ||
-                                Settings.getActivityCategory() ||
-                                Settings.getClassCounter() ||
-                                Settings.getClassHourCounter()) {
-                                data = data + '<p class="h6">' +
-
-                                Generate.bellInformation(timetable.getActivities()[i]) + '<wbr>' +
-                                Generate.locationInformation(timetable.getActivities()[i]) + '<wbr>' +
-                                Generate.categoryInformation(timetable.getActivities()[i]) + '<wbr>';
-
-
-
-                                if (Settings.getClassCounter()) {
-                                    data = data + '<span class="label label-info pull-right" title="Zajęcia z koleji: ' + activityCounter[activityCounterIndex].counter + '"><i class="fa fa-fw fa-info-circle"></i>' + activityCounter[activityCounterIndex].counter + '</span><wbr>';
-                                }
-
-                                if (Settings.getClassHourCounter()) {
-                                    data = data + '<span class="label label-default pull-right" title="Ilość jednostek lekcyjnych:"><i class="fa fa-fw fa-clock-o"></i>' +
-                                    (activityCounter[activityCounterIndex].hour - activity.getNumberOfSchoolLessons()) + " - " + activityCounter[activityCounterIndex].hour +
-                                    '</span> ';
-                                }
+                                Settings.getActivityLocation() || Settings.getActivityCategory() ||
+                                Settings.getClassCounter() || Settings.getClassHourCounter()) {
+                                //
+                                data = data + '<p class="h6">' + Generate.bellInformation(timetable.getActivities()[i]) +
+                                Generate.locationInformation(timetable.getActivities()[i]) +
+                                Generate.categoryInformation(timetable.getActivities()[i]) +
+                                Generate.activityCounter(timetable.getPositionOfActivity(activity), timetable.getMaxNumberOfOccurencesOfActivity(activity)) +
+                                Generate.hourInformation( activity.getNumberOfSchoolLessons(),timetable.sumAllHoursOfActivity(activity),timetable.sumAllHoursOfActivity(activity,true));
                                 data = data + '</p><div class="clearfix"></div>';
                             }
                             if (Settings.getActivityGroup()) {
                                 data = data + '<p class="h6">';
                                 for (var j = 0; j < groups.length; j++) {
                                     if (groups[j] != null) {
-                                        data = data + '<a href="timetable.html?timetable=g' + groups[j].getId() + '" title="Plan zajęć dla ' + groups[j].getName() + '">' + groups[j].getName() + "</a>" + '<wbr>';
+                                        data = data + '<a href="timetable.html?timetable=g' + groups[j].getId() + '" title="Kliknij aby zobaczyć devPlan: ' + groups[j].getName() + '">' + groups[j].getName() + "</a>" + '<wbr>';
                                         if (j < (groups.length - 1)) {
                                             data = data + ' | ';
                                         }
@@ -435,10 +460,10 @@ module devPlan {
             $("#timetable-results").append(data);
         }
     }
-
 }
-
-
+/**
+ * 
+ */
 function sendIssue() {
     $.ajax({
         url: "http://devplan.uek.krakow.pl/devPlanAdmin/index.php/issue/create",
@@ -452,5 +477,3 @@ function sendIssue() {
         }
     });
 }
-
-

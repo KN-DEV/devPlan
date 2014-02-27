@@ -41,8 +41,6 @@ module Cash {
          */
         public setLocation(location: string): void {
             this.location = location;
-
         }
-
     }
 }

@@ -16,13 +16,15 @@ module Cash {
          */
         public static getGroupsList(): JQueryXHR {
             return $.ajax({
-                url: Cash.Api.host + "groups?_=" + new Date().getTime(),
+                url: Cash.Api.host + "groups",
                 type: "GET",
                 dataType: 'json',
                 cache: false,
                 success: (data) => {
+                    console.log("Cash.Api.getGroupsLis() - success", data);
                 },
                 error: () => {
+                    console.log("Cash.Api.getGroupsLis() - error");
                 }
             });
         }
@@ -31,13 +33,15 @@ module Cash {
          */
         public static getTutorsList(): JQueryXHR {
             return $.ajax({
-                url: Cash.Api.host + "tutors?_=" + new Date().getTime(),
+                url: Cash.Api.host + "tutors",
                 type: "GET",
                 dataType: 'json',
                 cache: false,
                 success: (data) => {
+                    console.log("Cash.Api.getTutorsList() - success", data);
                 },
                 error: () => {
+                    console.log("Cash.Api.getTutorsList() - error");
                 }
             });
         }
@@ -46,34 +50,37 @@ module Cash {
         */
         public static getPlacesList(): JQueryXHR {
             return $.ajax({
-                url: Cash.Api.host + "places?_=" + new Date().getTime(),
+                url: Cash.Api.host + "places",
                 type: "GET",
                 dataType: 'json',
                 cache: false,
                 success: (data) => {
+                    console.log("Cash.Api.getPlacesList() - success", data);
                 },
                 error: () => {
+                    console.log("Cash.Api.getPlacesList() - error");
                 }
             });
         }
         /**
          * Registers timetable
          */
-        public static registerTimetable(timetableParams: Cash.Params): JQueryXHR {
+        public static registerTimetable(params: Cash.Params): JQueryXHR {
             return $.ajax({
-
                 url: Cash.Api.host + "timetables",
                 type: "POST",
                 dataType: 'json',
-                cache: false,
+                // cache: false,
                 data: {
-                    group_id: timetableParams.getGroups(),
-                    tutor_id: timetableParams.getTutors(),
-                    place_id: timetableParams.getPlaces()
+                    group_id: params.getGroups(),
+                    tutor_id: params.getTutors(),
+                    place_id: params.getPlaces()
                 },
                 success: (data: any) => {
+                    console.log("Cash.Api.registerTimetable() - success", params, data);
                 },
                 error: () => {
+                    console.log("Cash.Api.registerTimetable() - error", params);
                 }
             });
         }
@@ -82,13 +89,15 @@ module Cash {
          */
         public static getTimetable(params: Cash.Params): JQueryXHR {
             return $.ajax({
-                url: Cash.Api.host + "timetables/" + params.toString() + "?_=" + new Date().getTime(),
+                url: Cash.Api.host + "timetables/" + params.toString(),
                 type: "GET",
                 dataType: 'json',
-                cache: false,
+                // cache: false,
                 success: (data: any) => {
+                    console.log("Cash.Api.getTimetable() - success", params.toString(), data);
                 },
                 error: () => {
+                    console.log("Cash.Api.getTimetable() - error", params);
                 }
             });
         }

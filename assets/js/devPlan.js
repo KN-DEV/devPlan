@@ -33,6 +33,8 @@ var Cash;
 })(Cash || (Cash = {}));
 var Cash;
 (function (Cash) {
+    
+
     var Tutor = (function () {
         function Tutor(object) {
             if (typeof object === "undefined") { object = { id: 0, name: "", moodle_url: "" }; }
@@ -105,36 +107,20 @@ var Cash;
 (function (Cash) {
     var Activity = (function () {
         function Activity(object) {
-            if (typeof object === "undefined") { object = {
-                category: "",
-                date: "",
-                day_of_week: "",
-                ends_at: "",
-                ends_at_timestamp: 0,
-                group: null,
-                id: 0,
-                name: "",
-                notes: "",
-                place: null,
-                starts_at: "",
-                starts_at_timestamp: 0,
-                state: 0,
-                tutor: null
-            }; }
             this.category = "";
             this.date = "";
             this.day_of_week = "";
             this.ends_at = "";
             this.ends_at_timestamp = 0;
-            this.group = null;
+            this.group = new Cash.Group();
             this.id = 0;
             this.name = "";
             this.notes = "";
-            this.place = null;
+            this.place = new Cash.Place();
             this.starts_at = "";
             this.starts_at_timestamp = 0;
             this.state = 0;
-            this.tutor = null;
+            this.tutor = new Cash.Tutor();
             this.setCategory(object.category);
             this.setDate(object.date);
             this.setDayOfWeek(object.day_of_week);
@@ -278,7 +264,11 @@ var Cash;
                     break;
                 }
             }
-            return counter / 2;
+            return (counter / 2);
+        };
+
+        Activity.generateHash = function (activity) {
+            return activity.getGroup().getId() + '-' + activity.getName() + '-' + activity.getCategory() + '-' + activity.getTutor().getId();
         };
         Activity.alarms = [
             "07:50", "08:35", "08:45", "09:30", "09:35", "10:20",
@@ -468,62 +458,156 @@ var Cash;
     })();
     Cash.Params = Params;
 })(Cash || (Cash = {}));
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
 var Cash;
 (function (Cash) {
-    
-
-    var Timetable = (function () {
-        function Timetable(object) {
-            if (typeof object === "undefined") { object = { _id: "", access_url: "", params: new Cash.Params(), activities: [] }; }
-            this._id = "";
+    var RegisteredTimetable = (function () {
+        function RegisteredTimetable(object) {
+            if (typeof object === "undefined") { object = { id: "", access_url: "", params: new Cash.Params() }; }
+            this.id = "";
             this.access_url = "";
             this.params = new Cash.Params();
-            this.activities = [];
-            this.resource_versions = [];
-            this.setId(object._id);
+            this.setId(object.id);
             this.setAccessUrl(object.access_url);
             this.setParams(object.params);
-            this.setActivities(object.activities);
         }
-        Timetable.prototype.getId = function () {
-            return this._id;
+        RegisteredTimetable.prototype.getId = function () {
+            return this.id;
         };
 
-        Timetable.prototype.setId = function (id) {
-            this._id = id;
+        RegisteredTimetable.prototype.setId = function (id) {
+            this.id = id;
         };
 
-        Timetable.prototype.getAccessUrl = function () {
+        RegisteredTimetable.prototype.getAccessUrl = function () {
             return this.access_url;
         };
 
-        Timetable.prototype.setAccessUrl = function (access_url) {
+        RegisteredTimetable.prototype.setAccessUrl = function (access_url) {
             this.access_url = access_url;
         };
 
-        Timetable.prototype.getParams = function () {
+        RegisteredTimetable.prototype.getParams = function () {
             return this.params;
         };
 
-        Timetable.prototype.setParams = function (params) {
+        RegisteredTimetable.prototype.setParams = function (params) {
             this.params = params;
         };
+        return RegisteredTimetable;
+    })();
+    Cash.RegisteredTimetable = RegisteredTimetable;
 
+    var ActivityInfo = (function () {
+        function ActivityInfo(id, numberOfHours) {
+            if (typeof numberOfHours === "undefined") { numberOfHours = 0; }
+            this.setId(id);
+            this.setNumberOfHours(numberOfHours);
+        }
+        ActivityInfo.prototype.getId = function () {
+            return this.id;
+        };
+
+        ActivityInfo.prototype.setId = function (id) {
+            this.id = id;
+            return this;
+        };
+
+        ActivityInfo.prototype.getNumberOfHours = function () {
+            return this.numberOfHours;
+        };
+
+        ActivityInfo.prototype.setNumberOfHours = function (numberOfHours) {
+            this.numberOfHours = numberOfHours;
+            return this;
+        };
+        return ActivityInfo;
+    })();
+    Cash.ActivityInfo = ActivityInfo;
+
+    var Timetable = (function (_super) {
+        __extends(Timetable, _super);
+        function Timetable(object) {
+            if (typeof object === "undefined") { object = { id: "", access_url: "", params: new Cash.Params(), activities: [] }; }
+            _super.call(this, object);
+            this.activities = [];
+            this.resource_versions = [];
+            this.maxNumberOfOccurencesOfActivity = [];
+            this.activityInfo = [[]];
+            this.setActivities(object.activities);
+        }
         Timetable.prototype.getActivities = function () {
             return this.activities;
         };
 
         Timetable.prototype.setActivities = function (activities) {
             var _this = this;
+            activities = activities.sort(function (a, b) {
+                return a.starts_at_timestamp - b.starts_at_timestamp;
+            });
+            console.log(activities);
+            var id;
+            var newActivity;
+            var activity_info;
             activities.forEach(function (activity, index) {
-                _this.activities.push(new Cash.Activity(activity));
+                newActivity = new Cash.Activity(activity);
+                _this.activities.push(newActivity);
+                _this.incrementMaxNumberOfOccurencesOfActivity(newActivity);
+                if (_this.activityInfo[Cash.Activity.generateHash(newActivity)] == null) {
+                    _this.activityInfo[Cash.Activity.generateHash(newActivity)] = [];
+                }
+                _this.activityInfo[Cash.Activity.generateHash(newActivity)].push(new Cash.ActivityInfo(newActivity.getId(), newActivity.getNumberOfSchoolLessons()));
             });
-            this.activities = this.getActivities().sort(function (a, b) {
-                return a.getStartsAtTimestamp() - b.getStartsAtTimestamp();
-            });
+            console.log(this.activityInfo);
+        };
+
+        Timetable.prototype.getMaxNumberOfOccurencesOfActivity = function (activity) {
+            var activityHash = Cash.Activity.generateHash(activity);
+            return (this.maxNumberOfOccurencesOfActivity[activityHash]) == null ? 0 : this.maxNumberOfOccurencesOfActivity[activityHash].length;
+        };
+
+        Timetable.prototype.incrementMaxNumberOfOccurencesOfActivity = function (activity) {
+            var activityHash = Cash.Activity.generateHash(activity);
+            if (this.getMaxNumberOfOccurencesOfActivity(activity) == 0) {
+                this.maxNumberOfOccurencesOfActivity[activityHash] = new Array();
+            }
+            this.maxNumberOfOccurencesOfActivity[activityHash].push(activity.getId());
+            return this;
+        };
+
+        Timetable.prototype.getPositionOfActivity = function (activity) {
+            var activityHash = Cash.Activity.generateHash(activity);
+            if (this.maxNumberOfOccurencesOfActivity[activityHash].length > 0) {
+                for (var i = 0; i < this.maxNumberOfOccurencesOfActivity[activityHash].length; i++) {
+                    if (this.maxNumberOfOccurencesOfActivity[activityHash][i] == activity.getId()) {
+                        return (i + 1);
+                    }
+                }
+            }
+            return -1;
+        };
+
+        Timetable.prototype.sumAllHoursOfActivity = function (activity, full) {
+            if (typeof full === "undefined") { full = false; }
+            var activityHash = Cash.Activity.generateHash(activity);
+            var sum = 0;
+
+            for (var i = 0; i < this.activityInfo[activityHash].length; i++) {
+                if (full || i < this.getPositionOfActivity(activity)) {
+                    sum = sum + this.activityInfo[activityHash][i].getNumberOfHours();
+                }
+            }
+
+            console.log(sum);
+            return sum;
         };
         return Timetable;
-    })();
+    })(RegisteredTimetable);
     Cash.Timetable = Timetable;
 })(Cash || (Cash = {}));
 var Cash;
@@ -533,70 +617,78 @@ var Cash;
         }
         Api.getGroupsList = function () {
             return $.ajax({
-                url: Cash.Api.host + "groups?_=" + new Date().getTime(),
+                url: Cash.Api.host + "groups",
                 type: "GET",
                 dataType: 'json',
                 cache: false,
                 success: function (data) {
+                    console.log("Cash.Api.getGroupsLis() - success", data);
                 },
                 error: function () {
+                    console.log("Cash.Api.getGroupsLis() - error");
                 }
             });
         };
 
         Api.getTutorsList = function () {
             return $.ajax({
-                url: Cash.Api.host + "tutors?_=" + new Date().getTime(),
+                url: Cash.Api.host + "tutors",
                 type: "GET",
                 dataType: 'json',
                 cache: false,
                 success: function (data) {
+                    console.log("Cash.Api.getTutorsList() - success", data);
                 },
                 error: function () {
+                    console.log("Cash.Api.getTutorsList() - error");
                 }
             });
         };
 
         Api.getPlacesList = function () {
             return $.ajax({
-                url: Cash.Api.host + "places?_=" + new Date().getTime(),
+                url: Cash.Api.host + "places",
                 type: "GET",
                 dataType: 'json',
                 cache: false,
                 success: function (data) {
+                    console.log("Cash.Api.getPlacesList() - success", data);
                 },
                 error: function () {
+                    console.log("Cash.Api.getPlacesList() - error");
                 }
             });
         };
 
-        Api.registerTimetable = function (timetableParams) {
+        Api.registerTimetable = function (params) {
             return $.ajax({
                 url: Cash.Api.host + "timetables",
                 type: "POST",
                 dataType: 'json',
-                cache: false,
                 data: {
-                    group_id: timetableParams.getGroups(),
-                    tutor_id: timetableParams.getTutors(),
-                    place_id: timetableParams.getPlaces()
+                    group_id: params.getGroups(),
+                    tutor_id: params.getTutors(),
+                    place_id: params.getPlaces()
                 },
                 success: function (data) {
+                    console.log("Cash.Api.registerTimetable() - success", params, data);
                 },
                 error: function () {
+                    console.log("Cash.Api.registerTimetable() - error", params);
                 }
             });
         };
 
         Api.getTimetable = function (params) {
             return $.ajax({
-                url: Cash.Api.host + "timetables/" + params.toString() + "?_=" + new Date().getTime(),
+                url: Cash.Api.host + "timetables/" + params.toString(),
                 type: "GET",
                 dataType: 'json',
-                cache: false,
                 success: function (data) {
+                    console.log("Cash.Api.getTimetable() - success", params.toString(), data);
                 },
                 error: function () {
+                    console.log("Cash.Api.getTimetable() - error", params);
                 }
             });
         };
@@ -821,16 +913,22 @@ var devPlan;
         };
 
         Settings.addTimetableParam = function (item) {
-            var g = devPlan.Init.searchGroup(item);
-            var t = devPlan.Init.searchTutor(item);
-            if (g > 0 && t == null) {
-                $("#devPlanParams").append('<button id="g' + g + '" class="devPlanParam btn btn-xs btn-info" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + g + '" type="g">' + item + '' + '</button><wbr> ');
+            var g = devPlan.Init.searchGroupId(item);
+            var t = devPlan.Init.searchTutorId(item);
+            var p = devPlan.Init.searchPlaceId(item);
+            if (g > 0 && t == 0 && p == 0) {
+                $("#devPlanParams").append('<button id="g' + g + '" class="devPlanParam btn btn-xs btn-primary" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + g + '" type="g">' + item + '' + '</button><wbr> ');
                 Settings.setTimetableParams(Settings.getTimetableParams().addGroup(g));
             }
-            if (t > 0 && g == null) {
+            if (g == 0 && t > 0 && p == 0) {
                 $("#devPlanParams").append('<button id="t' + t + '" class="devPlanParam btn btn-xs btn-success" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + t + '" type="t">' + item + '' + '</button><wbr> ');
                 Settings.setTimetableParams(Settings.getTimetableParams().addTutor(t));
             }
+            if (g == 0 && t == 0 && p > 0) {
+                $("#devPlanParams").append('<button id="t' + t + '" class="devPlanParam btn btn-xs btn-info" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + t + '" type="p">' + item + '' + '</button><wbr> ');
+                Settings.setTimetableParams(Settings.getTimetableParams().addPlace(p));
+            }
+            console.log("Added param", item);
         };
         Settings.removeTimetableParam = function (item) {
             var item = $(item);
@@ -841,10 +939,6 @@ var devPlan;
                 Settings.setTimetableParams(Settings.getTimetableParams().removeTutor(parseInt(item.attr("value"))));
             }
             item.remove();
-        };
-        Settings.setDevPlan = function () {
-            $(".devPlanTypeahead").each(function (index) {
-            });
         };
         Settings.classCounter = false;
 
@@ -877,7 +971,7 @@ var devPlan;
         function Generate() {
         }
         Generate.dateInformation = function (activity) {
-            return '<li class="list-group-item list-group-item-info date">' + '<p id="' + activity.getDate() + '" class="h5" ><strong>' + activity.getDayOfWeek() + ', ' + activity.getDate() + '' + '</strong></p>' + '</li>';
+            return '<li class="list-group-item list-group-item-info date"><p id="' + activity.getDate() + '" class="h5" ><strong>' + (activity.getDayOfWeek() + ', ' + activity.getDate()) + '' + '</strong>' + '<a data-toggle="collapse" data-parent="#accordion" href="#' + activity.getDate() + '.activities" class="pull-right"><i class="fa fa-fw fa-chevron-up"></i></a>' + '</p></li>';
         };
 
         Generate.noteInformation = function (activity) {
@@ -910,14 +1004,28 @@ var devPlan;
 
         Generate.locationInformation = function (activity) {
             if (devPlan.Settings.getActivityLocation() && activity.getPlace().getLocation().length > 0) {
-                return '<strong><span class="" title="Zajęcia odbywają się w ' + activity.getPlace().getLocation() + '"><i class="fa fa-fw fa-map-marker"></i>' + activity.getPlace().location + '</span></strong> ';
+                return '<strong><span class="" title="Kliknij aby zobaczyć devPlan: ' + activity.getPlace().getLocation() + '"><i class="fa fa-fw fa-map-marker"></i>' + '<a href="timetable.html?timetable=p' + activity.getPlace().getId() + '">' + activity.getPlace().getLocation() + '</a>' + '</span></strong> ';
+            }
+            return '';
+        };
+
+        Generate.activityCounter = function (min, max) {
+            if (devPlan.Settings.getClassCounter()) {
+                return '<span class="label label-info pull-right" title="Zajęcia z koleji: ' + min + '"><i class="fa fa-fw fa-info-circle"></i>' + min + ' / ' + max + '</span><wbr>';
+            } else {
+                return '';
+            }
+        };
+        Generate.hourInformation = function (value, have, all) {
+            if (devPlan.Settings.getClassHourCounter()) {
+                return '<span class="label label-default pull-right" title="Ilość jednostek lekcyjnych:"><i class="fa fa-fw fa-clock-o"></i>' + (have - value) + ' - ' + have + ' / ' + all + '</span> ';
             }
             return '';
         };
 
         Generate.tutorInformation = function (activity) {
             if (devPlan.Settings.getActivityTutor()) {
-                return '<small><a class="pull-right" href="timetable.html?timetable=t' + activity.getTutor().id + '" title="devPlan  ' + activity.getTutor().getName() + '">' + activity.getTutor().getName() + '</a>' + (activity.getTutor().getMoodleUrl() != null ? '<a class="pull-right" href="' + activity.getTutor().getMoodleUrl() + '" title=" ' + activity.getTutor().getName() + ' - Wizytówka E-Uczelna "><i class="fa fa-globe fa-fw"></i></a>' : "") + '</small>';
+                return '<small ><a class="pull-right" href="timetable.html?timetable=t' + activity.getTutor().id + '" title="Kliknij aby zobaczyć devPlan: ' + activity.getTutor().getName() + '">' + activity.getTutor().getName() + '</a>' + (activity.getTutor().getMoodleUrl() != null ? '<a class="pull-right" href="' + activity.getTutor().getMoodleUrl() + '" title=" ' + activity.getTutor().getName() + ' - Wizytówka E-Uczelna "><i class="fa fa-globe fa-fw"></i></a>' : "") + '</small>';
             }
             return '';
         };
@@ -931,7 +1039,7 @@ var devPlan;
 (function (devPlan) {
     var ActivityHourCounter = (function () {
         function ActivityHourCounter() {
-            this.hour = 0;
+            this.hour = 1;
             this.counter = 0;
         }
         return ActivityHourCounter;
@@ -943,39 +1051,47 @@ var devPlan;
             $("#search-input").attr('value', devPlan.Settings.getUrlParam('search'));
             devPlan.Settings.load();
 
-            var params;
-            if (devPlan.Settings.getUrlParam('timetable').length != 0) {
-                params = Cash.Params.fromString(devPlan.Settings.getUrlParam('timetable'));
-                devPlan.Settings.setTimetableParams(params);
-            } else {
-                params = devPlan.Settings.getTimetableParams();
-            }
+            if ($("#timetable-results").length == 1) {
+                var params;
+                if (devPlan.Settings.getUrlParam('timetable').length != 0) {
+                    params = Cash.Params.fromString(devPlan.Settings.getUrlParam('timetable'));
+                    devPlan.Settings.setTimetableParams(params);
+                } else {
+                    params = devPlan.Settings.getTimetableParams();
+                }
 
-            if (params.isEmpty()) {
-                $("#timetable-panel-spinner-icon").empty().append('<button class="btn btn-primary"' + 'data-toggle="modal" data-target="#myModal">' + 'Stwórz swój devPlan' + '</button>');
-            } else {
-                $.when(Cash.Api.getTimetable(params)).done(function (response) {
-                    Init.showTimetable(Init.setTimetable(response).getTimetable());
-                    $("#timetable-panel-spinner").remove();
-                }).fail(function () {
-                    $.when(Cash.Api.registerTimetable(params)).done(function (response) {
-                        console.log(new Date().getTime() + "done");
+                if (params.isEmpty() == true) {
+                    $("#timetable-panel-spinner-icon").empty().append('<button class="btn btn-primary"' + 'data-toggle="modal" data-target="#myModal">' + 'Stwórz swój devPlan' + '</button>');
+                } else {
+                    $.when(Cash.Api.getTimetable(params)).done(function (response) {
                         Init.showTimetable(Init.setTimetable(response).getTimetable());
-
                         $("#timetable-panel-spinner").remove();
                     }).fail(function () {
-                        console.log("Registration timetable failed");
+                        console.log("Pobranie planu zakończone niepowodzeniem.");
+                        $.when(Cash.Api.registerTimetable(params)).done(function (response) {
+                            console.log("Rejestracja planu zkończona powodzeniem.");
+                            $.when(Cash.Api.getTimetable(params)).done(function (response) {
+                                Init.showTimetable(Init.setTimetable(response).getTimetable());
+                                $("#timetable-panel-spinner").remove();
+                                console.log("Pobieranie planu po rejestracji zakończone powodzeniem.");
+                            }).fail(function () {
+                                console.log("Pobieranie planu po rejestracji zakończone niepowodzeniem.");
+                            });
+                        }).fail(function () {
+                            console.log("Rejestracja planu nie powiodła się");
+                        });
                     });
-                });
+                }
             }
 
             if ($("#search-panel-input").length) {
                 $("#search-panel-input").attr('value', devPlan.Settings.getUrlParam('search'));
             }
 
-            $.when(Cash.Api.getGroupsList(), Cash.Api.getTutorsList()).done(function (groups, tutors) {
+            $.when(Cash.Api.getGroupsList(), Cash.Api.getTutorsList(), Cash.Api.getPlacesList()).done(function (groups, tutors, places) {
                 Init.setGroups(groups[0]);
                 Init.setTutors(tutors[0]);
+                Init.setPlaces(places[0]);
 
                 $("#search-input").removeAttr('disabled').attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn').attr('data-provide', "typeahead");
 
@@ -991,7 +1107,23 @@ var devPlan;
                     source: data,
                     items: 15,
                     updater: function (item) {
-                        window.location.replace('timetable.html?timetable=g' + Init.searchGroup(item));
+                        var group = Init.searchGroupId(item);
+                        var tutor = Init.searchTutorId(item);
+                        var place = Init.searchPlaceId(item);
+                        console.log("navbar search", item, Init.searchGroupId(item), 'timetable.html?timetable=g' + group);
+                        console.log("navbar search", item, Init.searchTutorId(item), 'timetable.html?timetable=t' + tutor);
+                        console.log("navbar search", item, Init.searchPlaceId(item), 'timetable.html?timetable=p' + place);
+
+                        if (group > 0 && tutor == 0 && place == 0) {
+                            window.location.replace('timetable.html?timetable=g' + group);
+                        }
+                        if (group == 0 && tutor > 0 && place == 0) {
+                            window.location.replace('timetable.html?timetable=t' + tutor);
+                        }
+                        if (group == 0 && tutor == 0 && place > 0) {
+                            window.location.replace('timetable.html?timetable=p' + place);
+                        }
+                        console.log("navbar search error", item);
                     }
                 });
 
@@ -1034,17 +1166,18 @@ var devPlan;
             return Init;
         };
 
-        Init.searchGroup = function (name) {
+        Init.searchGroupId = function (name) {
             var id;
-            var counter;
-            var group;
+            var found = false;
+            console.log(name);
             for (var i = 0; i < Init.getGroups().length; i++) {
-                if (Init.getGroups()[i].getName().toLocaleLowerCase() == name.toLowerCase()) {
+                if (Init.getGroups()[i].getName().toString() == name.toString()) {
                     id = Init.getGroups()[i].getId();
-                    counter++;
+                    found = true;
+                    break;
                 }
             }
-            return counter > 1 ? 0 : id;
+            return found ? id : 0;
         };
 
         Init.getTutors = function () {
@@ -1062,17 +1195,47 @@ var devPlan;
             return Init;
         };
 
-        Init.searchTutor = function (name) {
+        Init.searchTutorId = function (name) {
             var id;
-            var counter;
-            var group;
+            var found = false;
+            console.log(name);
             for (var i = 0; i < Init.getTutors().length; i++) {
-                if (Init.getTutors()[i].getName().toLocaleLowerCase() == name.toLowerCase()) {
+                if (Init.getTutors()[i].getName().toUpperCase().toString() == name.toUpperCase().toString()) {
                     id = Init.getTutors()[i].getId();
-                    counter++;
+                    found = true;
+                    break;
                 }
             }
-            return counter > 1 ? 0 : id;
+            return found ? id : 0;
+        };
+
+        Init.getPlaces = function () {
+            return Init.places;
+        };
+
+        Init.setPlaces = function (tutors) {
+            if (typeof tutors === "undefined") { tutors = []; }
+            for (var i = 0; i < tutors.length; i++) {
+                Init.places.push(new Cash.Place(tutors[i]));
+            }
+            Init.places = Init.getPlaces().sort(function (a, b) {
+                return a.getLocation() - b.getLocation();
+            });
+            return Init;
+        };
+
+        Init.searchPlaceId = function (name) {
+            var id;
+            var found = false;
+            console.log(name);
+            for (var i = 0; i < Init.getPlaces().length; i++) {
+                if (Init.getPlaces()[i].getLocation().toUpperCase().toString() == name.toUpperCase().toString()) {
+                    id = Init.getPlaces()[i].getId();
+                    found = true;
+                    break;
+                }
+            }
+            return found ? id : 0;
         };
 
         Init.getTimetable = function () {
@@ -1100,7 +1263,11 @@ var devPlan;
                         data = data + '<li class="list-group-item">' + '<a href="timetable.html?timetable=t' + Init.getTutors()[i].getId() + '">' + Init.getTutors()[i].getName() + '</a>' + '<span class="pull-right">' + '<a href="' + Init.getTutors()[i].getMoodleUrl() + '" title="Wizytówka E-Uczelnia"><i class="fa fa-globe fa-fw"></i></a>' + '</span>' + '</li>';
                     }
                 }
-
+                for (var i = 0; i < Init.getPlaces().length; i++) {
+                    if (Init.getPlaces()[i].getLocation().toString().toUpperCase().indexOf(query) !== -1) {
+                        data = data + '<li class="list-group-item">' + '<a href="timetable.html?timetable=p' + Init.getPlaces()[i].getId() + '">' + Init.getPlaces()[i].getLocation() + '</a>' + '</li>';
+                    }
+                }
                 $("#search-panel-body").attr("display", "none");
                 if (data.length == 0) {
                     data = "<tr><td class='text-center'>Brak wyników. Spróbuj jeszcze raz ;)</td</td>";
@@ -1137,55 +1304,36 @@ var devPlan;
                     groups = groups.sort(function (a, b) {
                         return a.getName() >= b.getName();
                     });
-
                     for (var k = 0; k < groups.length; k++) {
                         indexgroup = indexgroup + groups[k].getName();
                     }
-
-                    activityCounterIndex = indexgroup + '-' + activity.getName() + '-' + activity.getCategory() + '-' + (activity.getTutor() != null ? activity.getTutor().getId() + '' : '');
-
-                    if (activityCounter[activityCounterIndex] == undefined) {
-                        activityCounter[activityCounterIndex] = new ActivityHourCounter();
-                    }
-
                     if (activity.getDate() >= devPlan.Settings.getCurrentDate() || devPlan.Settings.getTimetableType() == 0) {
                         if ((activity.getName().toLowerCase().indexOf(devPlan.Settings.getActivityNameFilter().toLowerCase()) > -1) || (activity.getTutor().getName().toLowerCase().indexOf(devPlan.Settings.getActivityNameFilter().toLowerCase()) > -1) || (indexgroup.toLowerCase().indexOf(devPlan.Settings.getActivityNameFilter().toLowerCase()) > -1) || (activity.getDate().indexOf(devPlan.Settings.getActivityNameFilter().toLowerCase()) > -1)) {
                             if (date != activity.getDate()) {
-                                data = data + devPlan.Generate.dateInformation(activity);
+                                if (date != "") {
+                                    data = data + '</div>';
+                                }
+                                data = data + devPlan.Generate.dateInformation(activity) + '<div id="' + activity.getDate() + '" class="activities collapse in">';
                                 date = activity.getDate();
                             }
-                            date = activity.getDate();
 
                             if (timetable.getActivities()[i - 1] != null && activity.getName() == timetable.getActivities()[i - 1].getName() && activity.getEndsAtTimestamp() == timetable.getActivities()[i - 1].getEndsAtTimestamp()) {
                                 continue;
                             }
-
-                            ++activityCounter[activityCounterIndex].counter;
-                            activityCounter[activityCounterIndex].hour += activity.getNumberOfSchoolLessons();
-
-                            data = data + '<li id="activity-' + i + '" class="list-group-item activity">' + '<p class="h5">' + devPlan.Generate.nameInformation(timetable.getActivities()[i]) + '<wbr>' + devPlan.Generate.tutorInformation(timetable.getActivities()[i]);
+                            data = data + '<li id="activity-' + i + '" class="list-group-item activity">' + '<p class="h5">' + devPlan.Generate.nameInformation(timetable.getActivities()[i]) + devPlan.Generate.tutorInformation(timetable.getActivities()[i]);
                             '</p>';
-
                             if (devPlan.Settings.getActivityNote() && activity.getNotes() != null) {
                                 data = data + '<p class="h6">' + devPlan.Generate.noteInformation(timetable.getActivities()[i]) + '</p><div class="clearfix"></div>';
                             }
                             if (devPlan.Settings.getActivityBell() || devPlan.Settings.getActivityLocation() || devPlan.Settings.getActivityCategory() || devPlan.Settings.getClassCounter() || devPlan.Settings.getClassHourCounter()) {
-                                data = data + '<p class="h6">' + devPlan.Generate.bellInformation(timetable.getActivities()[i]) + '<wbr>' + devPlan.Generate.locationInformation(timetable.getActivities()[i]) + '<wbr>' + devPlan.Generate.categoryInformation(timetable.getActivities()[i]) + '<wbr>';
-
-                                if (devPlan.Settings.getClassCounter()) {
-                                    data = data + '<span class="label label-info pull-right" title="Zajęcia z koleji: ' + activityCounter[activityCounterIndex].counter + '"><i class="fa fa-fw fa-info-circle"></i>' + activityCounter[activityCounterIndex].counter + '</span><wbr>';
-                                }
-
-                                if (devPlan.Settings.getClassHourCounter()) {
-                                    data = data + '<span class="label label-default pull-right" title="Ilość jednostek lekcyjnych:"><i class="fa fa-fw fa-clock-o"></i>' + (activityCounter[activityCounterIndex].hour - activity.getNumberOfSchoolLessons()) + " - " + activityCounter[activityCounterIndex].hour + '</span> ';
-                                }
+                                data = data + '<p class="h6">' + devPlan.Generate.bellInformation(timetable.getActivities()[i]) + devPlan.Generate.locationInformation(timetable.getActivities()[i]) + devPlan.Generate.categoryInformation(timetable.getActivities()[i]) + devPlan.Generate.activityCounter(timetable.getPositionOfActivity(activity), timetable.getMaxNumberOfOccurencesOfActivity(activity)) + devPlan.Generate.hourInformation(activity.getNumberOfSchoolLessons(), timetable.sumAllHoursOfActivity(activity), timetable.sumAllHoursOfActivity(activity, true));
                                 data = data + '</p><div class="clearfix"></div>';
                             }
                             if (devPlan.Settings.getActivityGroup()) {
                                 data = data + '<p class="h6">';
                                 for (var j = 0; j < groups.length; j++) {
                                     if (groups[j] != null) {
-                                        data = data + '<a href="timetable.html?timetable=g' + groups[j].getId() + '" title="Plan zajęć dla ' + groups[j].getName() + '">' + groups[j].getName() + "</a>" + '<wbr>';
+                                        data = data + '<a href="timetable.html?timetable=g' + groups[j].getId() + '" title="Kliknij aby zobaczyć devPlan: ' + groups[j].getName() + '">' + groups[j].getName() + "</a>" + '<wbr>';
                                         if (j < (groups.length - 1)) {
                                             data = data + ' | ';
                                         }

@@ -24,17 +24,19 @@
 			<div class="row">
 				<div class="col-lg-12">
 					<div class="navbar-header">
-						<a href="timetable.html"
-							class="navbar-btn btn btn-link pull-right visible-xs text-success"
-							title="Mój devPlan"><i class="fa fa-fw fa-calendar-o"></i></a> <a
-							href="search.html"
+						<a id="devPlanWizardNavbarIconLink"
 							class="navbar-btn btn btn-link pull-right visible-xs"
-							title="Szukaj"><i class="fa fa-fw fa-search"></i></a><a
+							title="Mój devPlan"><i class="fa fa-fw fa-align-justify"></i></a>
+						<a href="search.html"
+							class="navbar-btn btn btn-link pull-right visible-xs"
+							title="Szukaj"><i class="fa fa-fw fa-search"></i></a> <a
 							class="navbar-brand" href="index.html" title="devPlan"><strong>devPlan</strong></a>
 					</div>
 					<div class="navbar-form navbar-right hidden-xs">
-						<a href="timetable.html" class="btn btn-success"><i
-							class="fa fa-fw fa-calendar-o"></i> Mój devPlan</a>
+						<a id="devPlanWizardNavbarLink" class="btn btn-info"
+							data-toggle="modal" data-target="#devPlan-wizard">Stwórz swój
+							<strong>devPlan</strong>
+						</a>
 					</div>
 					<ul class="nav navbar-nav navbar-right hidden-xs">
 						<li><a href="search.html" title="Szukaj"><i
@@ -78,6 +80,45 @@
 			</div>
 		</div>
 	</div>
+	<!-- devPlan create start -->
+	<div class="modal fade" id="devPlan-wizard" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">Stwórz swój plan</h4>
+				</div>
+				<div class="modal-body">
+					<div class="tab-pane" id="devPlan">
+						<fieldset>
+							<p class="h4">Twój devPlan</p>
+							<p id="devPlanUrl"></p>
+							<p id="devPlanParams" class="lead"></p>
+
+							<div class="form-group">
+								<label>Wprowadz nazwe grupy lub wykładowcy</label> <input id="0"
+									autocomplete="off" disabled="disabled" value=""
+									name="devPlanTypeahead[]" type="text"
+									class="form-control devPlanTypeahead"
+									placeholder="KrDzIs3011Io / dr Paweł Wołoszyn" />
+							</div>
+							<div class="form-group"></div>
+						</fieldset>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Zamknij</button>
+					<button class="btn btn-primary"
+						onclick="devPlan.Settings.saveTimetable();window.location.replace('timetable.html')">
+						<i class="fa fa-fw fa-save"></i> Zapisz devPlan
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- devPlan create stop -->
 	<!-- issue start-->
 	<div class="modal fade" id="issue" tabindex="-1" role="dialog"
 		aria-labelledby="myModalLabel" aria-hidden="true">

@@ -173,7 +173,7 @@ module Cash {
          * 
          */
         public isEmpty() {
-            return this.getGroups().length == 0 && this.getTutors().length == 0 && this.getPlaces().length == 0;
+            return (this.getGroups().length == 0) && (this.getTutors().length == 0) && (this.getPlaces().length == 0);
         }
         /**
          * 

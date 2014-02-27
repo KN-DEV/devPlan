@@ -25,17 +25,17 @@
 			<div class="row">
 				<div class="col-lg-12">
 					<div class="navbar-header">
-						<a href="timetable.html"
-							class="navbar-btn btn btn-link pull-right visible-xs text-success"
-							title="Mój devPlan"><i class="fa fa-fw fa-calendar-o"></i></a> <a
-							href="search.html"
+						<a id="devPlanWizardNavbarIconLink"
 							class="navbar-btn btn btn-link pull-right visible-xs"
-							title="Szukaj"><i class="fa fa-fw fa-search"></i></a><a
+							title="Mój devPlan"><i class="fa fa-fw fa-align-justify"></i></a>
+						<a href="search.html"
+							class="navbar-btn btn btn-link pull-right visible-xs"
+							title="Szukaj"><i class="fa fa-fw fa-search"></i></a> <a
 							class="navbar-brand" href="index.html" title="devPlan"><strong>devPlan</strong></a>
 					</div>
 					<div class="navbar-form navbar-right hidden-xs">
-						<a href="timetable.html" class="btn btn-success"><i
-							class="fa fa-fw fa-calendar-o"></i> Mój devPlan</a>
+						<a id="devPlanWizardNavbarLink" class="btn btn-info" data-toggle="modal"
+							data-target="#devPlan-wizard">Stwórz swój <strong>devPlan</strong></a>
 					</div>
 					<ul class="nav navbar-nav navbar-right hidden-xs">
 						<li><a href="search.html" title="Szukaj"><i
@@ -65,7 +65,7 @@
 						<hr class="intro-divider" />
 						<p class="lead">Jesteś studentem lub pracownikiem Uniwersytetu
 							Ekonomicznego w Krakowie?</p>
-						<a data-toggle="modal" data-target="#devPlan-wizard"
+						<a id="devPlanWizardLink" data-toggle="modal" data-target="#devPlan-wizard"
 							class="btn btn-info btn-lg centering"> Stwórz swój <strong>devPlan</strong>
 						</a>
 					</div>
@@ -76,7 +76,6 @@
 	</div>
 	<!-- /.intro-header -->
 	<div class="content-section-mobile">
-
 		<div class="container">
 			<div class="row">
 				<div class="col-lg-4 col-md-5 col-sm-7">
@@ -109,17 +108,16 @@
 	<div class="content-section-a">
 		<div class="container">
 			<div class="row">
-
 				<div class="col-lg-7 col-md-6">
-					<h2 class="section-heading text-justify">
+					<h2 class="section-heading">
 						Widzisz tylko swoje zajęcia językowe<br /> <small>Z <strong>devPlan
 						</strong> widzisz tylko te zajęcia, na które jesteś w rzeczywistości
 							zapisany.
 						</small>
 					</h2>
-					<p class="lead text-justify">Czy nie zdarzyło Ci się spóźnić na
-						zajęcia językowe, bo nie wiedziałeś w której sali masz zajęcia?</p>
-					<p class="lead text-justify">
+					<p class="lead">Czy nie zdarzyło Ci się spóźnić na zajęcia
+						językowe, bo nie wiedziałeś w której sali masz zajęcia?</p>
+					<p class="lead">
 						Dzięki <strong>devPlan</strong> już nigdy więcej Ci się to nie
 						zdarzy.
 					</p>
@@ -259,7 +257,7 @@
 	<footer>
 		<div class="container">
 			<div class="row">
-				<div class="col-lg-12 col-md-12 col-sm-12">
+				<div class="col-lg-12">
 					<ul class="list-inline">
 						<li><a href="index.html" title="Strona startowa devPlan"><strong>devPlan</strong></a></li>
 						<li class="footer-menu-divider">&sdot;</li>

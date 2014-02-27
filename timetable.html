@@ -24,17 +24,19 @@
 			<div class="row">
 				<div class="col-lg-12">
 					<div class="navbar-header">
-						<a href="timetable.html"
-							class="navbar-btn btn btn-link pull-right visible-xs text-success"
-							title="Mój devPlan"><i class="fa fa-fw fa-calendar-o"></i></a> <a
-							href="search.html"
+						<a id="devPlanWizardNavbarIconLink"
 							class="navbar-btn btn btn-link pull-right visible-xs"
-							title="Szukaj"><i class="fa fa-fw fa-search"></i></a><a
+							title="Mój devPlan"><i class="fa fa-fw fa-align-justify"></i></a>
+						<a href="search.html"
+							class="navbar-btn btn btn-link pull-right visible-xs"
+							title="Szukaj"><i class="fa fa-fw fa-search"></i></a> <a
 							class="navbar-brand" href="index.html" title="devPlan"><strong>devPlan</strong></a>
 					</div>
 					<div class="navbar-form navbar-right hidden-xs">
-						<a href="timetable.html" class="btn btn-success"><i
-							class="fa fa-fw fa-calendar-o"></i> Mój devPlan</a>
+						<a id="devPlanWizardNavbarLink" class="btn btn-info"
+							data-toggle="modal" data-target="#devPlan-wizard">Stwórz swój
+							<strong>devPlan</strong>
+						</a>
 					</div>
 					<ul class="nav navbar-nav navbar-right hidden-xs">
 						<li><a href="search.html" title="Szukaj"><i
@@ -55,7 +57,7 @@
 	<div class="container" style="margin-top: 70px">
 		<div class="row">
 			<div class="col-lg-8 col-lg-offset-2">
-				<div class="panel panel-default">
+				<div id="devPlanShowResults" class="panel panel-default">
 					<div class="panel-heading">
 						<div class="row">
 							<div class="col-lg-12,col-md-12 col-sm-12 col-xs-12">
@@ -67,7 +69,7 @@
 									<div class="input-group-btn">
 										<button class="btn btn-info" data-toggle="modal"
 											data-parent="#accordion" href="#devPlan-settings">
-											<i class="fa fa-gears"></i>
+											<i class="fa fa-wrench"></i>
 										</button>
 										<button class="btn btn-primary" data-toggle="modal"
 											title="Link do twojego devPlan'u"
@@ -290,7 +292,7 @@
 	<footer>
 		<div class="container">
 			<div class="row">
-				<div class="col-lg-12 col-md-12 col-sm-12">
+				<div class="col-lg-12">
 					<ul class="list-inline">
 						<li><a href="index.html" title="Strona startowa devPlan"><strong>devPlan</strong></a></li>
 						<li class="footer-menu-divider">&sdot;</li>

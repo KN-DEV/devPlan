@@ -50,17 +50,49 @@ module devPlan {
             $("#search-input").attr('value', Settings.getUrlParam('search'));
             Settings.load();
 
+
+
+
+
+            /**
+                * Check if GET['timetable'] exists
+                */
+            var params: Cash.Params;
+            if (Settings.getUrlParam('timetable').length != 0) {
+                params = Cash.Params.fromString(Settings.getUrlParam('timetable'));
+                Settings.setTimetableParams(params);
+            } else {
+                params = Settings.getTimetableParams();
+            }
+
+            if (!params.isEmpty()) {
+                $("#devPlanWizardNavbarIconLink")
+                    .attr("href", "timetable.html")
+                    .removeAttr("data-toggle").removeAttr("data-target");
+                $("#devPlanWizardNavbarLink")
+                    .attr("href", "timetable.html")
+                    .removeAttr("data-toggle")
+                    .removeAttr("data-target")
+                    .empty().toggleClass("btn-info")
+                    .toggleClass("btn-success")
+                    .attr("href", "timetable.html")
+                    .removeAttr("data-toggle")
+                    .removeAttr("data-target")
+                    .text("Mój devPlan");
+                $("#devPlanWizardLink")
+                    .attr("href", "timetable.html")
+                    .removeAttr("data-toggle")
+                    .removeAttr("data-target")
+                    .empty()
+                    .toggleClass("btn-info")
+                    .toggleClass("btn-success")
+                    .text("Mój devPlan");
+            }
+
+
+
+
             if ($("#timetable-results").length == 1) {
-                /**
-                 * Check if GET['timetable'] exists
-                 */
-                var params: Cash.Params;
-                if (Settings.getUrlParam('timetable').length != 0) {
-                    params = Cash.Params.fromString(Settings.getUrlParam('timetable'));
-                    Settings.setTimetableParams(params);
-                } else {
-                    params = Settings.getTimetableParams();
-                }
 
                 /**
                  * Sprawdza czy istnieje jakikolwiek parametr do planu
@@ -71,9 +103,9 @@ module devPlan {
                      */
                     $("#timetable-panel-spinner-icon")
                         .empty()
-                        .append('<button class="btn btn-primary"' +
-                        'data-toggle="modal" data-target="#myModal">' +
-                        'Stwórz swój devPlan' +
+                        .append('<button class="btn btn-info"' +
+                        'data-toggle="modal" data-target="#devPlanWizard">' +
+                        'Stwórz swój <strong>devPlan</strong>' +
                         '</button>');
 
                 } else {

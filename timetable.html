@@ -26,7 +26,8 @@
 					<div class="navbar-header">
 						<a id="devPlanWizardNavbarIconLink"
 							class="navbar-btn btn btn-link pull-right visible-xs"
-							title="Mój devPlan"><i class="fa fa-fw fa-align-justify"></i></a>
+							title="Mój devPlan" data-toggle="modal"
+							data-target="#devPlanWizard"><i class="fa fa-fw fa-align-justify"></i></a>
 						<a href="search.html"
 							class="navbar-btn btn btn-link pull-right visible-xs"
 							title="Szukaj"><i class="fa fa-fw fa-search"></i></a> <a
@@ -34,7 +35,7 @@
 					</div>
 					<div class="navbar-form navbar-right hidden-xs">
 						<a id="devPlanWizardNavbarLink" class="btn btn-info"
-							data-toggle="modal" data-target="#devPlan-wizard">Stwórz swój
+							data-toggle="modal" data-target="#devPlanWizard">Stwórz swój
 							<strong>devPlan</strong>
 						</a>
 					</div>
@@ -73,7 +74,7 @@
 										</button>
 										<button class="btn btn-primary" data-toggle="modal"
 											title="Link do twojego devPlan'u"
-											data-target="#devPlan-wizard">
+											data-target="#devPlanWizard">
 											<i class="fa fa-fw fa-link"></i>
 										</button>
 									</div>
@@ -213,7 +214,7 @@
 	</div>
 	<!-- devPlan Settings stop -->
 	<!-- devPlan create start -->
-	<div class="modal fade" id="devPlan-wizard" tabindex="-1" role="dialog"
+	<div class="modal fade" id="devPlanWizard" tabindex="-1" role="dialog"
 		aria-labelledby="myModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">

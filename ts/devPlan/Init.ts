@@ -68,7 +68,9 @@ module devPlan {
             if (!params.isEmpty()) {
                 $("#devPlanWizardNavbarIconLink")
                     .attr("href", "timetable.html")
-                    .removeAttr("data-toggle").removeAttr("data-target");
+                    .removeAttr("data-toggle")
+                    .removeAttr("data-target");
+
                 $("#devPlanWizardNavbarLink")
                     .attr("href", "timetable.html")
                     .removeAttr("data-toggle")

@@ -413,7 +413,7 @@ module devPlan {
                                 continue;
                             }
                             data = data +
-                            '<li id="activity-' + i + '" class="list-group-item activity">' +
+                            '<li id="activity' + activity.getId() + '" class="list-group-item activity ' + activity.getCategory() + '">' +
                             '<p class="h5">' +
                             Generate.nameInformation(timetable.getActivities()[i]) +
                             Generate.tutorInformation(timetable.getActivities()[i]);
@@ -431,7 +431,7 @@ module devPlan {
                                 Generate.locationInformation(timetable.getActivities()[i]) +
                                 Generate.categoryInformation(timetable.getActivities()[i]) +
                                 Generate.activityCounter(timetable.getPositionOfActivity(activity), timetable.getMaxNumberOfOccurencesOfActivity(activity)) +
-                                Generate.hourInformation( activity.getNumberOfSchoolLessons(),timetable.sumAllHoursOfActivity(activity),timetable.sumAllHoursOfActivity(activity,true));
+                                Generate.hourInformation(activity.getNumberOfSchoolLessons(), timetable.sumAllHoursOfActivity(activity), timetable.sumAllHoursOfActivity(activity, true));
                                 data = data + '</p><div class="clearfix"></div>';
                             }
                             if (Settings.getActivityGroup()) {

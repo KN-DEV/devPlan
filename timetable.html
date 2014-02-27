@@ -25,14 +25,12 @@
 				<div class="col-lg-12">
 					<div class="navbar-header">
 						<div class="btn-group visible-xs">
-							<button type="button"
-								class="navbar-btn btn btn-link  pull-right"
+							<button type="button" class="navbar-btn btn btn-link  pull-right"
 								data-toggle="collapse"
 								data-target="#bs-example-navbar-collapse-1">
 								<i class="fa fa-align-justify"></i>
 							</button>
-							<button>
-							</button>
+							<button></button>
 						</div>
 						<a class="navbar-brand" href="index.html" title="devPlan"><strong>devPlan</strong></a>
 					</div>
@@ -74,10 +72,18 @@
 										name="activityNameFilter"
 										placeholder="Filtruj po nazwie przedmiotu, dacie prowadzącym lub grupie"
 										onkeyup="console.log(this.value);devPlan.Settings.setActivityNameFilter(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
-									<span class="input-group-btn"> <a class="btn btn-info"
-										data-toggle="collapse" data-parent="#accordion"
-										href="#timetable-panel"> <i class="fa fa-gears"></i></a>
-									</span>
+									<div class="input-group-btn">
+										<a class="btn btn-info" data-toggle="collapse"
+											data-parent="#accordion" href="#timetable-panel"> <i
+											class="fa fa-gears"></i>
+										</a>
+										<button class="btn btn-primary" data-toggle="modal"
+											data-target="#myModal">
+											<i class="fa fa-fw fa-link"></i>
+										</button>
+
+									</div>
+
 								</div>
 							</div>
 						</div>
@@ -202,6 +208,7 @@
 					<div class="tab-pane" id="devPlan">
 						<fieldset>
 							<p class="h4">Twój devPlan</p>
+							<p id="devPlanUrl"></p>
 							<p id="devPlanParams" class="lead"></p>
 
 							<div class="form-group">
@@ -233,7 +240,7 @@
 	<!-- Modal -->
 	<div class="modal fade" id="issue" tabindex="-1" role="dialog"
 		aria-labelledby="myModalLabel" aria-hidden="true">
-	  <div class="modal-dialog modal-sm">
+		<div class="modal-dialog modal-sm">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal"

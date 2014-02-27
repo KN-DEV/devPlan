@@ -328,6 +328,8 @@ module devPlan {
                     '</button><wbr> ');
                 Settings.setTimetableParams(Settings.getTimetableParams().addPlace(p));
             }
+
+            $("#devPlanUrl").empty().append('<p class="form-control-static">https://devplan.uek.krakow.pl/timetable.html?timetable=' + Settings.getTimetableParams().toString()+'</p>');
             console.log("Added param", item);
 
         }
@@ -339,6 +341,8 @@ module devPlan {
             if (item.attr("type") == "t") {
                 Settings.setTimetableParams(Settings.getTimetableParams().removeTutor(parseInt(item.attr("value"))));
             }
+
+            $("#devPlanUrl").append("https://devplan.uek.krakow.pl/timetable.html?timetable=" + Settings.getTimetableParams().toString());
             item.remove();
         }
 

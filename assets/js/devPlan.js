@@ -928,6 +928,8 @@ var devPlan;
                 $("#devPlanParams").append('<button id="t' + t + '" class="devPlanParam btn btn-xs btn-info" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + t + '" type="p">' + item + '' + '</button><wbr> ');
                 Settings.setTimetableParams(Settings.getTimetableParams().addPlace(p));
             }
+
+            $("#devPlanUrl").empty().append('<p class="form-control-static">https://devplan.uek.krakow.pl/timetable.html?timetable=' + Settings.getTimetableParams().toString() + '</p>');
             console.log("Added param", item);
         };
         Settings.removeTimetableParam = function (item) {
@@ -938,6 +940,8 @@ var devPlan;
             if (item.attr("type") == "t") {
                 Settings.setTimetableParams(Settings.getTimetableParams().removeTutor(parseInt(item.attr("value"))));
             }
+
+            $("#devPlanUrl").append("https://devplan.uek.krakow.pl/timetable.html?timetable=" + Settings.getTimetableParams().toString());
             item.remove();
         };
         Settings.classCounter = false;

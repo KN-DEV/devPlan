@@ -40,7 +40,7 @@
 						<li><a href="search.html" title="Szukaj"><i
 								class="fa fa-fw fa-search"></i> Szukaj</a></li>
 					</ul>
-					<form class="navbar-form navbar-right hidden-xs"
+					<form class="navbar-form hidden-xs"
 						action="search.html" method="get" role="search">
 						<div id="navbar-search" class="form-group">
 							<input id="search-input" name="search" autocomplete="off"
@@ -48,7 +48,6 @@
 								placeholder="KrDzIs3011Io / dr Paweł Wołoszyn" />
 						</div>
 					</form>
-					<p class="navbar-text navbar-right hidden-xs">Szybki devPlan:</p>
 				</div>
 			</div>
 		</div>
@@ -240,6 +239,7 @@
 					</div>
 				</div>
 				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Zamknij</button>
 					<button class="btn btn-primary"
 						onclick="devPlan.Settings.saveTimetable();window.location.replace('timetable.html')">
 						<i class="fa fa-fw fa-save"></i> Zapisz devPlan
@@ -272,6 +272,7 @@
 					</div>
 				</div>
 				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Zamknij</button>
 					<button class="btn btn-primary" data-dismiss="modal"
 						aria-hidden="true" onclick="sendIssue();">
 						<i class="fa fa-fw fa-save"></i>Wyślij zgłoszenie

@@ -225,25 +225,30 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal"
-						aria-hidden="true">&times;</button>
+						aria-hidden="true" title="Zamknij okienko">&times;</button>
 					<h4 class="modal-title" id="myModalLabel">Zgłoś błąd</h4>
 				</div>
 				<div class="modal-body">
-					<p>Twoje zgłoszenie bardzo nam pomoże w usprawnianiu devPlanu.</p>
+					<p>
+						Twoje zgłoszenie bardzo nam pomoże, ulepszyć devPlan. <br> Im
+						dokładniej opiszesz problem tym bardziej mam ułatwisz sprawe.
+					</p>
 					<div class="form-group">
-						<label>Nik / Email</label> <input id="issueEmail" type="email"
-							name="email" type="text" class="form-control" placeholder="nik" />
+						<label for="issueEmail">Twój nick: </label> <input id="issueEmail"
+							type="email" name="email" type="text" class="form-control"
+							placeholder="Twój nick" />
 					</div>
 					<div class="form-group">
-						<label>Opis błędu</label>
+						<label for="issueContent">Opis błędu:</label>
 						<textarea id="issueContent" name="content" value=""
-							class="form-control" row="3"></textarea>
+							class="form-control" row="5" placeholder="Opis błędu"></textarea>
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Zamknij</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal"
+						title="Nie wysyłaj i zamknij">Zamknij</button>
 					<button class="btn btn-primary" data-dismiss="modal"
-						aria-hidden="true" onclick="sendIssue();">
+						aria-hidden="true" onclick="sendIssue();" title="Wyślij i zamknij">
 						<i class="fa fa-fw fa-save"></i>Wyślij zgłoszenie
 					</button>
 				</div>

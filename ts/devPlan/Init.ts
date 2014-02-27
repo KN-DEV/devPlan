@@ -6,6 +6,7 @@
 /// <reference path="Settings.ts" />
 /// <reference path="Generate.ts" />
 /// <reference path="typeahead.ts" />
+/// <reference path="AnimateChevron.ts" />
 
 /**
  * devPlan App
@@ -458,6 +459,8 @@ module devPlan {
                 data = data + '<li class="list-group-item"><p class="h4 text-center">Przykro nam. Ten devPlan nie posiada żadnych zajęć.</p>';
             }
             $("#timetable-results").append(data);
+            // binds chevron animation
+            bindAnimation();
         }
     }
 }

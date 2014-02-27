@@ -10,10 +10,13 @@ module devPlan {
          * 
          */
         static dateInformation(activity: Cash.Activity): string {
-            return '<li id="date' + activity.getDate() + '" class="list-group-item list-group-item-info date"><a data-toggle="collapse" data-parent="#accordion" href="#' + activity.getDate() + '.activities">' +
-                (activity.getDayOfWeek() + ', ' + activity.getDate()) + '' +
-                '</a>' +
-                '</li>';
+            return '<li class="list-group-item list-group-item-info date"><p id="' + 
+                        activity.getDate() + '" class="h5" >' +
+                '<a data-toggle="collapse" data-parent="#accordion" href="#' + activity.getDate() + '.activities" class="">' + 
+                        (activity.getDayOfWeek() + ', ' + activity.getDate()) + '' +
+                        '</a>' +
+                '<a data-toggle="collapse" data-parent="#accordion" href="#' + activity.getDate() + '.activities" class="pull-right"><i class="fa fa-fw fa-chevron-up animate-transform"></i></a>' +
+                '</p></li>';
         }
         /**
          * 

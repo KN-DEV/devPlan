@@ -1,3 +1,81 @@
+var devPlan;
+(function (devPlan) {
+    function bindAnimation() {
+        $('li.date').find('a').on("click", function () {
+            $(this).parent().find('i.fa-chevron-up').toggleClass('animate-down');
+        });
+    }
+    devPlan.bindAnimation = bindAnimation;
+})(devPlan || (devPlan = {}));
+var devPlan;
+(function (devPlan) {
+    var Generate = (function () {
+        function Generate() {
+        }
+        Generate.dateInformation = function (activity) {
+            return '<li class="list-group-item list-group-item-info date"><p id="' + activity.getDate() + '" class="h5" >' + '<a data-toggle="collapse" data-parent="#accordion" href="#' + activity.getDate() + '.activities" class="">' + (activity.getDayOfWeek() + ', ' + activity.getDate()) + '' + '</a>' + '<a data-toggle="collapse" data-parent="#accordion" href="#' + activity.getDate() + '.activities" class="pull-right"><i class="fa fa-fw fa-chevron-up animate-transform"></i></a>' + '</p></li>';
+        };
+
+        Generate.noteInformation = function (activity) {
+            if (devPlan.Settings.getActivityNote() && activity.getNotes()) {
+                return '<p class="note" title="Notatka dotycząca zajęć">Notatka: ' + activity.getNotes() + '</p>';
+            }
+            return '';
+        };
+
+        Generate.nameInformation = function (activity) {
+            if (activity.getName().length > 0) {
+                return '<span class="name" title="Przedmiot: ' + activity.getName() + '">' + activity.getName() + '</span>';
+            }
+            return '<span span="name" title="Przedmiot: ' + activity.getName() + '">' + 'brak nazwy zajęć' + '</span>';
+        };
+
+        Generate.bellInformation = function (activity) {
+            if (devPlan.Settings.getActivityBell()) {
+                return '<span class="bell" title="Zajęcia rozpoczynają się o: ' + activity.getStartsAt() + ' i kończą o ' + activity.getEndsAt() + '">' + '<i class="fa fa-fw fa-bell"></i>' + activity.getStartsAt() + " - " + activity.getEndsAt() + '</span>';
+            }
+            return '';
+        };
+
+        Generate.categoryInformation = function (activity) {
+            if (devPlan.Settings.getActivityCategory()) {
+                return '<span class="label label-danger category" title="Typ zajęć">' + '<i class="fa fa-fw fa-tag"></i>' + activity.getCategory() + '</span>';
+            }
+            return '';
+        };
+
+        Generate.locationInformation = function (activity) {
+            if (devPlan.Settings.getActivityLocation() && activity.getPlace().getLocation().length > 0) {
+                return '<span class="location" title="Kliknij aby zobaczyć devPlan: ' + activity.getPlace().getLocation() + '"><i class="fa fa-fw fa-map-marker"></i>' + '<a href="timetable.html?timetable=p' + activity.getPlace().getId() + '">' + activity.getPlace().getLocation() + '</a>' + '</span>';
+            }
+            return '';
+        };
+
+        Generate.activityCounter = function (min, max) {
+            if (devPlan.Settings.getClassCounter()) {
+                return '<span class="label label-info counter" title="Zajęcia z koleji: ' + min + '"><i class="fa fa-fw fa-info-circle"></i>' + min + ' / ' + max + '</span><wbr>';
+            } else {
+                return '';
+            }
+        };
+
+        Generate.hourInformation = function (value, have, all) {
+            if (devPlan.Settings.getClassHourCounter()) {
+                return '<span class="label label-default hour" title="Ilość jednostek lekcyjnych:"><i class="fa fa-fw fa-clock-o"></i>' + ((have - value) + 1) + ' - ' + have + ' / ' + all + '</span> ';
+            }
+            return '';
+        };
+
+        Generate.tutorInformation = function (activity) {
+            if (devPlan.Settings.getActivityTutor()) {
+                return '<a class="tutor" href="timetable.html?timetable=t' + activity.getTutor().id + '" title="Kliknij aby zobaczyć devPlan: ' + activity.getTutor().getName() + '">' + activity.getTutor().getName() + '</a>' + (activity.getTutor().getMoodleUrl() != null ? '<a class="tutor" href="' + activity.getTutor().getMoodleUrl() + '" title=" ' + activity.getTutor().getName() + ' - Wizytówka E-Uczelna "><i class="fa fa-globe fa-fw"></i></a>' : "");
+            }
+            return '';
+        };
+        return Generate;
+    })();
+    devPlan.Generate = Generate;
+})(devPlan || (devPlan = {}));
 var Cash;
 (function (Cash) {
     
@@ -969,75 +1047,6 @@ var devPlan;
     })();
     devPlan.Settings = Settings;
 })(devPlan || (devPlan = {}));
-var devPlan;
-(function (devPlan) {
-    var Generate = (function () {
-        function Generate() {
-        }
-        Generate.dateInformation = function (activity) {
-            return '<li id="date' + activity.getDate() + '" class="list-group-item list-group-item-info date"><a data-toggle="collapse" data-parent="#accordion" href="#' + activity.getDate() + '.activities">' + (activity.getDayOfWeek() + ', ' + activity.getDate()) + '' + '</a>' + '</li>';
-        };
-
-        Generate.noteInformation = function (activity) {
-            if (devPlan.Settings.getActivityNote() && activity.getNotes()) {
-                return '<p class="note" title="Notatka dotycząca zajęć">Notatka: ' + activity.getNotes() + '</p>';
-            }
-            return '';
-        };
-
-        Generate.nameInformation = function (activity) {
-            if (activity.getName().length > 0) {
-                return '<span class="name" title="Przedmiot: ' + activity.getName() + '">' + activity.getName() + '</span>';
-            }
-            return '<span span="name" title="Przedmiot: ' + activity.getName() + '">' + 'brak nazwy zajęć' + '</span>';
-        };
-
-        Generate.bellInformation = function (activity) {
-            if (devPlan.Settings.getActivityBell()) {
-                return '<span class="bell" title="Zajęcia rozpoczynają się o: ' + activity.getStartsAt() + ' i kończą o ' + activity.getEndsAt() + '">' + '<i class="fa fa-fw fa-bell"></i>' + activity.getStartsAt() + " - " + activity.getEndsAt() + '</span>';
-            }
-            return '';
-        };
-
-        Generate.categoryInformation = function (activity) {
-            if (devPlan.Settings.getActivityCategory()) {
-                return '<span class="label label-danger category" title="Typ zajęć">' + '<i class="fa fa-fw fa-tag"></i>' + activity.getCategory() + '</span>';
-            }
-            return '';
-        };
-
-        Generate.locationInformation = function (activity) {
-            if (devPlan.Settings.getActivityLocation() && activity.getPlace().getLocation().length > 0) {
-                return '<span class="location" title="Kliknij aby zobaczyć devPlan: ' + activity.getPlace().getLocation() + '"><i class="fa fa-fw fa-map-marker"></i>' + '<a href="timetable.html?timetable=p' + activity.getPlace().getId() + '">' + activity.getPlace().getLocation() + '</a>' + '</span>';
-            }
-            return '';
-        };
-
-        Generate.activityCounter = function (min, max) {
-            if (devPlan.Settings.getClassCounter()) {
-                return '<span class="label label-info counter" title="Zajęcia z koleji: ' + min + '"><i class="fa fa-fw fa-info-circle"></i>' + min + ' / ' + max + '</span><wbr>';
-            } else {
-                return '';
-            }
-        };
-
-        Generate.hourInformation = function (value, have, all) {
-            if (devPlan.Settings.getClassHourCounter()) {
-                return '<span class="label label-default hour" title="Ilość jednostek lekcyjnych:"><i class="fa fa-fw fa-clock-o"></i>' + ((have - value) + 1) + ' - ' + have + ' / ' + all + '</span> ';
-            }
-            return '';
-        };
-
-        Generate.tutorInformation = function (activity) {
-            if (devPlan.Settings.getActivityTutor()) {
-                return '<a class="tutor" href="timetable.html?timetable=t' + activity.getTutor().id + '" title="Kliknij aby zobaczyć devPlan: ' + activity.getTutor().getName() + '">' + activity.getTutor().getName() + '</a>' + (activity.getTutor().getMoodleUrl() != null ? '<a class="tutor" href="' + activity.getTutor().getMoodleUrl() + '" title=" ' + activity.getTutor().getName() + ' - Wizytówka E-Uczelna "><i class="fa fa-globe fa-fw"></i></a>' : "");
-            }
-            return '';
-        };
-        return Generate;
-    })();
-    devPlan.Generate = Generate;
-})(devPlan || (devPlan = {}));
 
 
 var devPlan;
@@ -1358,6 +1367,8 @@ var devPlan;
                 data = data + '<li class="list-group-item"><p class="h4 text-center">Przykro nam. Ten devPlan nie posiada żadnych zajęć.</p>';
             }
             $("#timetable-results").append(data);
+
+            devPlan.bindAnimation();
         };
         Init.groups = [];
 
@@ -1382,4 +1393,3 @@ function sendIssue() {
         }
     });
 }
-//# sourceMappingURL=devPlan.js.map

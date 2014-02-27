@@ -38,7 +38,7 @@ module devPlan {
             }
             return '<strong>' +
                 '<span title="Przedmiot: ' + activity.getName() + '">' +
-                'Brak zajeć' +
+                '<small>brak nazwy zajęć</small>' +
                 '</span>' +
                 '</strong>';
         }

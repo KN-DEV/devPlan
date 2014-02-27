@@ -989,7 +989,7 @@ var devPlan;
             if (activity.getName().length > 0) {
                 return '<strong>' + '<span title="Przedmiot: ' + activity.getName() + '">' + activity.getName() + '</span>' + '</strong>';
             }
-            return '<strong>' + '<span title="Przedmiot: ' + activity.getName() + '">' + 'Brak zajeć' + '</span>' + '</strong>';
+            return '<strong>' + '<span title="Przedmiot: ' + activity.getName() + '">' + '<small>brak nazwy zajęć</small>' + '</span>' + '</strong>';
         };
 
         Generate.bellInformation = function (activity) {

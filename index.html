@@ -26,34 +26,31 @@
 			<div class="row">
 				<div class="col-lg-12">
 					<div class="navbar-header">
-						<button type="button"
-							class="navbar-btn btn btn-link visible-xs pull-right"
-							data-toggle="collapse"
-							data-target="#bs-example-navbar-collapse-1">
-							<i class="fa fa-align-justify"></i>
-						</button>
-						<a class="navbar-brand" href="index.html" title="devPlan"><strong>devPlan</strong></a>
+						<a href="timetable.html"
+							class="navbar-btn btn btn-link pull-right visible-xs"
+							title="Mój devPlan"> <i class="fa fa-fw fa-calendar-o"></i>
+						</a> <a html="search.html"
+							class="navbar-btn btn btn-link pull-right visible-xs"
+							title="Szukaj"><i class="fa fa-fw fa-search"></i></a><a
+							class="navbar-brand" href="index.html" title="devPlan"><strong>devPlan</strong></a>
 					</div>
-					<div class="collapse navbar-collapse"
-						id="bs-example-navbar-collapse-1">
-						<div class="navbar-form navbar-right hidden-xs">
-							<a href="timetable.html" class="btn btn-success">Mój devPlan</a>
+					<div class="navbar-form navbar-right hidden-xs">
+						<a href="timetable.html" class="btn btn-success"><i
+							class="fa fa-fw fa-calendar-o"></i> Mój devPlan</a>
+					</div>
+					<ul class="nav navbar-nav navbar-right hidden-xs">
+						<li><a href="search.html" title="Szukaj"><i
+								class="fa fa-fw fa-search"></i> Szukaj</a></li>
+					</ul>
+					<form class="navbar-form navbar-right hidden-xs"
+						action="search.html" method="get" role="search">
+						<div id="navbar-search" class="form-group">
+							<input id="search-input" name="search" autocomplete="off"
+								disabled="disabled" type="text" class="form-control" size="50"
+								placeholder="KrDzIs3011Io / dr Paweł Wołoszyn" />
 						</div>
-						<ul class="nav navbar-nav navbar-right">
-							<li><a href="search.html" title="Szukaj">Szukaj</a></li>
-							<li class="visible-xs"><a href="timetable.html"
-								title="Mój plan">Mój plan</a></li>
-						</ul>
-						<form class="navbar-form navbar-right hidden-xs"
-							action="search.html" method="get" role="search">
-							<div id="navbar-search" class="form-group">
-								<input id="search-input" name="search" autocomplete="off"
-									disabled="disabled" type="text" class="form-control" size="50"
-									placeholder="KrDzIs3011Io / dr Paweł Wołoszyn" />
-							</div>
-						</form>
-						<p class="navbar-text navbar-right hidden-xs">Szybki devPlan:</p>
-					</div>
+					</form>
+					<p class="navbar-text navbar-right hidden-xs">Szybki devPlan:</p>
 				</div>
 			</div>
 		</div>

@@ -33,7 +33,7 @@ li.list-group-item.activity>p {
 	margin-bottom: 3px;
 }
 
-li.devPlan{
+li.devPlan {
 	background-color: #5cb85c;
 }
 
@@ -58,3 +58,49 @@ i.animate-down {
     -ms-transform: rotate(180deg);
     transform: rotate(180deg);
 }   
+
+li.date {
+	
+}
+
+span.name {
+	
+}
+
+p.note {
+	
+}
+
+span.bell {
+	
+}
+
+span.category {
+	
+}
+
+span.location {
+	
+}
+
+span.counter {
+	
+}
+
+span.hour {
+	
+}
+
+a.tutor {
+	
+}
+
+li.activity {
+	
+}
+/**
+*etc
+*/
+li.activity.egzamin {
+	
+}

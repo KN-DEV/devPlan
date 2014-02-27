@@ -24,10 +24,10 @@
 			<div class="row">
 				<div class="col-lg-12">
 					<div class="navbar-header">
-						<a href="timetable.html"
-							class="navbar-btn btn btn-link pull-right visible-xs"
-							title="Mój devPlan"> <i class="fa fa-fw fa-calendar-o"></i>
-						</a> <a html="search.html"
+						<a href="timetable.html" 
+							class="navbar-btn btn btn-link pull-right visible-xs text-success"
+							title="Mój devPlan"><i class="fa fa-fw fa-calendar-o"></i></a> <a
+							hhref="search.html"
 							class="navbar-btn btn btn-link pull-right visible-xs"
 							title="Szukaj"><i class="fa fa-fw fa-search"></i></a><a
 							class="navbar-brand" href="index.html" title="devPlan"><strong>devPlan</strong></a>
@@ -53,11 +53,9 @@
 			</div>
 		</div>
 	</nav>
-
 	<div class="container" style="margin-top: 70px">
 		<div class="row">
 			<div class="col-lg-8 col-lg-offset-2">
-
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						<div class="row">
@@ -73,17 +71,14 @@
 											class="fa fa-gears"></i>
 										</a>
 										<button class="btn btn-primary" data-toggle="modal"
-											data-target="#myModal">
+											title="Link do twojego devPlan'u" data-target="#myModal">
 											<i class="fa fa-fw fa-link"></i>
 										</button>
-
 									</div>
-
 								</div>
 							</div>
 						</div>
 					</div>
-
 					<div id="timetable-panel" class=" panel-collapse collapse ">
 						<div class="panel-body">
 							<div class="row">
@@ -97,10 +92,9 @@
 							<div class="row">
 								<div class="col-lg-12">
 									<div class="tab-content">
-
 										<div class="tab-pane active" id="view">
 											<fieldset>
-												<p class="h4">Ustawienia widoku</p>
+												<legend>Ustawienia okresu czasu</legend>
 												<div class="radio">
 													<label> <input type="radio" name="timetableType"
 														id="timetableType_1" value="1"
@@ -115,6 +109,41 @@
 														Wyświetlaj cały plan zajęć
 													</label>
 												</div>
+											</fieldset>
+											<fieldset>
+												<legend>Ustawienia wyglądu</legend>
+												<div class="radio">
+													<label> <input type="radio" name="timetableType"
+														id="timetableType_1" value="1"
+														onClick="devPlan.Settings.setTimetableType(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
+														3 dniowy
+													</label>
+												</div>
+												<div class="radio">
+													<label> <input type="radio" name="timetableType"
+														id="timetableType_0" value="0"
+														onClick="devPlan.Settings.setTimetableType(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
+														Tygodniowy
+													</label>
+												</div>
+												<div class="radio">
+													<label> <input type="radio" name="timetableType"
+														id="timetableType_0" value="0"
+														onClick="devPlan.Settings.setTimetableType(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
+														Miesięczny
+													</label>
+												</div>
+												<div class="radio">
+													<label> <input type="radio" name="timetableType"
+														id="timetableType_0" value="0"
+														onClick="devPlan.Settings.setTimetableType(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
+														Pełny
+													</label>
+												</div>
+
+											</fieldset>
+											<fieldset>
+												<legend>Ustawienia informacji</legend>
 												<div class="checkbox">
 													<label> <input id="activityTutor" type="checkbox"
 														onClick="devPlan.Settings.setActivityTutor(!devPlan.Settings.getActivityTutor()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">

@@ -79,34 +79,10 @@
 			</div>
 		</div>
 	</div>
-	<footer>
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-12 col-md-12 col-sm-12">
-					<ul class="list-inline">
-						<li><a href="index.html"><strong>devPlan</strong></a></li>
-						<li class="footer-menu-divider">&sdot;</li>
-						<li><a href="search.html">Szukaj</a></li>
-						<li class="footer-menu-divider">&sdot;</li>
-						<li><a href="timetable.html">Mój plan</a></li>
-						<li><a data-toggle="modal" data-target="#issue" class="">Zgłoś
-								błąd</a></li>
-					</ul>
-					<p class="copyright text-muted small">
-						<a href="http://dev.uek.krakow.pl">Koło Naukowe Programistów
-							dev</a>
-					</p>
-				</div>
-			</div>
-		</div>
-	</footer>
-
-
-
-	<!-- Modal -->
+	<!-- issue start-->
 	<div class="modal fade" id="issue" tabindex="-1" role="dialog"
 		aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
+		<div class="modal-dialog modal-sm">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal"
@@ -125,7 +101,6 @@
 							class="form-control" row="3"></textarea>
 					</div>
 				</div>
-
 				<div class="modal-footer">
 					<button class="btn btn-primary" data-dismiss="modal"
 						aria-hidden="true" onclick="sendIssue();">
@@ -133,12 +108,31 @@
 					</button>
 				</div>
 			</div>
-			<!-- /.modal-content -->
 		</div>
-		<!-- /.modal-dialog -->
 	</div>
-	<!-- /.modal -->
-
+	<!-- issue stop -->
+	<footer>
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12 col-md-12 col-sm-12">
+					<ul class="list-inline">
+						<li><a href="index.html"><strong>devPlan</strong></a></li>
+						<li class="footer-menu-divider">&sdot;</li>
+						<li><a href="search.html">Szukaj</a></li>
+						<li class="footer-menu-divider">&sdot;</li>
+						<li><a href="timetable.html">Mój plan</a></li>
+						<li class="footer-menu-divider">&sdot;</li>
+						<li><a data-toggle="modal" data-target="#issue" class="">Zgłoś
+								błąd</a></li>
+					</ul>
+					<p class="copyright text-muted small">
+						<a href="http://dev.uek.krakow.pl">Koło Naukowe Programistów
+							dev</a>
+					</p>
+				</div>
+			</div>
+		</div>
+	</footer>
 	<script src="assets/js/jquery-1.10.2.js"></script>
 	<script src="assets/js/jquery.cookie.js"></script>
 	<script src="assets/js/bootstrap.min.js"></script>

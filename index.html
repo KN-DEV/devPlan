@@ -16,7 +16,6 @@
 <link
 	href='http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900,100italic,300italic,400italic,700italic,900italic'
 	rel='stylesheet' type='text/css'>
-<!-- <link href="assets/css/typeahead.css" rel="stylesheet"> -->
 <link href="assets/css/landing-page.css" rel="stylesheet">
 <link href="assets/css/custom.css" rel="stylesheet">
 </head>
@@ -181,6 +180,76 @@
 			</div>
 		</div>
 	</div>
+	<!-- devPlan create start -->
+	<div class="modal fade" id="devPlan-wizard" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">Stwórz swój plan</h4>
+				</div>
+				<div class="modal-body">
+					<div class="tab-pane" id="devPlan">
+						<fieldset>
+							<p class="h4">Twój devPlan</p>
+							<p id="devPlanUrl"></p>
+							<p id="devPlanParams" class="lead"></p>
+
+							<div class="form-group">
+								<label>Wprowadz nazwe grupy lub wykładowcy</label> <input id="0"
+									autocomplete="off" disabled="disabled" value=""
+									name="devPlanTypeahead[]" type="text"
+									class="form-control devPlanTypeahead"
+									placeholder="KrDzIs3011Io / dr Paweł Wołoszyn" />
+							</div>
+							<div class="form-group"></div>
+						</fieldset>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-primary"
+						onclick="devPlan.Settings.saveTimetable();window.location.replace('timetable.html')">
+						<i class="fa fa-fw fa-save"></i> Zapisz devPlan
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- devPlan create stop -->
+	<!-- issue start-->
+	<div class="modal fade" id="issue" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">Zgłoś błąd</h4>
+				</div>
+				<div class="modal-body">
+					<p>Twoje zgłoszenie bardzo nam pomoże w usprawnianiu devPlanu.</p>
+					<div class="form-group">
+						<label>Nik / Email</label> <input id="issueEmail" type="email"
+							name="email" type="text" class="form-control" placeholder="nik" />
+					</div>
+					<div class="form-group">
+						<label>Opis błędu</label>
+						<textarea id="issueContent" name="content" value=""
+							class="form-control" row="3"></textarea>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-primary" data-dismiss="modal"
+						aria-hidden="true" onclick="sendIssue();">
+						<i class="fa fa-fw fa-save"></i>Wyślij zgłoszenie
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- issue stop -->
 	<footer>
 		<div class="container">
 			<div class="row">
@@ -203,84 +272,6 @@
 			</div>
 		</div>
 	</footer>
-
-	<!-- Modal -->
-	<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
-		aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal"
-						aria-hidden="true">&times;</button>
-					<h4 class="modal-title" id="myModalLabel">Stwórz swój plan</h4>
-				</div>
-				<div class="modal-body">
-					<div class="tab-pane" id="devPlan">
-						<fieldset>
-							<p class="h4">Twój devPlan</p>
-							<p id="devPlanUrl"></p>
-							<p id="devPlanParams" class="lead"></p>
-							<div class="form-group">
-								<label>Wprowadz nazwe grupy lub wykładowcy</label> <input id="0"
-									autocomplete="off" disabled="disabled" value=""
-									name="devPlanTypeahead[]" type="text"
-									class="form-control devPlanTypeahead"
-									placeholder="KrDzIs3011Io / dr Paweł Wołoszyn" />
-							</div>
-							<div class="form-group"></div>
-						</fieldset>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button class="btn btn-primary"
-						onclick="devPlan.Settings.saveTimetable();window.location.replace('timetable.html')">
-						<i class="fa fa-fw fa-save"></i> Zapisz devPlan
-					</button>
-				</div>
-			</div>
-			<!-- /.modal-content -->
-		</div>
-		<!-- /.modal-dialog -->
-	</div>
-	<!-- /.modal -->
-
-
-
-	<!-- Modal -->
-	<div class="modal fade" id="issue" tabindex="-1" role="dialog"
-		aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal"
-						aria-hidden="true">&times;</button>
-					<h4 class="modal-title" id="myModalLabel">Zgłoś błąd</h4>
-				</div>
-				<div class="modal-body">
-					<p>Twoje zgłoszenie bardzo nam pomoże w usprawnianiu devPlanu.</p>
-					<div class="form-group">
-						<label>Nik / Email</label> <input id="issueEmail" type="email"
-							name="email" type="text" class="form-control" placeholder="nik" />
-					</div>
-					<div class="form-group">
-						<label>Opis błędu</label>
-						<textarea id="issueContent" name="content" value=""
-							class="form-control" row="3"></textarea>
-					</div>
-				</div>
-
-				<div class="modal-footer">
-					<button class="btn btn-primary" data-dismiss="modal"
-						aria-hidden="true" onclick="sendIssue();">
-						<i class="fa fa-fw fa-save"></i>Wyślij zgłoszenie
-					</button>
-				</div>
-			</div>
-			<!-- /.modal-content -->
-		</div>
-		<!-- /.modal-dialog -->
-	</div>
-	<!-- /.modal -->
 	<script src="assets/js/jquery-1.10.2.js"></script>
 	<script src="assets/js/jquery.cookie.js"></script>
 	<script src="assets/js/bootstrap.min.js"></script>

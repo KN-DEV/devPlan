@@ -13,7 +13,7 @@ module devPlan {
             return '<li class="list-group-item list-group-item-info date"><p id="' + activity.getDate() + '" class="h5" ><strong>' +
                 (activity.getDayOfWeek() + ', ' + activity.getDate()) + '' +
                 '</strong>' +
-                '<a data-toggle="collapse" data-parent="#accordion" href="#' + activity.getDate() + '.activities" class="pull-right"><i class="fa fa-fw fa-chevron-up"></i></a>' +
+                '<a data-toggle="collapse" data-parent="#accordion" href="#' + activity.getDate() + '.activities" class="pull-right"><i class="fa fa-fw fa-chevron-up animate-up"></i></a>' +
                 '</p></li>';
         }
         /**

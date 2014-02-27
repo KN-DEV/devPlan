@@ -36,3 +36,25 @@ li.list-group-item.activity>p {
 li.devPlan{
 	background-color: #5cb85c;
 }
+
+i.animate-transform {
+    -webkit-transition: 0.3s; 
+    -moz-transition: 0.3s; 
+    -o-transition: 0.3s; 
+    -ms-transition: 0.3s; 
+    transition: 0.3s; 
+}
+
+i.animate-down {
+    -webkit-transition: 0.3s; 
+    -moz-transition: 0.3s; 
+    -o-transition: 0.3s; 
+    -ms-transition: 0.3s; 
+    transition: 0.3s; 
+
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    transform: rotate(180deg);
+}   

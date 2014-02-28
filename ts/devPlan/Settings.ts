@@ -48,6 +48,10 @@ module devPlan {
          */
         private static timetableType: number = 1;
         /**
+        * 
+        */
+        private static timetablePeriod: number = 0;
+        /**
          * 
          */
         public static timetableParams: Cash.Params = new Cash.Params();
@@ -170,6 +174,16 @@ module devPlan {
             Settings.timetableType = status;
             return Settings;
         }
+        static getTimetablePeriod(): number {
+            return Settings.timetablePeriod;
+        }
+        /**
+         *
+         */
+        static setTimetablePeriod(status: number = 0): Settings {
+            Settings.timetablePeriod = status;
+            return Settings;
+        }
         static getTimetableParams(): Cash.Params {
             return Settings.timetableParams;
         }
@@ -206,6 +220,7 @@ module devPlan {
                 Settings.setActivityGroup(data.activityGroup);
                 Settings.setActivityTutor(data.activityTutor);
                 Settings.setTimetableType(data.timetableType);
+                Settings.setTimetablePeriod(data.timetablePeriod);
 
             }
             var data: any = $.cookie('devPlan.Params');
@@ -237,7 +252,8 @@ module devPlan {
             if (Settings.getActivityTutor()) {
                 $("#activityTutor").attr("checked", "checked");
             }
-            $('#timetableType_' + Settings.getTimetableType()).attr("checked", "checked");
+            $('#timetableType' + Settings.getTimetableType()).attr("checked", "checked");
+            $('#timetablePeriod' + Settings.getTimetablePeriod()).attr("checked", "checked");
             //  $('#activityNameFilter').attr('value', Settings.getActivityNameFilter());
 
 
@@ -273,6 +289,7 @@ module devPlan {
                 activityGroup: Settings.getActivityGroup(),
                 activityTutor: Settings.getActivityTutor(),
                 timetableType: Settings.getTimetableType(),
+                timetablePeriod: Settings.getTimetablePeriod(),
                 timetableParams: Settings.getTimetableParams(),
                 activityNameFilter: ''
             };
@@ -329,8 +346,7 @@ module devPlan {
                 Settings.setTimetableParams(Settings.getTimetableParams().addPlace(p));
             }
 
-            $("#devPlanUrl").empty().append('<p class="form-control-static">https://devplan.uek.krakow.pl/timetable.html?timetable=' + Settings.getTimetableParams().toString()+'</p>');
-            console.log("Added param", item);
+            $("#devPlanUrl").empty().append('<p class="form-control-static">https://devplan.uek.krakow.pl/timetable.html?timetable=' + Settings.getTimetableParams().toString() + '</p>');
 
         }
         static removeTimetableParam(item: JQuery) {
@@ -341,8 +357,13 @@ module devPlan {
             if (item.attr("type") == "t") {
                 Settings.setTimetableParams(Settings.getTimetableParams().removeTutor(parseInt(item.attr("value"))));
             }
+            if (item.attr("type") == "p") {
+                Settings.setTimetableParams(Settings.getTimetableParams().removePlace(parseInt(item.attr("value"))));
+            }
 
-            $("#devPlanUrl").append("https://devplan.uek.krakow.pl/timetable.html?timetable=" + Settings.getTimetableParams().toString());
+            $("#devPlanUrl")
+                .empty()
+                .append("https://devplan.uek.krakow.pl/timetable.html?timetable=" + Settings.getTimetableParams().toString());
             item.remove();
         }
 

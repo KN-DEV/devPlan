@@ -790,6 +790,15 @@ var devPlan;
             Settings.timetableType = status;
             return Settings;
         };
+        Settings.getTimetablePeriod = function () {
+            return Settings.timetablePeriod;
+        };
+
+        Settings.setTimetablePeriod = function (status) {
+            if (typeof status === "undefined") { status = 0; }
+            Settings.timetablePeriod = status;
+            return Settings;
+        };
         Settings.getTimetableParams = function () {
             return Settings.timetableParams;
         };
@@ -822,6 +831,7 @@ var devPlan;
                 Settings.setActivityGroup(data.activityGroup);
                 Settings.setActivityTutor(data.activityTutor);
                 Settings.setTimetableType(data.timetableType);
+                Settings.setTimetablePeriod(data.timetablePeriod);
             }
             var data = $.cookie('devPlan.Params');
             if (data) {
@@ -851,7 +861,8 @@ var devPlan;
             if (Settings.getActivityTutor()) {
                 $("#activityTutor").attr("checked", "checked");
             }
-            $('#timetableType_' + Settings.getTimetableType()).attr("checked", "checked");
+            $('#timetableType' + Settings.getTimetableType()).attr("checked", "checked");
+            $('#timetablePeriod' + Settings.getTimetablePeriod()).attr("checked", "checked");
 
             return Settings;
         };
@@ -883,6 +894,7 @@ var devPlan;
                 activityGroup: Settings.getActivityGroup(),
                 activityTutor: Settings.getActivityTutor(),
                 timetableType: Settings.getTimetableType(),
+                timetablePeriod: Settings.getTimetablePeriod(),
                 timetableParams: Settings.getTimetableParams(),
                 activityNameFilter: ''
             };
@@ -930,7 +942,6 @@ var devPlan;
             }
 
             $("#devPlanUrl").empty().append('<p class="form-control-static">https://devplan.uek.krakow.pl/timetable.html?timetable=' + Settings.getTimetableParams().toString() + '</p>');
-            console.log("Added param", item);
         };
         Settings.removeTimetableParam = function (item) {
             var item = $(item);
@@ -940,8 +951,11 @@ var devPlan;
             if (item.attr("type") == "t") {
                 Settings.setTimetableParams(Settings.getTimetableParams().removeTutor(parseInt(item.attr("value"))));
             }
+            if (item.attr("type") == "p") {
+                Settings.setTimetableParams(Settings.getTimetableParams().removePlace(parseInt(item.attr("value"))));
+            }
 
-            $("#devPlanUrl").append("https://devplan.uek.krakow.pl/timetable.html?timetable=" + Settings.getTimetableParams().toString());
+            $("#devPlanUrl").empty().append("https://devplan.uek.krakow.pl/timetable.html?timetable=" + Settings.getTimetableParams().toString());
             item.remove();
         };
         Settings.classCounter = false;
@@ -961,6 +975,8 @@ var devPlan;
         Settings.activityTutor = true;
 
         Settings.timetableType = 1;
+
+        Settings.timetablePeriod = 0;
 
         Settings.timetableParams = new Cash.Params();
 

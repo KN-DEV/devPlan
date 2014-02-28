@@ -184,9 +184,9 @@ module devPlan {
             Settings.timetablePeriod = status;
             return Settings;
         }
-        
+
         static getTimetableParams(): Cash.Params {
-            console.log( Settings.timetableParams);
+            console.log(Settings.timetableParams);
             return Settings.timetableParams;
         }
         /**
@@ -348,8 +348,7 @@ module devPlan {
                     '</button><wbr>');
                 Settings.setTimetableParams(Settings.getTimetableParams().addPlace(p));
             }
-
-            $("#devPlanUrl").empty().append('<p class="form-control-static">https://devplan.uek.krakow.pl/timetable.html?timetable=' + Settings.getTimetableParams().toString() + '</p>');
+            $("#devPlanUrl").empty().append('<p class="form-control-static"><a href="/timetable.html?timetable=' + Settings.getTimetableParams().toString() + '">link</a></p>');
 
         }
         static removeTimetableParam(item: JQuery) {

@@ -22,22 +22,34 @@
 	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
 		<div class="container">
 			<div class="row">
-				<div class="col-lg-12">
+				<div class="col-lg-12 col-md-12 col-sm-12 col-12-xs">
 					<div class="navbar-header">
-						<a id="devPlanWizardNavbarIconLink"
-							class="navbar-btn btn btn-link pull-right visible-xs"
-							title="Mój devPlan" data-toggle="modal"
-							data-target="#devPlanWizard"><i
-							class="fa fa-fw fa-align-justify"></i></a> <a href="search.html"
-							class="navbar-btn btn btn-link pull-right visible-xs"
-							title="Szukaj"><i class="fa fa-fw fa-search"></i></a> <a
-							class="navbar-brand" href="index.html" title="devPlan"><strong>devPlan</strong></a>
+						<div class="btn-group pull-right btn-group-sm  visible-xs">
+							<a href="search.html" class="navbar-btn btn btn-success"
+								title="Szukaj"><i class="fa fa-fw fa-search"></i></a> 
+								<a
+								id="devPlanWizardNavbarIconLink" class="navbar-btn btn btn-info"
+								title="Mój devPlan" data-toggle="modal"
+								data-target="#devPlanWizard"><i
+								class="fa fa-fw fa-align-justify"></i></a>
+								 <a
+								id="devPlanSettingsNavbarIconLink" class="navbar-btn btn btn-primary"
+								data-toggle="modal" title="Twój devPlan"
+								data-target="#devPlanWizard"><i class="fa fa-fw fa-gear"></i>
+							</a>
+						</div>
+						<a class="navbar-brand" href="index.html" title="devPlan"><strong>devPlan</strong></a>
 					</div>
 					<div class="navbar-form navbar-right hidden-xs">
-						<a id="devPlanWizardNavbarLink" class="btn btn-info"
-							data-toggle="modal" data-target="#devPlanWizard">Stwórz swój
-							<strong>devPlan</strong>
-						</a>
+						<div class="btn-group">
+							<a id="devPlanWizardNavbarLink" class="btn btn-info"
+								data-toggle="modal" data-target="#devPlanWizard">Stwórz <strong>devPlan</strong>
+							</a> 
+							<a id="devPlanSettingsNavbarLink" class="btn btn-primary"
+								data-toggle="modal" title="Twój devPlan"
+								data-target="#devPlanWizard"><i class="fa fa-fw fa-gear"></i>
+							</a>
+						</div>
 					</div>
 					<ul class="nav navbar-nav navbar-right hidden-xs">
 						<li><a href="search.html" title="Szukaj"><i
@@ -47,7 +59,7 @@
 						method="get" role="search">
 						<div id="navbar-search" class="form-group">
 							<input id="search-input" name="search" autocomplete="off"
-								disabled="disabled" type="text" class="form-control" size="50"
+								disabled="disabled" type="text" class="form-control" size="40"
 								placeholder="KrDzIs3011Io / dr Paweł Wołoszyn" />
 						</div>
 					</form>
@@ -71,11 +83,6 @@
 										<button class="btn btn-info" data-toggle="modal"
 											data-parent="#accordion" href="#devPlan-settings">
 											<i class="fa fa-wrench"></i>
-										</button>
-										<button class="btn btn-primary" data-toggle="modal"
-											title="Link do twojego devPlan'u"
-											data-target="#devPlanWizard">
-											<i class="fa fa-fw fa-link"></i>
 										</button>
 									</div>
 								</div>
@@ -221,14 +228,16 @@
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal"
 						aria-hidden="true">&times;</button>
-					<h4 class="modal-title" id="myModalLabel">Stwórz swój plan</h4>
+					<h4 class="modal-title" id="myModalLabel">Twój plan</h4>
 				</div>
 				<div class="modal-body">
 					<div class="tab-pane" id="devPlan">
 						<fieldset>
-							<p class="h4">Twój devPlan</p>
+<p class="h4">Podziel się swoim devPlanem</p>
 							<p id="devPlanUrl"></p>
-							<p id="devPlanParams" class="lead"></p>
+							<p class="lead">
+								<span id="devPlanParams"></span>
+							</p>
 
 							<div class="form-group">
 								<label>Wprowadz nazwe grupy lub wykładowcy</label> <input id="0"
@@ -243,9 +252,13 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Zamknij</button>
+					<button type="button" class="btn btn-info" data-dismiss="modal">
+						<i class="fa fa-fw fa-qrcode"></i>QR Code
+					</button>
 					<button class="btn btn-primary"
 						onclick="devPlan.Settings.saveTimetable(); window.location.replace('timetable.html')">
-						Zapisz devPlan</button>
+						Zapamiętaj</button>
+
 				</div>
 			</div>
 		</div>

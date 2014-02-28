@@ -58,7 +58,8 @@ li.date {
 }
 
 span.name {
-	
+	font-size: 1.15em;
+	font-style: oblique;
 }
 
 p.note {
@@ -70,23 +71,27 @@ span.bell {
 }
 
 span.category {
-	
+float:right;
 }
 
-span.location {
-	
+a.location {
+		font-size:1em;
 }
 
 span.counter {
-	
+	float:right;
 }
 
 span.hour {
-	
+	float:right;
 }
 
 a.tutor {
-	
+	float:right;
+	font-size: 0.8em;
+}
+a.group {
+	font-size: 0.8em;
 }
 
 li.activity {
@@ -95,8 +100,23 @@ li.activity {
 /**
 *etc
 */
-li.activity.egzamin {
-	
+
+
+li.list-group-item.activity.ćwiczenia {
+	background-color: #fcf8e3;
+}
+li.list-group-item.activity.lektorat {
+	background-color: #fcf8e3;
+}
+li.list-group-item.activity.wykład,li.list-group-item.activity.wykład-do-wyboru{
+	background-color: #dff0d8;
+}
+li.list-group-item.activity.egzamin {
+	background-color: #f2dede;
+}
+
+li .activity  {
+	background-color: #fff;
 }
 
 .collapsing {

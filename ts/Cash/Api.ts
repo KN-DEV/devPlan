@@ -19,7 +19,7 @@ module Cash {
                 url: Cash.Api.host + "groups",
                 type: "GET",
                 dataType: 'json',
-                cache: false,
+                cache: true,
                 success: (data) => {
                     console.log("Cash.Api.getGroupsLis() - success", data);
                 },
@@ -36,7 +36,7 @@ module Cash {
                 url: Cash.Api.host + "tutors",
                 type: "GET",
                 dataType: 'json',
-                cache: false,
+                cache: true,
                 success: (data) => {
                     console.log("Cash.Api.getTutorsList() - success", data);
                 },
@@ -53,7 +53,7 @@ module Cash {
                 url: Cash.Api.host + "places",
                 type: "GET",
                 dataType: 'json',
-                cache: false,
+                cache: true,
                 success: (data) => {
                     console.log("Cash.Api.getPlacesList() - success", data);
                 },

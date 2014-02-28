@@ -616,7 +616,7 @@ var Cash;
                 url: Cash.Api.host + "groups",
                 type: "GET",
                 dataType: 'json',
-                cache: false,
+                cache: true,
                 success: function (data) {
                     console.log("Cash.Api.getGroupsLis() - success", data);
                 },
@@ -631,7 +631,7 @@ var Cash;
                 url: Cash.Api.host + "tutors",
                 type: "GET",
                 dataType: 'json',
-                cache: false,
+                cache: true,
                 success: function (data) {
                     console.log("Cash.Api.getTutorsList() - success", data);
                 },
@@ -646,7 +646,7 @@ var Cash;
                 url: Cash.Api.host + "places",
                 type: "GET",
                 dataType: 'json',
-                cache: false,
+                cache: true,
                 success: function (data) {
                     console.log("Cash.Api.getPlacesList() - success", data);
                 },
@@ -939,8 +939,7 @@ var devPlan;
                 $("#devPlanParams").append('<button id="p' + t + '" class="devPlanParam btn btn-xs btn-info" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + p + '" type="p">' + item + '' + '</button><wbr>');
                 Settings.setTimetableParams(Settings.getTimetableParams().addPlace(p));
             }
-
-            $("#devPlanUrl").empty().append('<p class="form-control-static">https://devplan.uek.krakow.pl/timetable.html?timetable=' + Settings.getTimetableParams().toString() + '</p>');
+            $("#devPlanUrl").empty().append('<p class="form-control-static"><a href="/timetable.html?timetable=' + Settings.getTimetableParams().toString() + '">link</a></p>');
         };
         Settings.removeTimetableParam = function (item) {
             var item = $(item);
@@ -991,7 +990,7 @@ var devPlan;
         function Generate() {
         }
         Generate.dateInformation = function (activity) {
-            return '<li class="list-group-item list-group-item-info date"><p id="' + activity.getDate() + '" class="h5" >' + '<a data-toggle="collapse" data-parent="#accordion" href="#' + activity.getDate() + '.activities" class="">' + (activity.getDayOfWeek() + ', ' + activity.getDate()) + '' + '</a>' + '<a data-toggle="collapse" data-parent="#accordion" href="#' + activity.getDate() + '.activities" class="pull-right"><i class="fa fa-fw fa-chevron-up animate-transform"></i></a>' + '</p></li>';
+            return '<li class="list-group-item list-group-item-info date"><p id="' + activity.getDate() + '" class="h4" >' + '<a data-toggle="collapse" data-parent="#accordion" href="#' + activity.getDate() + '.activities" class="">' + (activity.getDayOfWeek() + ', ' + activity.getDate()) + '' + '</a>' + '<a data-toggle="collapse" data-parent="#accordion" href="#' + activity.getDate() + '.activities" class="pull-right"><i class="fa fa-fw fa-chevron-up animate-transform"></i></a>' + '</p></li>';
         };
 
         Generate.noteInformation = function (activity) {
@@ -1003,7 +1002,7 @@ var devPlan;
 
         Generate.nameInformation = function (activity) {
             if (activity.getName().length > 0) {
-                return '<span class="name" title="Przedmiot: ' + activity.getName() + '">' + activity.getName() + '</span>';
+                return '<span class="name">' + activity.getName() + '</span>';
             }
             return '<span span="name" title="Przedmiot: ' + activity.getName() + '">' + 'brak nazwy zajęć' + '</span>';
         };
@@ -1024,7 +1023,7 @@ var devPlan;
 
         Generate.locationInformation = function (activity) {
             if (devPlan.Settings.getActivityLocation() && activity.getPlace().getLocation().length > 0) {
-                return '<span class="location" title="Kliknij aby zobaczyć devPlan: ' + activity.getPlace().getLocation() + '"><i class="fa fa-fw fa-map-marker"></i>' + '<a href="timetable.html?timetable=p' + activity.getPlace().getId() + '">' + activity.getPlace().getLocation() + '</a>' + '</span>';
+                return '<span  title="Kliknij aby zobaczyć devPlan: ' + activity.getPlace().getLocation() + '"><i class="fa fa-fw fa-map-marker"></i>' + '<a class="location" href="timetable.html?timetable=p' + activity.getPlace().getId() + '">' + activity.getPlace().getLocation() + '</a>' + '</span>';
             }
             return '';
         };
@@ -1064,7 +1063,6 @@ var devPlan;
     }
     devPlan.bindAnimation = bindAnimation;
 })(devPlan || (devPlan = {}));
-
 var devPlan;
 (function (devPlan) {
     var ActivityHourCounter = (function () {
@@ -1087,16 +1085,21 @@ var devPlan;
                 devPlan.Settings.setTimetableParams(params);
             } else {
                 params = devPlan.Settings.getTimetableParams();
-            }
 
-            if (!params.isEmpty()) {
-                $("#devPlanWizardNavbarIconLink").attr("href", "timetable.html").removeAttr("data-toggle").removeAttr("data-target");
+                if (!params.isEmpty()) {
+                    $("#devPlanWizardNavbarIconLink").attr("href", "timetable.html").removeAttr("data-toggle").removeAttr("data-target");
 
-                $("#devPlanWizardNavbarLink").attr("href", "timetable.html").removeAttr("data-toggle").removeAttr("data-target").empty().toggleClass("btn-info").toggleClass("btn-success").attr("href", "timetable.html").removeAttr("data-toggle").removeAttr("data-target").text("Mój devPlan");
-                $("#devPlanWizardLink").attr("href", "timetable.html").removeAttr("data-toggle").removeAttr("data-target").empty().toggleClass("btn-info").toggleClass("btn-success").text("Mój devPlan");
+                    $("#devPlanWizardNavbarLink").attr("href", "timetable.html").removeAttr("data-toggle").removeAttr("data-target").empty().toggleClass("btn-info").toggleClass("btn-success").attr("href", "timetable.html").removeAttr("data-toggle").removeAttr("data-target").text("Mój devPlan");
+                    $("#devPlanWizardLink").attr("href", "timetable.html").removeAttr("data-toggle").removeAttr("data-target").empty().toggleClass("btn-info").toggleClass("btn-success").text("Mój devPlan");
+                } else {
+                    $("#devPlanSettingsNavbarIconLink").remove();
+                    $("#devPlanSettingsNavbarLink").remove();
+                }
             }
 
             if ($("#timetable-results").length == 1) {
+                $('.name').tooltip({});
+
                 if (params.isEmpty() == true) {
                     $("#timetable-panel-spinner-icon").empty().append('<button class="btn btn-info"' + 'data-toggle="modal" data-target="#devPlanWizard">' + 'Stwórz swój <strong>devPlan</strong>' + '</button>');
                 } else {
@@ -1354,7 +1357,7 @@ var devPlan;
                             if (timetable.getActivities()[i - 1] != null && activity.getName() == timetable.getActivities()[i - 1].getName() && activity.getEndsAtTimestamp() == timetable.getActivities()[i - 1].getEndsAtTimestamp()) {
                                 continue;
                             }
-                            data = data + '<li id="activity' + activity.getId() + '" class="list-group-item activity ' + activity.getCategory() + '">' + '<p class="h5">' + devPlan.Generate.nameInformation(timetable.getActivities()[i]) + devPlan.Generate.tutorInformation(timetable.getActivities()[i]);
+                            data = data + '<li id="activity' + activity.getId() + '" class="list-group-item activity ' + activity.getCategory().replace(/\s/gi, "-") + '">' + '<p class="h5">' + devPlan.Generate.nameInformation(timetable.getActivities()[i]) + devPlan.Generate.tutorInformation(timetable.getActivities()[i]);
                             '</p>';
                             if (devPlan.Settings.getActivityNote() && activity.getNotes() != null) {
                                 data = data + '<p class="h6">' + devPlan.Generate.noteInformation(timetable.getActivities()[i]) + '</p><div class="clearfix"></div>';
@@ -1367,7 +1370,7 @@ var devPlan;
                                 data = data + '<p class="h6">';
                                 for (var j = 0; j < groups.length; j++) {
                                     if (groups[j] != null) {
-                                        data = data + '<a href="timetable.html?timetable=g' + groups[j].getId() + '" title="Kliknij aby zobaczyć devPlan: ' + groups[j].getName() + '">' + groups[j].getName() + "</a>" + '<wbr>';
+                                        data = data + '<a href="timetable.html?timetable=g' + groups[j].getId() + '"class="group" title="Kliknij aby zobaczyć devPlan: ' + groups[j].getName() + '">' + groups[j].getName() + "</a>" + '<wbr>';
                                         if (j < (groups.length - 1)) {
                                             data = data + ' | ';
                                         }

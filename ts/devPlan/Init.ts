@@ -1,5 +1,5 @@
 /// <reference path="../DefinitelyTyped/jquery/jquery.d.ts" />
-/// <reference path="../DefinitelyTyped/typeahead/typeahead.d.ts" />
+/// <reference path="../DefinitelyTyped/bootstrap/bootstrap.d.ts" />
 /// <reference path="../DefinitelyTyped/jquery.cookie/jquery.cookie.d.ts" />
 /// <reference path="../Cash/Timetable.ts" />
 /// <reference path="../Cash/Api.ts" />
@@ -12,9 +12,7 @@
  * devPlan App
  */
 
-interface JQuery {
-    typeahead(x: any): any;
-}
+
 
 module devPlan {
     /**
@@ -63,38 +61,48 @@ module devPlan {
                 Settings.setTimetableParams(params);
             } else {
                 params = Settings.getTimetableParams();
+
+                if (!params.isEmpty()) {
+                    $("#devPlanWizardNavbarIconLink")
+                        .attr("href", "timetable.html")
+                        .removeAttr("data-toggle")
+                        .removeAttr("data-target");
+
+                    $("#devPlanWizardNavbarLink")
+                        .attr("href", "timetable.html")
+                        .removeAttr("data-toggle")
+                        .removeAttr("data-target")
+                        .empty().toggleClass("btn-info")
+                        .toggleClass("btn-success")
+                        .attr("href", "timetable.html")
+                        .removeAttr("data-toggle")
+                        .removeAttr("data-target")
+                        .text("Mój devPlan");
+                    $("#devPlanWizardLink")
+                        .attr("href", "timetable.html")
+                        .removeAttr("data-toggle")
+                        .removeAttr("data-target")
+                        .empty()
+                        .toggleClass("btn-info")
+                        .toggleClass("btn-success")
+                        .text("Mój devPlan");
+
+                } else {
+
+                    $("#devPlanSettingsNavbarIconLink").remove();
+                    $("#devPlanSettingsNavbarLink").remove();
+                }
+
             }
 
-            if (!params.isEmpty()) {
-                $("#devPlanWizardNavbarIconLink")
-                    .attr("href", "timetable.html")
-                    .removeAttr("data-toggle")
-                    .removeAttr("data-target");
-
-                $("#devPlanWizardNavbarLink")
-                    .attr("href", "timetable.html")
-                    .removeAttr("data-toggle")
-                    .removeAttr("data-target")
-                    .empty().toggleClass("btn-info")
-                    .toggleClass("btn-success")
-                    .attr("href", "timetable.html")
-                    .removeAttr("data-toggle")
-                    .removeAttr("data-target")
-                    .text("Mój devPlan");
-                $("#devPlanWizardLink")
-                    .attr("href", "timetable.html")
-                    .removeAttr("data-toggle")
-                    .removeAttr("data-target")
-                    .empty()
-                    .toggleClass("btn-info")
-                    .toggleClass("btn-success")
-                    .text("Mój devPlan");
-            }
 
 
 
 
             if ($("#timetable-results").length == 1) {
+
+                $('.name').tooltip({});
+
 
                 /**
                  * Sprawdza czy istnieje jakikolwiek parametr do planu
@@ -444,7 +452,7 @@ module devPlan {
                                 continue;
                             }
                             data = data +
-                            '<li id="activity' + activity.getId() + '" class="list-group-item activity ' + activity.getCategory() + '">' +
+                            '<li id="activity' + activity.getId() + '" class="list-group-item activity ' + activity.getCategory().replace(/\s/gi, "-") + '">' +
                             '<p class="h5">' +
                             Generate.nameInformation(timetable.getActivities()[i]) +
                             Generate.tutorInformation(timetable.getActivities()[i]);
@@ -469,7 +477,7 @@ module devPlan {
                                 data = data + '<p class="h6">';
                                 for (var j = 0; j < groups.length; j++) {
                                     if (groups[j] != null) {
-                                        data = data + '<a href="timetable.html?timetable=g' + groups[j].getId() + '" title="Kliknij aby zobaczyć devPlan: ' + groups[j].getName() + '">' + groups[j].getName() + "</a>" + '<wbr>';
+                                        data = data + '<a href="timetable.html?timetable=g' + groups[j].getId() + '"class="group" title="Kliknij aby zobaczyć devPlan: ' + groups[j].getName() + '">' + groups[j].getName() + "</a>" + '<wbr>';
                                         if (j < (groups.length - 1)) {
                                             data = data + ' | ';
                                         }

@@ -10,11 +10,11 @@ module devPlan {
          * 
          */
         static dateInformation(activity: Cash.Activity): string {
-            return '<li class="list-group-item list-group-item-info date"><p id="' + 
-                        activity.getDate() + '" class="h5" >' +
-                '<a data-toggle="collapse" data-parent="#accordion" href="#' + activity.getDate() + '.activities" class="">' + 
-                        (activity.getDayOfWeek() + ', ' + activity.getDate()) + '' +
-                        '</a>' +
+            return '<li class="list-group-item list-group-item-info date"><p id="' +
+                activity.getDate() + '" class="h4" >' +
+                '<a data-toggle="collapse" data-parent="#accordion" href="#' + activity.getDate() + '.activities" class="">' +
+                (activity.getDayOfWeek() + ', ' + activity.getDate()) + '' +
+                '</a>' +
                 '<a data-toggle="collapse" data-parent="#accordion" href="#' + activity.getDate() + '.activities" class="pull-right"><i class="fa fa-fw fa-chevron-up animate-transform"></i></a>' +
                 '</p></li>';
         }
@@ -32,8 +32,8 @@ module devPlan {
          */
         static nameInformation(activity: Cash.Activity): string {
             if (activity.getName().length > 0) {
-                return '<span class="name" title="Przedmiot: ' + activity.getName() + '">' +
-                    activity.getName() +
+                return '<span class="name">' +
+                    activity.getName()+
                     '</span>';
             }
             return '<span span="name" title="Przedmiot: ' + activity.getName() + '">' +
@@ -56,7 +56,7 @@ module devPlan {
          */
         static categoryInformation(activity: Cash.Activity): string {
             if (Settings.getActivityCategory()) {
-                return'<span class="label label-danger category" title="Typ zajęć">' +
+                return '<span class="label label-danger category" title="Typ zajęć">' +
                     '<i class="fa fa-fw fa-tag"></i>' +
                     activity.getCategory() +
                     '</span>';
@@ -68,8 +68,8 @@ module devPlan {
          */
         static locationInformation(activity: Cash.Activity): string {
             if (Settings.getActivityLocation() && activity.getPlace().getLocation().length > 0) {
-                return '<span class="location" title="Kliknij aby zobaczyć devPlan: ' + activity.getPlace().getLocation() + '"><i class="fa fa-fw fa-map-marker"></i>' +
-                    '<a href="timetable.html?timetable=p' + activity.getPlace().getId() + '">' +
+                return '<span  title="Kliknij aby zobaczyć devPlan: ' + activity.getPlace().getLocation() + '"><i class="fa fa-fw fa-map-marker"></i>' +
+                    '<a class="location" href="timetable.html?timetable=p' + activity.getPlace().getId() + '">' +
                     activity.getPlace().getLocation() +
                     '</a>' +
                     '</span>';

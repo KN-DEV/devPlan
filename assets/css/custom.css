@@ -59,7 +59,6 @@ li.date {
 
 span.name {
 	font-size: 1.15em;
-	font-style: oblique;
 }
 
 p.note {
@@ -71,25 +70,26 @@ span.bell {
 }
 
 span.category {
-float:right;
+	float: right;
 }
 
 a.location {
-		font-size:1em;
+	font-size: 1em;
 }
 
 span.counter {
-	float:right;
+	float: right;
 }
 
 span.hour {
-	float:right;
+	float: right;
 }
 
 a.tutor {
-	float:right;
+	float: right;
 	font-size: 0.8em;
 }
+
 a.group {
 	font-size: 0.8em;
 }
@@ -100,29 +100,31 @@ li.activity {
 /**
 *etc
 */
+/* li.list-group-item.activity.ćwiczenia { */
+/* 	background-color: #fcf8e3; */
+/* } */
 
+/* li.list-group-item.activity.lektorat { */
+/* 	background-color: #fcf8e3; */
+/* } */
 
-li.list-group-item.activity.ćwiczenia {
-	background-color: #fcf8e3;
-}
-li.list-group-item.activity.lektorat {
-	background-color: #fcf8e3;
-}
-li.list-group-item.activity.wykład,li.list-group-item.activity.wykład-do-wyboru{
-	background-color: #dff0d8;
-}
-li.list-group-item.activity.egzamin {
-	background-color: #f2dede;
-}
+/* li.list-group-item.activity.wykład,li.list-group-item.activity.wykład-do-wyboru */
+/* 	{ */
+/* 	background-color: #dff0d8; */
+/* } */
 
-li .activity  {
-	background-color: #fff;
-}
+/* li.list-group-item.activity.egzamin { */
+/* 	background-color: #f2dede; */
+/* } */
+
+/* li .activity { */
+/* 	background-color: #fff; */
+/* } */
 
 .collapsing {
-    -webkit-transition: none;
-    -moz-transition: none;
-    -o-transition: none;
-    -ms-transition: none;
-    transition: none;
+	-webkit-transition: none;
+	-moz-transition: none;
+	-o-transition: none;
+	-ms-transition: none;
+	transition: none;
 }

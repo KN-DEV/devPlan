@@ -25,45 +25,41 @@
 			<div class="row">
 				<div class="col-lg-12 col-md-12 col-sm-12 col-12-xs">
 					<div class="navbar-header">
-						<div class="btn-group pull-right btn-group-sm  visible-xs">
-							<a href="search.html" class="navbar-btn btn btn-success"
-								title="Szukaj"><i class="fa fa-fw fa-search"></i></a> 
-								<a
+						<div class="btn-group pull-right btn-group-sm visible-xs">
+							<a class="navbar-btn btn btn-success" data-toggle="collapse"
+								data-target="#devPlanSearch" title="Szukaj"><i
+								class="fa fa-fw fa-search"></i></a><a
 								id="devPlanWizardNavbarIconLink" class="navbar-btn btn btn-info"
 								title="Mój devPlan" data-toggle="modal"
 								data-target="#devPlanWizard"><i
-								class="fa fa-fw fa-align-justify"></i></a>
-								 <a
-								id="devPlanSettingsNavbarIconLink" class="navbar-btn btn btn-primary"
-								data-toggle="modal" title="Twój devPlan"
-								data-target="#devPlanWizard"><i class="fa fa-fw fa-gear"></i>
-							</a>
+								class="fa fa-fw fa-align-justify"></i></a> <a
+								id="devPlanSettingsNavbarIconLink"
+								class="navbar-btn btn btn-primary" data-toggle="modal"
+								title="Twój devPlan" data-target="#devPlanWizard"><i
+								class="fa fa-fw fa-gear"></i> </a>
 						</div>
 						<a class="navbar-brand" href="index.html" title="devPlan"><strong>devPlan</strong></a>
 					</div>
-					<div class="navbar-form navbar-right hidden-xs">
-						<div class="btn-group">
-							<a id="devPlanWizardNavbarLink" class="btn btn-info"
-								data-toggle="modal" data-target="#devPlanWizard">Stwórz <strong>devPlan</strong>
-							</a> 
-							<a id="devPlanSettingsNavbarLink" class="btn btn-primary"
-								data-toggle="modal" title="Twój devPlan"
-								data-target="#devPlanWizard"><i class="fa fa-fw fa-gear"></i>
-							</a>
+					<div class="collapse navbar-collapse " id="devPlanSearch">
+						<div class="navbar-form pull-right hidden-xs">
+							<div class="btn-group">
+								<a id="devPlanWizardNavbarLink" class="btn btn-info"
+									data-toggle="modal" data-target="#devPlanWizard">Stwórz <strong>devPlan</strong>
+								</a> <a id="devPlanSettingsNavbarLink" class="btn btn-primary"
+									data-toggle="modal" title="Twój devPlan"
+									data-target="#devPlanWizard"><i class="fa fa-fw fa-gear"></i>
+								</a>
+							</div>
 						</div>
+						<form class="navbar-form pull-right" action="search.html"
+							method="get" role="search">
+							<div id="navbar-search" class="form-group">
+								<input id="search-input" name="search" autocomplete="off"
+									disabled="disabled" type="text" class="form-control" size="40"
+									placeholder="KrDzIs3011Io / dr Paweł Wołoszyn" />
+							</div>
+						</form>
 					</div>
-					<ul class="nav navbar-nav navbar-right hidden-xs">
-						<li><a href="search.html" title="Szukaj"><i
-								class="fa fa-fw fa-search"></i> Szukaj</a></li>
-					</ul>
-					<form class="navbar-form hidden-xs" action="search.html"
-						method="get" role="search">
-						<div id="navbar-search" class="form-group">
-							<input id="search-input" name="search" autocomplete="off"
-								disabled="disabled" type="text" class="form-control" size="40"
-								placeholder="KrDzIs3011Io / dr Paweł Wołoszyn" />
-						</div>
-					</form>
 				</div>
 			</div>
 		</div>
@@ -80,7 +76,8 @@
 						<hr class="intro-divider" />
 						<p class="lead">Jesteś studentem lub pracownikiem Uniwersytetu
 							Ekonomicznego w Krakowie?</p>
-						<a id="devPlanWizardLink" data-toggle="modal" data-target="#devPlanWizard"
+						<a id="devPlanWizardLink" data-toggle="modal"
+							data-target="#devPlanWizard"
 							class="btn btn-info btn-lg centering"> Stwórz swój <strong>devPlan</strong>
 						</a>
 					</div>
@@ -300,11 +297,11 @@
 		new devPlan.Init();
 	</script>
 	<script src="assets/js/analytics.js"></script>
-    <script src="assets/js/fastclick.js"></script>
+	<script src="assets/js/fastclick.js"></script>
 </body>
 <script>
-    $(function() {
-        FastClick.attach(document.body);
-    });
+	$(function() {
+		FastClick.attach(document.body);
+	});
 </script>
 </html>

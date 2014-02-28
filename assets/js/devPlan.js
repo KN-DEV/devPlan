@@ -1063,6 +1063,11 @@ var devPlan;
     }
     devPlan.bindAnimation = bindAnimation;
 })(devPlan || (devPlan = {}));
+if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
+    var msViewportStyle = document.createElement("style");
+    msViewportStyle.appendChild(document.createTextNode("@-ms-viewport{width:auto!important}"));
+    document.getElementsByTagName("head")[0].appendChild(msViewportStyle);
+}
 var devPlan;
 (function (devPlan) {
     var ActivityHourCounter = (function () {

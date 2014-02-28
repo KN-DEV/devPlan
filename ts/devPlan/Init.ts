@@ -7,6 +7,7 @@
 /// <reference path="Generate.ts" />
 /// <reference path="typeahead.ts" />
 /// <reference path="AnimateChevron.ts" />
+/// <reference path="windowsPhone.ts" />
 
 /**
  * devPlan App

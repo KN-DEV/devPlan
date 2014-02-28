@@ -332,7 +332,7 @@ var Cash;
         Params.prototype.removeGroup = function (id) {
             for (var i = 0; i < this.getGroups().length; i++) {
                 if (this.getGroups()[i] == id) {
-                    this.getGroups().splice(id, 1);
+                    this.getGroups().splice(i, 1);
                 }
             }
             return this;
@@ -373,7 +373,7 @@ var Cash;
         Params.prototype.removeTutor = function (id) {
             for (var i = 0; i < this.getTutors().length; i++) {
                 if (this.getTutors()[i] == id) {
-                    this.setTutors(this.getTutors().splice(id, 1));
+                    this.getTutors().splice(i, 1);
                 }
             }
             return this;
@@ -414,7 +414,7 @@ var Cash;
         Params.prototype.removePlace = function (id) {
             for (var i = 0; i < this.getPlaces().length; i++) {
                 if (this.getPlaces()[i] == id) {
-                    this.setPlaces(this.getPlaces().splice(id, 1));
+                    this.getPlaces().splice(i, 1);
                 }
             }
             return this;
@@ -563,7 +563,6 @@ var Cash;
                 }
                 _this.activityInfo[Cash.Activity.generateHash(newActivity)].push(new Cash.ActivityInfo(newActivity.getId(), newActivity.getNumberOfSchoolLessons()));
             });
-            console.log(this.activityInfo);
         };
 
         Timetable.prototype.getMaxNumberOfOccurencesOfActivity = function (activity) {
@@ -596,14 +595,11 @@ var Cash;
             if (typeof full === "undefined") { full = false; }
             var activityHash = Cash.Activity.generateHash(activity);
             var sum = 0;
-
             for (var i = 0; i < this.activityInfo[activityHash].length; i++) {
                 if (full || i < this.getPositionOfActivity(activity)) {
                     sum = sum + this.activityInfo[activityHash][i].getNumberOfHours();
                 }
             }
-
-            console.log(sum);
             return sum;
         };
         return Timetable;
@@ -799,7 +795,9 @@ var devPlan;
             Settings.timetablePeriod = status;
             return Settings;
         };
+
         Settings.getTimetableParams = function () {
+            console.log(Settings.timetableParams);
             return Settings.timetableParams;
         };
 
@@ -906,6 +904,7 @@ var devPlan;
         Settings.saveTimetable = function () {
             $.cookie.json = true;
             $.cookie('devPlan.Params', Settings.getTimetableParams(), { expires: 180 });
+            console.log("Params", Settings.getTimetableParams());
             return Settings;
         };
 
@@ -929,15 +928,15 @@ var devPlan;
             var t = devPlan.Init.searchTutorId(item);
             var p = devPlan.Init.searchPlaceId(item);
             if (g > 0 && t == 0 && p == 0) {
-                $("#devPlanParams").append('<button id="g' + g + '" class="devPlanParam btn btn-xs btn-primary" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + g + '" type="g">' + item + '' + '</button><wbr> ');
+                $("#devPlanParams").append('<button id="g' + g + '" class="devPlanParam btn btn-xs btn-primary" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + g + '" type="g">' + item + '' + '</button><wbr>');
                 Settings.setTimetableParams(Settings.getTimetableParams().addGroup(g));
             }
             if (g == 0 && t > 0 && p == 0) {
-                $("#devPlanParams").append('<button id="t' + t + '" class="devPlanParam btn btn-xs btn-success" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + t + '" type="t">' + item + '' + '</button><wbr> ');
+                $("#devPlanParams").append('<button id="t' + t + '" class="devPlanParam btn btn-xs btn-success" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + t + '" type="t">' + item + '' + '</button><wbr>');
                 Settings.setTimetableParams(Settings.getTimetableParams().addTutor(t));
             }
             if (g == 0 && t == 0 && p > 0) {
-                $("#devPlanParams").append('<button id="t' + t + '" class="devPlanParam btn btn-xs btn-info" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + t + '" type="p">' + item + '' + '</button><wbr> ');
+                $("#devPlanParams").append('<button id="p' + t + '" class="devPlanParam btn btn-xs btn-info" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + p + '" type="p">' + item + '' + '</button><wbr>');
                 Settings.setTimetableParams(Settings.getTimetableParams().addPlace(p));
             }
 
@@ -955,6 +954,7 @@ var devPlan;
                 Settings.setTimetableParams(Settings.getTimetableParams().removePlace(parseInt(item.attr("value"))));
             }
 
+            console.log(Settings.getTimetableParams());
             $("#devPlanUrl").empty().append("https://devplan.uek.krakow.pl/timetable.html?timetable=" + Settings.getTimetableParams().toString());
             item.remove();
         };
@@ -1206,7 +1206,6 @@ var devPlan;
         Init.searchGroupId = function (name) {
             var id;
             var found = false;
-            console.log(name);
             for (var i = 0; i < Init.getGroups().length; i++) {
                 if (Init.getGroups()[i].getName().toString() == name.toString()) {
                     id = Init.getGroups()[i].getId();
@@ -1235,7 +1234,6 @@ var devPlan;
         Init.searchTutorId = function (name) {
             var id;
             var found = false;
-            console.log(name);
             for (var i = 0; i < Init.getTutors().length; i++) {
                 if (Init.getTutors()[i].getName().toUpperCase().toString() == name.toUpperCase().toString()) {
                     id = Init.getTutors()[i].getId();
@@ -1264,7 +1262,6 @@ var devPlan;
         Init.searchPlaceId = function (name) {
             var id;
             var found = false;
-            console.log(name);
             for (var i = 0; i < Init.getPlaces().length; i++) {
                 if (Init.getPlaces()[i].getLocation().toUpperCase().toString() == name.toUpperCase().toString()) {
                     id = Init.getPlaces()[i].getId();

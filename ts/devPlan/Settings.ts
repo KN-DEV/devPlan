@@ -184,7 +184,9 @@ module devPlan {
             Settings.timetablePeriod = status;
             return Settings;
         }
+        
         static getTimetableParams(): Cash.Params {
+            console.log( Settings.timetableParams);
             return Settings.timetableParams;
         }
         /**
@@ -301,6 +303,7 @@ module devPlan {
         static saveTimetable(): Settings {
             $.cookie.json = true;
             $.cookie('devPlan.Params', Settings.getTimetableParams(), { expires: 180 });
+            console.log("Params", Settings.getTimetableParams());
             return Settings;
         }
         /**
@@ -332,17 +335,17 @@ module devPlan {
             var p = Init.searchPlaceId(item);
             if (g > 0 && t == 0 && p == 0) {
                 $("#devPlanParams").append('<button id="g' + g + '" class="devPlanParam btn btn-xs btn-primary" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + g + '" type="g">' + item + '' +
-                    '</button><wbr> ');
+                    '</button><wbr>');
                 Settings.setTimetableParams(Settings.getTimetableParams().addGroup(g))
             }
             if (g == 0 && t > 0 && p == 0) {
                 $("#devPlanParams").append('<button id="t' + t + '" class="devPlanParam btn btn-xs btn-success" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + t + '" type="t">' + item + '' +
-                    '</button><wbr> ');
+                    '</button><wbr>');
                 Settings.setTimetableParams(Settings.getTimetableParams().addTutor(t));
             }
             if (g == 0 && t == 0 && p > 0) {
-                $("#devPlanParams").append('<button id="t' + t + '" class="devPlanParam btn btn-xs btn-info" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + t + '" type="p">' + item + '' +
-                    '</button><wbr> ');
+                $("#devPlanParams").append('<button id="p' + t + '" class="devPlanParam btn btn-xs btn-info" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + p + '" type="p">' + item + '' +
+                    '</button><wbr>');
                 Settings.setTimetableParams(Settings.getTimetableParams().addPlace(p));
             }
 
@@ -361,6 +364,7 @@ module devPlan {
                 Settings.setTimetableParams(Settings.getTimetableParams().removePlace(parseInt(item.attr("value"))));
             }
 
+            console.log(Settings.getTimetableParams());
             $("#devPlanUrl")
                 .empty()
                 .append("https://devplan.uek.krakow.pl/timetable.html?timetable=" + Settings.getTimetableParams().toString());

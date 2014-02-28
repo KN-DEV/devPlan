@@ -70,9 +70,10 @@ module Cash {
          * 
          */
         public removeGroup(id: number): Cash.Params {
+            
             for (var i = 0; i < this.getGroups().length; i++) {
                 if (this.getGroups()[i] == id) {
-                    this.getGroups().splice(id, 1);
+                    this.getGroups().splice(i, 1);
                 }
             }
             return this;
@@ -116,9 +117,11 @@ module Cash {
          * 
          */
         public removeTutor(id: number): Cash.Params {
+            
+            
             for (var i = 0; i < this.getTutors().length; i++) {
                 if (this.getTutors()[i] == id) {
-                    this.setTutors(this.getTutors().splice(id, 1));
+                   this.getTutors().splice(i, 1);
                 }
             }
             return this;
@@ -164,7 +167,7 @@ module Cash {
         public removePlace(id: number): Cash.Params {
             for (var i = 0; i < this.getPlaces().length; i++) {
                 if (this.getPlaces()[i] == id) {
-                    this.setPlaces(this.getPlaces().splice(id, 1));
+                   this.getPlaces().splice(i, 1);
                 }
             }
             return this;

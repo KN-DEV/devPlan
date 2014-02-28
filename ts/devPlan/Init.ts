@@ -241,7 +241,6 @@ module devPlan {
          *
          */
         static setGroups(groups: Cash.Group[]= []): Init {
-
             for (var i = 0; i < groups.length; i++) {
                 Init.groups.push(new Cash.Group(groups[i]));
             }
@@ -254,7 +253,6 @@ module devPlan {
         public static searchGroupId(name: string): number {
             var id: number;
             var found: boolean = false;
-            console.log(name);
             for (var i = 0; i < Init.getGroups().length; i++) {
                 if (Init.getGroups()[i].getName().toString() == name.toString()) {
                     id = Init.getGroups()[i].getId();
@@ -286,7 +284,6 @@ module devPlan {
         public static searchTutorId(name: string): number {
             var id: number;
             var found: boolean = false;
-            console.log(name);
             for (var i = 0; i < Init.getTutors().length; i++) {
                 if (Init.getTutors()[i].getName().toUpperCase().toString() == name.toUpperCase().toString()) {
                     id = Init.getTutors()[i].getId();
@@ -320,7 +317,6 @@ module devPlan {
         public static searchPlaceId(name: string): number {
             var id: number;
             var found: boolean = false;
-            console.log(name);
             for (var i = 0; i < Init.getPlaces().length; i++) {
                 if (Init.getPlaces()[i].getLocation().toUpperCase().toString() == name.toUpperCase().toString()) {
                     id = Init.getPlaces()[i].getId();

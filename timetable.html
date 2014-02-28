@@ -233,7 +233,7 @@
 							<div class="form-group">
 								<label>Wprowadz nazwe grupy lub wykładowcy</label> <input id="0"
 									autocomplete="off" disabled="disabled" value=""
-									name="devPlanTypeahead[]" type="text"
+									name="devPlanTypeahead" type="text"
 									class="form-control devPlanTypeahead"
 									placeholder="KrDzIs3011Io / dr Paweł Wołoszyn" />
 							</div>
@@ -244,9 +244,8 @@
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Zamknij</button>
 					<button class="btn btn-primary"
-						onclick="devPlan.Settings.saveTimetable();window.location.replace('timetable.html')">
-						<i class="fa fa-fw fa-save"></i> Zapisz devPlan
-					</button>
+						onclick="devPlan.Settings.saveTimetable(); window.location.replace('timetable.html')">
+						Zapisz devPlan</button>
 				</div>
 			</div>
 		</div>

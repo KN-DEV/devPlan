@@ -205,7 +205,6 @@ module Cash {
                         newActivity.getId(),
                         newActivity.getNumberOfSchoolLessons()));
                 });
-            console.log(this.activityInfo);
         }
         /**
          * Zwraca ilość wystąpień danego przedmiotu
@@ -239,18 +238,17 @@ module Cash {
             }
             return -1;
         }
-
+        /**
+         * 
+         */
         public sumAllHoursOfActivity(activity: Cash.Activity, full: boolean= false) {
             var activityHash = Cash.Activity.generateHash(activity);
             var sum: number = 0;
-
             for (var i = 0; i < this.activityInfo[activityHash].length; i++) {
-                  if (full || i < this.getPositionOfActivity(activity)) {
-                sum = sum + this.activityInfo[activityHash][i].getNumberOfHours();
-                   }
+                if (full || i < this.getPositionOfActivity(activity)) {
+                    sum = sum + this.activityInfo[activityHash][i].getNumberOfHours();
+                }
             }
-
-            console.log(sum);
             return sum;
         }
     }

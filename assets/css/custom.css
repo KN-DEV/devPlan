@@ -98,7 +98,11 @@ li.activity {
 li.activity.egzamin {
 	
 }
-.collapsing{
+
+.collapsing {
     -webkit-transition: none;
-          transition: none;
+    -moz-transition: none;
+    -o-transition: none;
+    -ms-transition: none;
+    transition: none;
 }

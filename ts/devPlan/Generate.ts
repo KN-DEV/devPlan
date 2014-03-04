@@ -31,14 +31,11 @@ module devPlan {
          * 
          */
         static nameInformation(activity: Cash.Activity): string {
-            if (activity.getName().length > 0) {
-                return '<span class="name">' +
-                    activity.getName()+
-                    '</span>';
-            }
-            return '<span span="name" title="Przedmiot: ' + activity.getName() + '">' +
-                'brak nazwy zajęć' +
+
+            return '<span class="name">' +
+                (activity.getName().length != 0 ? activity.getName() : '&nbsp;') +
                 '</span>';
+
         }
         /**
          * 
@@ -56,7 +53,30 @@ module devPlan {
          */
         static categoryInformation(activity: Cash.Activity): string {
             if (Settings.getActivityCategory()) {
-                return '<span class="label label-danger category" title="Typ zajęć">' +
+
+                var color: string = "";
+                switch (activity.getCategory()) {
+                    case "wykład":
+                        color = "warning";
+                        break;
+                    case "wykład do wyboru":
+                        color = "warning";
+                        break;
+                    case "lektorat":
+                        color = "success";
+                        break;
+                    case "ćwiczenia":
+                        color = "primary";
+                        break;
+                    case "egzamin":
+                        color = "danger";
+                        break;
+                    default:
+                        color = "danger";
+                        break;
+                }
+
+                return '<span class="label label-' + color + ' category" title="Typ zajęć">' +
                     '<i class="fa fa-fw fa-tag"></i>' +
                     activity.getCategory() +
                     '</span>';
@@ -101,10 +121,11 @@ module devPlan {
          */
         static tutorInformation(activity: Cash.Activity): string {
             if (Settings.getActivityTutor()) {
-                return '<a class="tutor" href="timetable.html?timetable=t' + activity.getTutor().id +
-                    '" title="Kliknij aby zobaczyć devPlan: ' + activity.getTutor().getName() + '">' + activity.getTutor().getName() + '</a>' + (activity.getTutor().getMoodleUrl() != null ?
+                return (activity.getTutor().getMoodleUrl() != null ?
                     '<a class="tutor" href="' + activity.getTutor().getMoodleUrl() +
-                    '" title=" ' + activity.getTutor().getName() + ' - Wizytówka E-Uczelna "><i class="fa fa-globe fa-fw"></i></a>' : "");
+                    '" title=" ' + activity.getTutor().getName() + ' - Wizytówka E-Uczelna "><i class="fa fa-globe fa-fw"></i></a>' : "") +
+                    '<a class="tutor" href="timetable.html?timetable=t' + activity.getTutor().id +
+                    '" title="Kliknij aby zobaczyć devPlan: ' + activity.getTutor().getName() + '">' + activity.getTutor().getName() + '</a>';
 
             }
             return '';

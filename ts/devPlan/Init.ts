@@ -1,6 +1,7 @@
 /// <reference path="../DefinitelyTyped/jquery/jquery.d.ts" />
 /// <reference path="../DefinitelyTyped/bootstrap/bootstrap.d.ts" />
 /// <reference path="../DefinitelyTyped/jquery.cookie/jquery.cookie.d.ts" />
+/// <reference path="../DefinitelyTyped/storejs/storejs.d.ts" />
 /// <reference path="../Cash/Timetable.ts" />
 /// <reference path="../Cash/Api.ts" />
 /// <reference path="Settings.ts" />
@@ -17,16 +18,10 @@
 
 module devPlan {
     /**
- * 
- */
-    export class ActivityHourCounter {
-        hour: number = 1;
-        counter: number = 0;
-    }
-    /**
      * 
      */
     export class Init {
+
 
         /**
          * Keeps list of groups from Cash service
@@ -51,108 +46,72 @@ module devPlan {
 
 
 
-
-
-            /**
-                * Check if GET['timetable'] exists
-                */
+            console.log(Settings.getTimetablePeriod());
             var params: Cash.Params;
             if (Settings.getUrlParam('timetable').length != 0) {
                 params = Cash.Params.fromString(Settings.getUrlParam('timetable'));
                 Settings.setTimetableParams(params);
             } else {
                 params = Settings.getTimetableParams();
-
-                if (!params.isEmpty()) {
-                    $("#devPlanWizardNavbarIconLink")
-                        .attr("href", "timetable.html")
-                        .removeAttr("data-toggle")
-                        .removeAttr("data-target");
-
-                    $("#devPlanWizardNavbarLink")
-                        .attr("href", "timetable.html")
-                        .removeAttr("data-toggle")
-                        .removeAttr("data-target")
-                        .empty().toggleClass("btn-info")
-                        .toggleClass("btn-success")
-                        .attr("href", "timetable.html")
-                        .removeAttr("data-toggle")
-                        .removeAttr("data-target")
-                        .text("Mój devPlan");
-                    $("#devPlanWizardLink")
-                        .attr("href", "timetable.html")
-                        .removeAttr("data-toggle")
-                        .removeAttr("data-target")
-                        .empty()
-                        .toggleClass("btn-info")
-                        .toggleClass("btn-success")
-                        .text("Mój devPlan");
-
-                } else {
-
-                    $("#devPlanSettingsNavbarIconLink").remove();
-                    $("#devPlanSettingsNavbarLink").remove();
-                }
-
+                Init.setUpButtons(params);
             }
 
-
-
-
-
             if ($("#timetable-results").length == 1) {
-
-                $('.name').tooltip({});
-
-
                 /**
                  * Sprawdza czy istnieje jakikolwiek parametr do planu
                     */
-                if (params.isEmpty() == true) {
-                    /**
-                     * Kręcące się kółko
-                     */
-                    $("#timetable-panel-spinner-icon")
-                        .empty()
-                        .append('<button class="btn btn-info"' +
-                        'data-toggle="modal" data-target="#devPlanWizard">' +
-                        'Stwórz swój <strong>devPlan</strong>' +
-                        '</button>');
-
-                } else {
+                if (params.isEmpty() == false) {
                     $.when(Cash.Api.getTimetable(params))
                         .done((response: any) => {
                             Init.showTimetable(Init.setTimetable(response).getTimetable());
                             $("#timetable-panel-spinner").remove();
                         }).fail(() => {
-                            console.log("Pobranie planu zakończone niepowodzeniem.");
+
                             $.when(Cash.Api.registerTimetable(params))
                                 .done((response: any) => {
-                                    console.log("Rejestracja planu zkończona powodzeniem.");
                                     $.when(Cash.Api.getTimetable(params))
                                         .done((response: any) => {
                                             Init.showTimetable(Init.setTimetable(response).getTimetable());
                                             $("#timetable-panel-spinner").remove();
-                                            console.log("Pobieranie planu po rejestracji zakończone powodzeniem.");
                                         }).fail(() => {
-                                            console.log("Pobieranie planu po rejestracji zakończone niepowodzeniem.");
                                         });
                                 }).fail(() => {
-                                    console.log("Rejestracja planu nie powiodła się");
+                                    Init.showTimetable(Init.setTimetable()
+                                        .getTimetable());
                                 });
                         });
                 }
             }
-
             /**
              * Zakładka szukaj
              */
-            if ($("#search-panel-input").length) {
-                $("#search-panel-input").attr('value', Settings.getUrlParam('search'));
+            if ($("#search-panel-input").length != 0) {
+                $("#search-panel-input")
+                    .attr('value', Settings.getUrlParam('search'));
             }
 
+            //            if (store.enabled) {
+            //                if (store.get("Cash.groups")) {
+            //                    Init.setGroups(store.get("Cash.groups"));
+            //                } else {
+            //                    $.when(Cash.Api.getGroupsList())
+            //                        .done((response: any) => {
+            //                            store.set("Cash.groups", response[0]);
+            //                            Init.setGroups(response[0]);
+            //                        })
+            //                        .fail(() => {
+            //                            Init.setGroups([]);
+            //                        });
+            //
+            //                }
+            //            } else {
+            //                // var groups:any =  
+            //            }
 
-            $.when(Cash.Api.getGroupsList(), Cash.Api.getTutorsList(), Cash.Api.getPlacesList())
+
+            $.when(Cash.Api.getGroupsList(),
+                Cash.Api.getTutorsList(),
+                Cash.Api.getPlacesList())
                 .done((groups: any, tutors: any, places: any) => {
 
                     Init.setGroups(groups[0]);
@@ -167,16 +126,7 @@ module devPlan {
                     /**
                      *Tablica nazw dla typeahead
                      */
-                    var data: string[] = [];
-                    for (var i = 0; i < Init.getGroups().length; i++) {
-                        data.push(Init.getGroups()[i].getName());
-                    }
-                    for (i = 0; i < Init.getTutors().length; i++) {
-                        data.push(Init.getTutors()[i].getName());
-                    }
-                    //                    for (i = 0; i < Init.getPlaces().length; i++) {
-                    //                        data.push(Init.getPlaces()[i].getLocation());
-                    //                    }
+                    var data: string[] = Init.typeaheadDataCreator(Init.getGroups(), Init.getTutors(), Init.getPlaces());
 
                     /**
                      * Navbar search
@@ -185,14 +135,9 @@ module devPlan {
                         source: data,
                         items: 15,
                         updater: (item: any) => {
-
                             var group: number = Init.searchGroupId(item);
                             var tutor: number = Init.searchTutorId(item);
                             var place: number = Init.searchPlaceId(item);
-                            console.log("navbar search", item, Init.searchGroupId(item), 'timetable.html?timetable=g' + group);
-                            console.log("navbar search", item, Init.searchTutorId(item), 'timetable.html?timetable=t' + tutor);
-                            console.log("navbar search", item, Init.searchPlaceId(item), 'timetable.html?timetable=p' + place);
-
                             if (group > 0 && tutor == 0 && place == 0) {
                                 window.location.replace('timetable.html?timetable=g' + group);
                             }
@@ -202,10 +147,8 @@ module devPlan {
                             if (group == 0 && tutor == 0 && place > 0) {
                                 window.location.replace('timetable.html?timetable=p' + place);
                             }
-                            console.log("navbar search error", item);
                         }
                     });
-
                     /**
                      * Add information about selected groups places and tutors
                      */
@@ -217,25 +160,14 @@ module devPlan {
                         $('#' + index + '.devPlanTypeahead').removeAttr('disabled')
                             .attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn')
                             .attr('data-provide', "typeahead");
-
                         $('#' + index + '.devPlanTypeahead').typeahead({
                             source: data,
                             items: 15,
                             updater: (item: any) => {
                                 Settings.addTimetableParam(item);
-                                console.log("Selected: " + item);
                             }
                         });
                     });
-
-                    if ($("#search-panel-input").length) {
-                        $("#search-panel-input")
-                            .attr('value', Settings.getUrlParam('search'))
-                            .attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn')
-                            .removeAttr("disabled");
-                        $("#search-panel .panel-body").remove();
-                        Init.showSearchResults(Settings.getUrlParam("search"));
-                    }
                 }).fail(() => {
                     console.log("Fail creating typeahead");
                 });
@@ -256,9 +188,9 @@ module devPlan {
             Init.groups = Init.getGroups().sort((a: any, b: any) => {return a.getName() - b.getName() });
             return Init;
         }
-
-
-
+        /**
+         * 
+         */
         public static searchGroupId(name: string): number {
             var id: number;
             var found: boolean = false;
@@ -302,7 +234,6 @@ module devPlan {
             }
             return found ? id : 0;
         }
-
         /**
         *
         */
@@ -344,7 +275,7 @@ module devPlan {
         /**
          *
          */
-        static setTimetable(timetable: Cash.TimetableInterface) {
+        static setTimetable(timetable?: Cash.TimetableInterface) {
             Init.timetable = new Cash.Timetable(timetable);
             return Init;
         }
@@ -390,7 +321,7 @@ module devPlan {
                 }
                 $("#search-results").append(data);
             } else {
-                console.log("Too short query");
+                data = "<tr><td class='text-center'>Zbyt krótka fraza.</td</td>";
             }
         }
         /**
@@ -402,11 +333,10 @@ module devPlan {
             $("#timetable-results").empty();
 
             if (timetable.getActivities().length > 0) {
-
-                var activityCounter: ActivityHourCounter[] = [];
-                var activityCounterIndex: string = "";
-
                 var activity: Cash.Activity;
+
+                var daysCounter: number = 0;
+
                 var j = 0;
                 for (var i = 0; i < timetable.getActivities().length; i++) {
                     activity = timetable.getActivities()[i];
@@ -431,12 +361,26 @@ module devPlan {
                     for (var k = 0; k < groups.length; k++) {
                         indexgroup = indexgroup + groups[k].getName();
                     }
-                    if (activity.getDate() >= Settings.getCurrentDate() || Settings.getTimetableType() == 0) {
+                    /**
+                     * 
+                     */
+                    if (activity.getDate() >= Settings.getCurrentDate() ||
+                        Settings.getTimetableType() == 0) {
+
                         if ((activity.getName().toLowerCase().indexOf(Settings.getActivityNameFilter().toLowerCase()) > -1) ||
                             (activity.getTutor().getName().toLowerCase().indexOf(Settings.getActivityNameFilter().toLowerCase()) > -1) ||
                             (indexgroup.toLowerCase().indexOf(Settings.getActivityNameFilter().toLowerCase()) > -1) ||
                             (activity.getDate().indexOf(Settings.getActivityNameFilter().toLowerCase()) > -1)) {
+
                             if (date != activity.getDate()) {
+
+                                /**
+                                 * Ilość kolejnych zajęć
+                                 */
+                                if (Settings.getTimetablePeriod() != 0 && daysCounter >= Settings.getTimetablePeriod()) {
+                                    break;
+                                }
+                                daysCounter++;
                                 if (date != "") {
                                     data = data + '</div>';
                                 }
@@ -457,7 +401,7 @@ module devPlan {
                             '<p class="h5">' +
                             Generate.nameInformation(timetable.getActivities()[i]) +
                             Generate.tutorInformation(timetable.getActivities()[i]);
-                            '</p>';
+                            '</p><div class="clearfix"></div>';
                             if (Settings.getActivityNote() && activity.getNotes() != null) {
                                 data = data + '<p class="h6">' +
                                 Generate.noteInformation(timetable.getActivities()[i]) +
@@ -490,16 +434,83 @@ module devPlan {
                             data = data + '</li>';
                         }
                     }
+
+
                 }
+                //end of loop
                 if (data.length == 0 && Settings.getActivityNameFilter().length > 0) {
                     data = data + '<li class="list-group-item"><p class="h4 text-center">Brak wyników</p>';
                 }
+
+
             } else {
                 data = data + '<li class="list-group-item"><p class="h4 text-center">Przykro nam. Ten devPlan nie posiada żadnych zajęć.</p>';
             }
             $("#timetable-results").append(data);
             // binds chevron animation
             bindAnimation();
+
+
+        }
+
+
+        /**
+         * 
+         */
+        static typeaheadDataCreator(groups: Cash.Group[]= [], tutors: Cash.Tutor[]= [], places: Cash.Place[]= []): string[] {
+            var data: string[] = [];
+            for (var i = 0; i < groups.length; i++) {
+                data.push(Init.groups[i].getName());
+            }
+            for (var i = 0; i < tutors.length; i++) {
+                data.push(tutors[i].getName());
+            }
+            for (var i = 0; i < places.length; i++) {
+                data.push(places[i].getLocation());
+            }
+            return data;
+        }
+
+
+        static setUpButtons(params: Cash.Params): void {
+            if (params.isEmpty() == false) {
+                $("#devPlanWizardNavbarIconLink")
+                    .attr("href", "timetable.html")
+                    .removeAttr("data-toggle")
+                    .removeAttr("data-target");
+
+                $("#devPlanWizardNavbarLink")
+                    .attr("href", "timetable.html")
+                    .removeAttr("data-toggle")
+                    .removeAttr("data-target")
+                    .empty().toggleClass("btn-info")
+                    .toggleClass("btn-success")
+                    .attr("href", "timetable.html")
+                    .removeAttr("data-toggle")
+                    .removeAttr("data-target")
+                    .text("Mój devPlan");
+
+                $("#devPlanWizardLink")
+                    .attr("href", "timetable.html")
+                    .removeAttr("data-toggle")
+                    .removeAttr("data-target")
+                    .empty()
+                    .toggleClass("btn-info")
+                    .toggleClass("btn-success")
+                    .text("Mój devPlan");
+
+            } else {
+                $("#devPlanSettingsNavbarIconLink").remove();
+                $("#devPlanSettingsNavbarLink").remove();
+
+                $("#timetable-panel-spinner-icon")
+                    .empty()
+                    .append('<button class="btn btn-info"' +
+                    'data-toggle="modal" data-target="#devPlanWizard">' +
+                    'Stwórz swój <strong>devPlan</strong>' +
+                    '</button>');
+            }
+
         }
     }
 }

@@ -59,6 +59,7 @@ li.date {
 
 span.name {
 	font-size: 1.15em;
+/* 	float:right; */
 }
 
 p.note {
@@ -127,8 +128,14 @@ li.activity {
 	-ms-transition: none;
 	transition: none;
 }
-
+button.devPlanParam{
+	margin-bottom:3px;
+}
 .navbar-collapse .navbar-form {
 	border: none;
 }
+
+ .navbar-form{
+ width:auto;
+ }
 }

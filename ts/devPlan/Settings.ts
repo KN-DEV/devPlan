@@ -59,6 +59,10 @@ module devPlan {
          * 
          */
         private static activityNameFilter: string = "";
+        /**
+         * 
+         */
+        private static devPlanRedirect: boolean = false;
 
         /**
          * 
@@ -184,9 +188,23 @@ module devPlan {
             Settings.timetablePeriod = status;
             return Settings;
         }
-
+        /**
+         * 
+         */
+        static getDevPlanRedirect(): boolean {
+            return Settings.devPlanRedirect;
+        }
+        /**
+         * 
+         */
+        static setDevPlanRedirect(status: boolean = false): Settings {
+            Settings.devPlanRedirect = status;
+            return Settings;
+        }
+        /**
+         * 
+         */
         static getTimetableParams(): Cash.Params {
-            console.log(Settings.timetableParams);
             return Settings.timetableParams;
         }
         /**
@@ -223,6 +241,7 @@ module devPlan {
                 Settings.setActivityTutor(data.activityTutor);
                 Settings.setTimetableType(data.timetableType);
                 Settings.setTimetablePeriod(data.timetablePeriod);
+                Settings.setDevPlanRedirect(data.devPlanRedirect);
 
             }
             var data: any = $.cookie('devPlan.Params');
@@ -254,8 +273,12 @@ module devPlan {
             if (Settings.getActivityTutor()) {
                 $("#activityTutor").attr("checked", "checked");
             }
+            if (Settings.getDevPlanRedirect()) {
+                $("#devPlanRedirect").attr("checked", "checked");
+            }
             $('#timetableType' + Settings.getTimetableType()).attr("checked", "checked");
             $('#timetablePeriod' + Settings.getTimetablePeriod()).attr("checked", "checked");
+
             //  $('#activityNameFilter').attr('value', Settings.getActivityNameFilter());
 
 
@@ -276,6 +299,13 @@ module devPlan {
                     }
                 }
             });
+            Settings.getTimetableParams().getPlaces().forEach((index: number, item: number) => {
+                for (var i = 0; i < Init.getPlaces().length; i++) {
+                    if (Init.getPlaces()[i].getId() == index) {
+                        Settings.addTimetableParam(Init.getPlaces()[i].getLocation());
+                    }
+                }
+            });
         }
         /**
          *
@@ -292,6 +322,7 @@ module devPlan {
                 activityTutor: Settings.getActivityTutor(),
                 timetableType: Settings.getTimetableType(),
                 timetablePeriod: Settings.getTimetablePeriod(),
+                devPlanRedirect: Settings.getDevPlanRedirect(),
                 timetableParams: Settings.getTimetableParams(),
                 activityNameFilter: ''
             };
@@ -303,7 +334,6 @@ module devPlan {
         static saveTimetable(): Settings {
             $.cookie.json = true;
             $.cookie('devPlan.Params', Settings.getTimetableParams(), { expires: 180 });
-            console.log("Params", Settings.getTimetableParams());
             return Settings;
         }
         /**
@@ -318,11 +348,19 @@ module devPlan {
          */
         static getCurrentDate(): string {
             var date = new Date();
-            var month = ((date.getMonth() <= 9) ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1));
-            var day = ((date.getDate() <= 9) ? '0' + date.getDate() : date.getDate());
-
-            return (date.getFullYear() + '-' + month + '-' + day);
-
+            var month: string = "";
+            if (date.getMonth() <= 9) {
+                month = '0' + (date.getMonth() + 1);
+            } else {
+                month = date.getMonth().toString();
+            };
+            var day: string = "";
+            if (date.getDate() <= 9) {
+                day = '0' + date.getDate();
+            } else {
+                day = date.getDate().toString();
+            };
+            return date.getFullYear() + '-' + month + '-' + day;
         }
         /**
          * 
@@ -331,41 +369,57 @@ module devPlan {
             var g = Init.searchGroupId(item);
             var t = Init.searchTutorId(item);
             var p = Init.searchPlaceId(item);
+
             if (g > 0 && t == 0 && p == 0) {
-                $("#devPlanParams").append('<button id="g' + g + '" class="devPlanParam btn btn-xs btn-primary" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + g + '" type="g">' + item + '' +
-                    '</button><wbr>');
+                $("#devPlanParams").append('<button title="' + item + '" id="g' + g +
+                    '" class="devPlanParam btn btn-xs btn-primary" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + g +
+                    '" type="g">' + ((item.length > 50) ? item.substr(0, 50) + '...' : item) + '' +
+                    '</button>');
                 Settings.setTimetableParams(Settings.getTimetableParams().addGroup(g))
             }
             if (g == 0 && t > 0 && p == 0) {
-                $("#devPlanParams").append('<button id="t' + t + '" class="devPlanParam btn btn-xs btn-success" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + t + '" type="t">' + item + '' +
-                    '</button><wbr>');
+                $("#devPlanParams").append('<button title="' + item + '"  id="t' + t +
+                    '" class="devPlanParam btn btn-xs btn-success" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + t +
+                    '" type="t">' + ((item.length > 50) ? item.substr(0, 50) + '...' : item) + '' +
+                    '</button>');
                 Settings.setTimetableParams(Settings.getTimetableParams().addTutor(t));
             }
             if (g == 0 && t == 0 && p > 0) {
-                $("#devPlanParams").append('<button id="p' + t + '" class="devPlanParam btn btn-xs btn-info" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + p + '" type="p">' + item + '' +
-                    '</button><wbr>');
+                $("#devPlanParams").append('<button  title="' + item + '"  id="p' + p +
+                    '" class="devPlanParam btn btn-xs btn-info" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + p +
+                    '" type="p">' + ((item.length > 50) ? item.substr(0, 50) + '...' : item) + '' +
+                    '</button>');
                 Settings.setTimetableParams(Settings.getTimetableParams().addPlace(p));
             }
-            $("#devPlanUrl").empty().append('<p class="form-control-static"><a href="/timetable.html?timetable=' + Settings.getTimetableParams().toString() + '">link</a></p>');
-
+            if (Settings.getTimetableParams().isEmpty()) {
+                $("#devPlanUrl").empty();
+            } else {
+                $("#devPlanUrl").empty().append('<a href="timetable.html?timetable=' +
+                    Settings.getTimetableParams().toString() + '">link</a>');
+            }
         }
         static removeTimetableParam(item: JQuery) {
             var item: JQuery = $(item);
             if (item.attr("type") == "g") {
-                Settings.setTimetableParams(Settings.getTimetableParams().removeGroup(parseInt(item.attr("value"))));
+                Settings.setTimetableParams(Settings.getTimetableParams()
+                    .removeGroup(parseInt(item.attr("value"))));
             }
             if (item.attr("type") == "t") {
-                Settings.setTimetableParams(Settings.getTimetableParams().removeTutor(parseInt(item.attr("value"))));
+                Settings.setTimetableParams(Settings.getTimetableParams()
+                    .removeTutor(parseInt(item.attr("value"))));
             }
             if (item.attr("type") == "p") {
-                Settings.setTimetableParams(Settings.getTimetableParams().removePlace(parseInt(item.attr("value"))));
+                Settings.setTimetableParams(Settings.getTimetableParams()
+                    .removePlace(parseInt(item.attr("value"))));
             }
-
-            console.log(Settings.getTimetableParams());
-            $("#devPlanUrl")
-                .empty()
-                .append("https://devplan.uek.krakow.pl/timetable.html?timetable=" + Settings.getTimetableParams().toString());
+          
             item.remove();
+              if (Settings.getTimetableParams().isEmpty()) {
+                $("#devPlanUrl").empty();
+            } else {
+                $("#devPlanUrl").empty().append('<a href="timetable.html?timetable=' +
+                    Settings.getTimetableParams().toString() + '">link</a>');
+            }
         }
 
     }

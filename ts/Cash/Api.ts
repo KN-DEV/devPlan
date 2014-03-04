@@ -15,18 +15,19 @@ module Cash {
          * Gets list of all groups available in cash service
          */
         public static getGroupsList(): JQueryXHR {
+
             return $.ajax({
                 url: Cash.Api.host + "groups",
                 type: "GET",
-                dataType: 'json',
-                cache: true,
+                // cache: true,
                 success: (data) => {
-                    console.log("Cash.Api.getGroupsLis() - success", data);
+                    // console.log("Cash.Api.getTutorsList() - success", data);
                 },
                 error: () => {
-                    console.log("Cash.Api.getGroupsLis() - error");
+                    //console.log("Cash.Api.getTutorsList() - error");
                 }
             });
+
         }
         /**
          * Gets list of all tutors available in cash service
@@ -35,13 +36,12 @@ module Cash {
             return $.ajax({
                 url: Cash.Api.host + "tutors",
                 type: "GET",
-                dataType: 'json',
-                cache: true,
+                // cache: true,
                 success: (data) => {
-                    console.log("Cash.Api.getTutorsList() - success", data);
+                    // console.log("Cash.Api.getTutorsList() - success", data);
                 },
                 error: () => {
-                    console.log("Cash.Api.getTutorsList() - error");
+                    //console.log("Cash.Api.getTutorsList() - error");
                 }
             });
         }
@@ -53,12 +53,12 @@ module Cash {
                 url: Cash.Api.host + "places",
                 type: "GET",
                 dataType: 'json',
-                cache: true,
+                //  cache: true,
                 success: (data) => {
-                    console.log("Cash.Api.getPlacesList() - success", data);
+                    //console.log("Cash.Api.getPlacesList() - success", data);
                 },
                 error: () => {
-                    console.log("Cash.Api.getPlacesList() - error");
+                    //console.log("Cash.Api.getPlacesList() - error");
                 }
             });
         }
@@ -77,10 +77,10 @@ module Cash {
                     place_id: params.getPlaces()
                 },
                 success: (data: any) => {
-                    console.log("Cash.Api.registerTimetable() - success", params, data);
+                    //console.log("Cash.Api.registerTimetable() - success", params, data);
                 },
                 error: () => {
-                    console.log("Cash.Api.registerTimetable() - error", params);
+                    //    console.log("Cash.Api.registerTimetable() - error", params);
                 }
             });
         }
@@ -94,10 +94,10 @@ module Cash {
                 dataType: 'json',
                 // cache: false,
                 success: (data: any) => {
-                    console.log("Cash.Api.getTimetable() - success", params.toString(), data);
+                    //   console.log("Cash.Api.getTimetable() - success", params.toString(), data);
                 },
                 error: () => {
-                    console.log("Cash.Api.getTimetable() - error", params);
+                    // console.log("Cash.Api.getTimetable() - error", params);
                 }
             });
         }

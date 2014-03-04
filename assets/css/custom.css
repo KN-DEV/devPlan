@@ -127,3 +127,8 @@ li.activity {
 	-ms-transition: none;
 	transition: none;
 }
+
+.navbar-collapse .navbar-form {
+	border: none;
+}
+}

@@ -30,7 +30,7 @@ module Cash {
         /**
          * 
          */
-        resource_versions: any[];
+        versions: any[];
     }
 
 

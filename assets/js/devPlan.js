@@ -684,11 +684,14 @@ var Cash;
                     console.log("Cash.Api.registerTimetable() - success", params, data);
                 },
                 error: function () {
-                }
+                },
+                cacheJStorage: false
             });
         };
 
-        Api.getTimetable = function (params) {
+        Api.getTimetable = function (params, cache, ttl) {
+            if (typeof cache === "undefined") { cache = false; }
+            if (typeof ttl === "undefined") { ttl = 1; }
             return $.ajax({
                 url: Cash.Api.host + "timetables/" + params.toString(),
                 type: "GET",
@@ -696,8 +699,48 @@ var Cash;
                 success: function (data) {
                 },
                 error: function () {
+                },
+                cacheJStorage: cache,
+                cacheTTL: (3600 * ttl),
+                isCacheValid: function () {
+                    console.log(Cash.Api.host + "timetables/" + params.toString() + "GETundefined");
+                    var value = $.jStorage.get(Cash.Api.host + "timetables/" + params.toString() + "GETundefined", false);
+                    console.log(value);
+                    $.when(Cash.Api.getTimetableVersion(params)).done(function (test) {
+                        if (test.versions == value.versions) {
+                            console.log(true, test.versions, value.versions);
+
+                            return true;
+                        } else {
+                            console.log(false, test.versions, value.versions);
+
+                            return false;
+                        }
+                    }).fail(function (test) {
+                        if (value != false) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                        ;
+                    });
                 }
             });
+        };
+
+        Api.getTimetableVersion = function (params) {
+            return $.ajax({
+                url: Cash.Api.host + "timetables/" + params.toString() + "/versions",
+                type: "GET",
+                dataType: 'json',
+                success: function (data) {
+                },
+                error: function () {
+                }
+            });
+        };
+
+        Api.checkVersion = function (oldVersion, newVersion) {
         };
         Api.host = "http://cash.dev.uek.krakow.pl/v0_1/";
         return Api;
@@ -1148,6 +1191,7 @@ var devPlan;
             var params;
             if (devPlan.Settings.getUrlParam('timetable').length != 0) {
                 params = Cash.Params.fromString(devPlan.Settings.getUrlParam('timetable'));
+                Init.setUpButtons(devPlan.Settings.getTimetableParams());
                 devPlan.Settings.setTimetableParams(params);
             } else {
                 params = devPlan.Settings.getTimetableParams();
@@ -1156,12 +1200,12 @@ var devPlan;
 
             if ($("#timetable-results").length == 1) {
                 if (params.isEmpty() == false) {
-                    $.when(Cash.Api.getTimetable(params)).done(function (response) {
+                    $.when(Cash.Api.getTimetable(params, true)).done(function (response) {
                         Init.showTimetable(Init.setTimetable(response).getTimetable());
                         $("#timetable-panel-spinner").remove();
                     }).fail(function () {
                         $.when(Cash.Api.registerTimetable(params)).done(function (response) {
-                            $.when(Cash.Api.getTimetable(params)).done(function (response) {
+                            $.when(Cash.Api.getTimetable(params, true)).done(function (response) {
                                 Init.showTimetable(Init.setTimetable(response).getTimetable());
                                 $("#timetable-panel-spinner").remove();
                             }).fail(function () {
@@ -1481,11 +1525,11 @@ var devPlan;
 
         Init.setUpButtons = function (params) {
             if (params.isEmpty() == false) {
-                $("#devPlanWizardNavbarIconLink").attr("href", "timetable.html").removeAttr("data-toggle").removeAttr("data-target");
+                $("#devPlanWizardNavbarIconLink").attr("href", "timetable.html?timetable=" + params.toString()).removeAttr("data-toggle").removeAttr("data-target");
 
-                $("#devPlanWizardNavbarLink").attr("href", "timetable.html").removeAttr("data-toggle").removeAttr("data-target").empty().toggleClass("btn-info").toggleClass("btn-success").attr("href", "timetable.html").removeAttr("data-toggle").removeAttr("data-target").text("Mój devPlan");
+                $("#devPlanWizardNavbarLink").toggleClass("btn-info").toggleClass("btn-success").attr("href", "timetable.html?timetable=" + params.toString()).removeAttr("data-toggle").removeAttr("data-target").empty().text("Mój devPlan");
 
-                $("#devPlanWizardLink").attr("href", "timetable.html").removeAttr("data-toggle").removeAttr("data-target").empty().toggleClass("btn-info").toggleClass("btn-success").text("Mój devPlan");
+                $("#devPlanWizardLink").attr("href", "timetable.html?timetable=" + params.toString()).removeAttr("data-toggle").removeAttr("data-target").toggleClass("btn-info").toggleClass("btn-success").empty().text("Mój devPlan");
             } else {
                 $("#devPlanSettingsNavbarIconLink").remove();
                 $("#devPlanSettingsNavbarLink").remove();

@@ -48,18 +48,20 @@ module devPlan {
             var params: Cash.Params;
             if (Settings.getUrlParam('timetable').length != 0) {
                 params = Cash.Params.fromString(Settings.getUrlParam('timetable'));
+                Init.setUpButtons(Settings.getTimetableParams());
                 Settings.setTimetableParams(params);
             } else {
                 params = Settings.getTimetableParams();
                 Init.setUpButtons(params);
             }
 
+
             if ($("#timetable-results").length == 1) {
                 /**
                  * Sprawdza czy istnieje jakikolwiek parametr do planu
                     */
                 if (params.isEmpty() == false) {
-                    $.when(Cash.Api.getTimetable(params))
+                    $.when(Cash.Api.getTimetable(params, true))
                         .done((response: any) => {
                             Init.showTimetable(Init.setTimetable(response).getTimetable());
                             $("#timetable-panel-spinner").remove();
@@ -67,7 +69,7 @@ module devPlan {
 
                             $.when(Cash.Api.registerTimetable(params))
                                 .done((response: any) => {
-                                    $.when(Cash.Api.getTimetable(params))
+                                    $.when(Cash.Api.getTimetable(params, true))
                                         .done((response: any) => {
                                             Init.showTimetable(Init.setTimetable(response).getTimetable());
                                             $("#timetable-panel-spinner").remove();
@@ -87,25 +89,6 @@ module devPlan {
                 $("#search-panel-input")
                     .attr('value', Settings.getUrlParam('search'));
             }
-
-            //            if (store.enabled) {
-            //                if (store.get("Cash.groups")) {
-            //                    Init.setGroups(store.get("Cash.groups"));
-            //                } else {
-            //                    $.when(Cash.Api.getGroupsList())
-            //                        .done((response: any) => {
-            //                            store.set("Cash.groups", response[0]);
-            //                            Init.setGroups(response[0]);
-            //                        })
-            //                        .fail(() => {
-            //                            Init.setGroups([]);
-            //                        });
-            //
-            //                }
-            //            } else {
-            //                // var groups:any =  
-            //            }
-
 
             $.when(Cash.Api.getGroupsList(true),
                 Cash.Api.getTutorsList(true),
@@ -164,7 +147,7 @@ module devPlan {
                     });
 
                 }).fail(() => {
-                    if ($.jStorage.storageAvailable() ==true) {
+                    if ($.jStorage.storageAvailable() == true) {
                         $("#search-input")
                             .removeAttr('disabled')
                             .attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn')
@@ -522,28 +505,27 @@ module devPlan {
         static setUpButtons(params: Cash.Params): void {
             if (params.isEmpty() == false) {
                 $("#devPlanWizardNavbarIconLink")
-                    .attr("href", "timetable.html")
+                    .attr("href", "timetable.html?timetable=" + params.toString())
                     .removeAttr("data-toggle")
                     .removeAttr("data-target");
 
                 $("#devPlanWizardNavbarLink")
-                    .attr("href", "timetable.html")
-                    .removeAttr("data-toggle")
-                    .removeAttr("data-target")
-                    .empty().toggleClass("btn-info")
+                    .toggleClass("btn-info")
                     .toggleClass("btn-success")
-                    .attr("href", "timetable.html")
-                    .removeAttr("data-toggle")
-                    .removeAttr("data-target")
-                    .text("Mój devPlan");
-
-                $("#devPlanWizardLink")
-                    .attr("href", "timetable.html")
+                    .attr("href", "timetable.html?timetable=" + params.toString())
                     .removeAttr("data-toggle")
                     .removeAttr("data-target")
                     .empty()
+                    .text("Mój devPlan");
+
+                $("#devPlanWizardLink")
+                    .attr("href", "timetable.html?timetable=" + params.toString())
+                    .removeAttr("data-toggle")
+                    .removeAttr("data-target")
+
                     .toggleClass("btn-info")
                     .toggleClass("btn-success")
+                    .empty()
                     .text("Mój devPlan");
 
             } else {

@@ -5,7 +5,6 @@ var devPlan;
             $("#search-input").attr('value', devPlan.Settings.getUrlParam('search'));
             devPlan.Settings.load();
 
-            console.log(devPlan.Settings.getTimetablePeriod());
             var params;
             if (devPlan.Settings.getUrlParam('timetable').length != 0) {
                 params = Cash.Params.fromString(devPlan.Settings.getUrlParam('timetable'));
@@ -39,6 +38,7 @@ var devPlan;
             }
 
             $.when(Cash.Api.getGroupsList(), Cash.Api.getTutorsList(), Cash.Api.getPlacesList()).done(function (groups, tutors, places) {
+                console.log(groups, tutors, places);
                 Init.setGroups(groups[0]);
                 Init.setTutors(tutors[0]);
                 Init.setPlaces(places[0]);
@@ -88,6 +88,7 @@ var devPlan;
 
         Init.setGroups = function (groups) {
             if (typeof groups === "undefined") { groups = []; }
+            console.log(groups);
             for (var i = 0; i < groups.length; i++) {
                 Init.groups.push(new Cash.Group(groups[i]));
             }

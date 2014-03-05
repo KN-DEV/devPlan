@@ -371,32 +371,34 @@ module devPlan {
             var p = Init.searchPlaceId(item);
 
             if (g > 0 && t == 0 && p == 0) {
-                $("#devPlanParams").append('<button title="' + item + '" id="g' + g +
+                $(".devPlanParams").append('<button title="' + item + '" id="g' + g +
                     '" class="devPlanParam btn btn-xs btn-primary" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + g +
                     '" type="g">' + ((item.length > 50) ? item.substr(0, 50) + '...' : item) + '' +
                     '</button>');
                 Settings.setTimetableParams(Settings.getTimetableParams().addGroup(g))
             }
             if (g == 0 && t > 0 && p == 0) {
-                $("#devPlanParams").append('<button title="' + item + '"  id="t' + t +
+                $(".devPlanParams").append('<button title="' + item + '"  id="t' + t +
                     '" class="devPlanParam btn btn-xs btn-success" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + t +
                     '" type="t">' + ((item.length > 50) ? item.substr(0, 50) + '...' : item) + '' +
                     '</button>');
                 Settings.setTimetableParams(Settings.getTimetableParams().addTutor(t));
             }
             if (g == 0 && t == 0 && p > 0) {
-                $("#devPlanParams").append('<button  title="' + item + '"  id="p' + p +
+                $(".devPlanParams").append('<button  title="' + item + '"  id="p' + p +
                     '" class="devPlanParam btn btn-xs btn-info" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + p +
                     '" type="p">' + ((item.length > 50) ? item.substr(0, 50) + '...' : item) + '' +
                     '</button>');
                 Settings.setTimetableParams(Settings.getTimetableParams().addPlace(p));
             }
             if (Settings.getTimetableParams().isEmpty()) {
-                $("#devPlanUrl").empty();
+                $(".devPlanUrl").empty();
+
             } else {
-                $("#devPlanUrl").empty().append('<a href="timetable.html?timetable=' +
-                    Settings.getTimetableParams().toString() + '">link</a>');
+                $(".devPlanUrl").empty().append('http://devplan.uek.krakow.pl/timetable.html?timetable=<wbr>' +
+                    Settings.getTimetableParams().toString());
             }
+            $('.devPlanQrCodeImg').empty().qrcode('http://devplan.uek.krakow.pl/timetable.html?timetable=' + Settings.getTimetableParams().toString())
         }
         static removeTimetableParam(item: JQuery) {
             var item: JQuery = $(item);
@@ -412,14 +414,16 @@ module devPlan {
                 Settings.setTimetableParams(Settings.getTimetableParams()
                     .removePlace(parseInt(item.attr("value"))));
             }
-          
+
             item.remove();
-              if (Settings.getTimetableParams().isEmpty()) {
-                $("#devPlanUrl").empty();
+            if (Settings.getTimetableParams().isEmpty()) {
+                $(".devPlanUrl").empty();
             } else {
-                $("#devPlanUrl").empty().append('<a href="timetable.html?timetable=' +
-                    Settings.getTimetableParams().toString() + '">link</a>');
+                $(".devPlanUrl").empty().append('http://devplan.uek.krakow.pl/timetable.html?timetable=<wbr>' +
+                    Settings.getTimetableParams().toString());
             }
+            $('.devPlanQrCodeImg').empty().qrcode('http://devplan.uek.krakow.pl/timetable.html?timetable=' + Settings.getTimetableParams().toString())
+
         }
 
     }

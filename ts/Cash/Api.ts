@@ -14,53 +14,90 @@ module Cash {
         /**
          * Gets list of all groups available in cash service
          */
-        public static getGroupsList(): JQueryXHR {
+        public static getGroupsList(cache: boolean = false, ttl: number = 1): JQueryXHR {
 
             return $.ajax({
                 url: Cash.Api.host + "groups",
                 type: "GET",
                 // cache: true,
                 success: (data) => {
-                    // console.log("Cash.Api.getTutorsList() - success", data);
+                    //  console.log("Cash.Api.getTutorsList() - success", data);
+                    devPlan.Init.setGroups(data);
                 },
                 error: () => {
                     //console.log("Cash.Api.getTutorsList() - error");
+
+                },
+                //
+                cacheJStorage: cache,
+
+                cacheTTL: (3600 * ttl),
+                isCacheValid: function() {
+                    return true;
                 }
+
+
+
             });
+            //  return [];
 
         }
         /**
          * Gets list of all tutors available in cash service
          */
-        public static getTutorsList(): JQueryXHR {
+        public static getTutorsList(cache: boolean = false, ttl: number = 1): JQueryXHR {
             return $.ajax({
                 url: Cash.Api.host + "tutors",
                 type: "GET",
                 // cache: true,
                 success: (data) => {
-                    // console.log("Cash.Api.getTutorsList() - success", data);
+                    //   console.log("Cash.Api.getTutorsList() - success", data);
+                    devPlan.Init.setTutors(data);
+                    // return data;
+
                 },
                 error: () => {
                     //console.log("Cash.Api.getTutorsList() - error");
+                    //return [];
+                },
+                cacheJStorage: cache,
+
+                cacheTTL: (3600 * ttl),
+                isCacheValid: function() {
+                    return true;
                 }
+
             });
         }
         /**
         * Gets list of all places available in cash service
         */
-        public static getPlacesList(): JQueryXHR {
+        public static getPlacesList(cache: boolean = false, ttl: number = 1): JQueryXHR {
             return $.ajax({
                 url: Cash.Api.host + "places",
                 type: "GET",
                 dataType: 'json',
                 //  cache: true,
                 success: (data) => {
-                    //console.log("Cash.Api.getPlacesList() - success", data);
+                    //     console.log("Cash.Api.getPlacesList() - success", data);
+                    devPlan.Init.setPlaces(data);
                 },
                 error: () => {
                     //console.log("Cash.Api.getPlacesList() - error");
+
+                },
+                //
+                cacheJStorage: cache,
+
+                cacheTTL: (3600 * ttl),
+                isCacheValid: function() {
+                    return true;
                 }
+
             });
+
+
+
         }
         /**
          * Registers timetable
@@ -77,7 +114,7 @@ module Cash {
                     place_id: params.getPlaces()
                 },
                 success: (data: any) => {
-                    //console.log("Cash.Api.registerTimetable() - success", params, data);
+                    console.log("Cash.Api.registerTimetable() - success", params, data);
                 },
                 error: () => {
                     //    console.log("Cash.Api.registerTimetable() - error", params);
@@ -94,7 +131,7 @@ module Cash {
                 dataType: 'json',
                 // cache: false,
                 success: (data: any) => {
-                    //   console.log("Cash.Api.getTimetable() - success", params.toString(), data);
+                    //console.log("Cash.Api.getTimetable() - success", params.toString(), data);
                 },
                 error: () => {
                     // console.log("Cash.Api.getTimetable() - error", params);

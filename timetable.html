@@ -8,9 +8,12 @@
 <meta name="keywords"
 	content="plan, zajęć, plan zajęć, spersonalizowany, uek, uniwersytet, ekonomiczny, grupy, prowadzący, Kraków, dev, devplan, koło, naukowe, programistów, szukaj, android, windows, ios">
 <title>devPlan - Mój plan</title>
-<link href="assets/css/bootstrap.min.css" rel="stylesheet">
+<link
+	href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"
+	rel="stylesheet">
 <link href="assets/css/bootstrap-theme.min.css" rel="stylesheet">
-<link href="assets/font-awesome/css/font-awesome.min.css"
+<link
+	href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"
 	rel="stylesheet">
 <link
 	href='http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900,100italic,300italic,400italic,700italic,900italic'
@@ -19,7 +22,8 @@
 <link href="assets/css/custom.css" rel="stylesheet">
 </head>
 <body>
-	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<nav class="hidden-print avbar navbar-default navbar-fixed-top"
+		role="navigation">
 		<div class="container">
 			<div class="row">
 				<div class="col-lg-12 col-md-12 col-sm-12 col-12-xs">
@@ -28,9 +32,9 @@
 							<a class="navbar-btn btn btn-info" data-toggle="collapse"
 								data-target="#devPlanSearch" title="Szukaj"><i
 								class="fa fa-fw fa-search"></i></a> <a
-								id="devPlanWizardNavbarIconLink" class="navbar-btn btn btn-success"
-								title="Mój devPlan" data-toggle="modal"
-								data-target="#devPlanWizard"><i
+								id="devPlanWizardNavbarIconLink"
+								class="navbar-btn btn btn-success" title="Mój devPlan"
+								data-toggle="modal" data-target="#devPlanWizard"><i
 								class="fa fa-fw fa-calendar"></i></a><a
 								id="devPlanSettingsNavbarIconLink"
 								class="navbar-btn btn btn-primary" data-toggle="modal"
@@ -67,7 +71,7 @@
 		<div class="row">
 			<div class="col-lg-8 col-lg-offset-2">
 				<div id="devPlanShowResults" class="panel panel-default">
-					<div class="panel-heading">
+					<div class="panel-heading hidden-print">
 						<div class="row">
 							<div class="col-lg-12,col-md-12 col-sm-12 col-xs-12">
 								<div class="h5">
@@ -120,6 +124,7 @@
 								<li class="active"><a data-toggle="tab"
 									href="#devPlanSettingsGeneral">Ustawienia</a></li>
 								<li><a data-toggle="tab" href="#devPlanSettingsView">Wygląd</a></li>
+								<li><a data-toggle="tab" href="#devPlanExport">Eksport</a></li>
 							</ul>
 						</div>
 					</h6>
@@ -130,8 +135,17 @@
 							<fieldset>
 
 								<legend>Twój devPlan:</legend>
-								<div class="form-group" id="devPlanUrl"></div>
-								<div id="devPlanParams" class="form-group"></div>
+								<p>
+									Skopiuj devPlan lub go
+									<button type="button" class="btn btn-link" data-toggle="modal"
+										data-target="#devPlanQrCode">
+										<i class="fa fa-fw fa-qrcode"></i> zeskanuj
+									</button>
+									i podziel się z innymi.
+								</p>
+								<div class="form-group devPlanUrl"></div>
+
+								<div class="form-group devPlanParams"></div>
 								<div class="form-group">
 									<label>Wprowadz nazwe grupy lub wykładowcy</label> <input
 										id="0" autocomplete="off" disabled="disabled" value=""
@@ -144,14 +158,38 @@
 						<div class="modal-footer">
 							<button type="button" class="btn btn-default"
 								data-dismiss="modal">Zamknij</button>
-							<button type="button" class="btn btn-info" data-dismiss="modal">
-								<i class="fa fa-fw fa-qrcode"></i>QR Code
-							</button>
-							<button class="btn btn-primary"
+
+							<button class="btn btn-success"
 								onclick="devPlan.Settings.saveTimetable(); window.location.replace('timetable.html')">
-								Zapamiętaj</button>
+								Zapamiętaj mój devPlan</button>
 						</div>
 					</div>
+
+
+
+
+					<div class="tab-pane" id="devPlanExport">
+						<div class="modal-body">
+
+							<p class="lead">Dajemy Ci możliwość eksportu devPlanu do
+								takich kalendarzy jak Google Calendar, Outlook itp.</p>
+							<p>
+								<a class="btn btn-info" data-toggle="modal"
+									data-target="#devPlanExportGoogle">Eksportuj devPlan do
+									Google Calendar itp</a>
+							</p>
+							<p>
+								<a href="" class="btn btn-success">Pobierz devPlan do pliku</a>
+							</p>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default"
+								data-dismiss="modal">Zamknij</button>
+						</div>
+					</div>
+
+
+
 					<div class="tab-pane fade " id="devPlanSettingsView">
 						<div class="modal-body">
 							<fieldset>
@@ -261,10 +299,59 @@
 		</div>
 	</div>
 	<!-- devPlan create stop -->
+	<!-- devPlanQrCode start -->
+	<div class="modal fade" id="devPlanQrCode" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">QR Code</h4>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
+							<div class="devPlanQrCodeImg img-responsive"></div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Zamknij</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- devPlanQrCode stop -->
+	<!-- devPlanExport start -->
+	<div class="modal fade" id="devPlanExportGoogle" tabindex="-1"
+		role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">Eksport do
+						kalendarza Google</h4>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
+							<div class="devPlanQrCodeImg img-responsive"></div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Zamknij</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- devPlanExport stop -->
 	<!-- issue start-->
 	<div class="modal fade" id="issue" tabindex="-1" role="dialog"
 		aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-sm">
+		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal"
@@ -299,14 +386,12 @@
 		</div>
 	</div>
 	<!-- issue stop -->
-	<footer>
+	<footer class="hidden-print">
 		<div class="container">
 			<div class="row">
 				<div class="col-lg-12">
 					<ul class="list-inline">
 						<li><a href="index.html" title="Strona startowa devPlan"><strong>devPlan</strong></a></li>
-						<li class="footer-menu-divider">&sdot;</li>
-						<li><a href="search.html">Szukaj</a></li>
 						<li class="footer-menu-divider">&sdot;</li>
 						<li><a href="timetable.html" title="Mój devPlan">Mój
 								devPlan</a></li>
@@ -321,11 +406,17 @@
 			</div>
 		</div>
 	</footer>
-	<script src="assets/js/jquery-1.10.2.js"></script>
+	<script
+		src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 	<script src="assets/js/jquery.cookie.js"></script>
-	<script src="assets/js/bootstrap.min.js"></script>
+	<script
+		src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 	<script src="assets/js/bootstrap3-typeahead.min.js"></script>
-	<script src="assets/js/storejson2.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2.js"></script>
+	<script
+		src="//cdnjs.cloudflare.com/ajax/libs/jStorage/0.4.4/jstorage.min.js"></script>
+	<script src="assets/js/jquery.qrcode.min.js"></script>
+	<script src="assets/js/jquery-ajax-localstorage-cache.min.js"></script>
 	<script src="assets/js/devPlan.js"></script>
 	<script type="text/javascript">
 		new devPlan.Init();

@@ -6,7 +6,8 @@
 /// <reference path="../Cash/Api.ts" />
 /// <reference path="Settings.ts" />
 /// <reference path="Generate.ts" />
-/// <reference path="typeahead.ts" />
+/// <reference path="qrcode.ts" />
+/// <reference path="jstorage.ts" />
 /// <reference path="AnimateChevron.ts" />
 /// <reference path="windowsPhone.ts" />
 
@@ -44,9 +45,6 @@ module devPlan {
             $("#search-input").attr('value', Settings.getUrlParam('search'));
             Settings.load();
 
-
-
-            console.log(Settings.getTimetablePeriod());
             var params: Cash.Params;
             if (Settings.getUrlParam('timetable').length != 0) {
                 params = Cash.Params.fromString(Settings.getUrlParam('timetable'));
@@ -109,14 +107,10 @@ module devPlan {
             //            }
 
 
-            $.when(Cash.Api.getGroupsList(),
-                Cash.Api.getTutorsList(),
-                Cash.Api.getPlacesList())
+            $.when(Cash.Api.getGroupsList(true),
+                Cash.Api.getTutorsList(true),
+                Cash.Api.getPlacesList(true))
                 .done((groups: any, tutors: any, places: any) => {
-
-                    Init.setGroups(groups[0]);
-                    Init.setTutors(tutors[0]);
-                    Init.setPlaces(places[0]);
 
                     $("#search-input")
                         .removeAttr('disabled')
@@ -168,8 +162,60 @@ module devPlan {
                             }
                         });
                     });
+
                 }).fail(() => {
-                    console.log("Fail creating typeahead");
+                    if ($.jStorage.storageAvailable() ==true) {
+                        $("#search-input")
+                            .removeAttr('disabled')
+                            .attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn')
+                            .attr('data-provide', "typeahead");
+
+                        /**
+                         *Tablica nazw dla typeahead
+                         */
+                        var data: string[] = Init.typeaheadDataCreator(Init.getGroups(), Init.getTutors(), Init.getPlaces());
+
+                        /**
+                         * Navbar search
+                         */
+                        $("#search-input").typeahead({
+                            source: data,
+                            items: 15,
+                            updater: (item: any) => {
+                                var group: number = Init.searchGroupId(item);
+                                var tutor: number = Init.searchTutorId(item);
+                                var place: number = Init.searchPlaceId(item);
+                                if (group > 0 && tutor == 0 && place == 0) {
+                                    window.location.replace('timetable.html?timetable=g' + group);
+                                }
+                                if (group == 0 && tutor > 0 && place == 0) {
+                                    window.location.replace('timetable.html?timetable=t' + tutor);
+                                }
+                                if (group == 0 && tutor == 0 && place > 0) {
+                                    window.location.replace('timetable.html?timetable=p' + place);
+                                }
+                            }
+                        });
+                        /**
+                         * Add information about selected groups places and tutors
+                         */
+                        Settings.loadTimetableParam();
+                        /**
+                         * 
+                         */
+                        $(".devPlanTypeahead").each((index) => {
+                            $('#' + index + '.devPlanTypeahead').removeAttr('disabled')
+                                .attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn')
+                                .attr('data-provide', "typeahead");
+                            $('#' + index + '.devPlanTypeahead').typeahead({
+                                source: data,
+                                items: 15,
+                                updater: (item: any) => {
+                                    Settings.addTimetableParam(item);
+                                }
+                            });
+                        });
+                    }
                 });
         }
         /**
@@ -181,9 +227,9 @@ module devPlan {
         /**
          *
          */
-        static setGroups(groups: Cash.Group[]= []): Init {
-            for (var i = 0; i < groups.length; i++) {
-                Init.groups.push(new Cash.Group(groups[i]));
+        static setGroups(groups: Cash.GroupInterface[]= []): Init {
+            for (var group in groups) {
+                Init.groups.push(new Cash.Group(groups[group]));
             }
             Init.groups = Init.getGroups().sort((a: any, b: any) => {return a.getName() - b.getName() });
             return Init;
@@ -212,9 +258,9 @@ module devPlan {
         /**
          *
          */
-        static setTutors(tutors: Cash.Tutor[]= []): Init {
-            for (var i = 0; i < tutors.length; i++) {
-                Init.tutors.push(new Cash.Tutor(tutors[i]));
+        static setTutors(tutors: Cash.TutorInterface[]= []): Init {
+            for (var tutor in tutors) {
+                Init.tutors.push(new Cash.Tutor(tutors[tutor]));
             }
             Init.tutors = Init.getTutors().sort((a: any, b: any) => {return a.getName() - b.getName() });
             return Init;
@@ -243,9 +289,10 @@ module devPlan {
         /**
          *
          */
-        static setPlaces(tutors: Cash.PlaceInterface[]= []): Init {
-            for (var i = 0; i < tutors.length; i++) {
-                Init.places.push(new Cash.Place(tutors[i]));
+        static setPlaces(places: any = []): Init {
+            for (var place in places) {
+
+                Init.places.push(new Cash.Place(places[place]));
             }
             Init.places = Init.getPlaces().sort((a: any, b: any) => {return a.getLocation() - b.getLocation() });
             return Init;

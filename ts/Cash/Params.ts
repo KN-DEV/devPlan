@@ -200,6 +200,7 @@ module Cash {
         public static fromString(query: string): Cash.Params {
             var params = new Cash.Params();
             var timetable = query.match(/[gtp][0-9]*/gi);
+            
             for (var i = 0; i < timetable.length; i++) {
                 if (timetable[i].toString().toLowerCase().indexOf("g") != -1) {
                     params.addGroup(parseInt(timetable[i].slice(1).toString()));
@@ -208,12 +209,10 @@ module Cash {
                     params.addTutor(parseInt(timetable[i].slice(1).toString()));
                 }
                 if (timetable[i].toString().toLowerCase().indexOf("p") != -1) {
-                    params.addTutor(parseInt(timetable[i].slice(1).toString()));
+                    params.addPlace(parseInt(timetable[i].slice(1).toString()));
                 }
             }
             return params;
-
         }
-
     }
 }

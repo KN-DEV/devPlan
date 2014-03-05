@@ -441,6 +441,7 @@ var Cash;
         Params.fromString = function (query) {
             var params = new Cash.Params();
             var timetable = query.match(/[gtp][0-9]*/gi);
+
             for (var i = 0; i < timetable.length; i++) {
                 if (timetable[i].toString().toLowerCase().indexOf("g") != -1) {
                     params.addGroup(parseInt(timetable[i].slice(1).toString()));
@@ -449,7 +450,7 @@ var Cash;
                     params.addTutor(parseInt(timetable[i].slice(1).toString()));
                 }
                 if (timetable[i].toString().toLowerCase().indexOf("p") != -1) {
-                    params.addTutor(parseInt(timetable[i].slice(1).toString()));
+                    params.addPlace(parseInt(timetable[i].slice(1).toString()));
                 }
             }
             return params;
@@ -611,36 +612,60 @@ var Cash;
     var Api = (function () {
         function Api() {
         }
-        Api.getGroupsList = function () {
+        Api.getGroupsList = function (cache, ttl) {
+            if (typeof cache === "undefined") { cache = false; }
+            if (typeof ttl === "undefined") { ttl = 1; }
             return $.ajax({
                 url: Cash.Api.host + "groups",
                 type: "GET",
                 success: function (data) {
+                    devPlan.Init.setGroups(data);
                 },
                 error: function () {
+                },
+                cacheJStorage: cache,
+                cacheTTL: (3600 * ttl),
+                isCacheValid: function () {
+                    return true;
                 }
             });
         };
 
-        Api.getTutorsList = function () {
+        Api.getTutorsList = function (cache, ttl) {
+            if (typeof cache === "undefined") { cache = false; }
+            if (typeof ttl === "undefined") { ttl = 1; }
             return $.ajax({
                 url: Cash.Api.host + "tutors",
                 type: "GET",
                 success: function (data) {
+                    devPlan.Init.setTutors(data);
                 },
                 error: function () {
+                },
+                cacheJStorage: cache,
+                cacheTTL: (3600 * ttl),
+                isCacheValid: function () {
+                    return true;
                 }
             });
         };
 
-        Api.getPlacesList = function () {
+        Api.getPlacesList = function (cache, ttl) {
+            if (typeof cache === "undefined") { cache = false; }
+            if (typeof ttl === "undefined") { ttl = 1; }
             return $.ajax({
                 url: Cash.Api.host + "places",
                 type: "GET",
                 dataType: 'json',
                 success: function (data) {
+                    devPlan.Init.setPlaces(data);
                 },
                 error: function () {
+                },
+                cacheJStorage: cache,
+                cacheTTL: (3600 * ttl),
+                isCacheValid: function () {
+                    return true;
                 }
             });
         };
@@ -656,6 +681,7 @@ var Cash;
                     place_id: params.getPlaces()
                 },
                 success: function (data) {
+                    console.log("Cash.Api.registerTimetable() - success", params, data);
                 },
                 error: function () {
                 }
@@ -943,22 +969,23 @@ var devPlan;
             var p = devPlan.Init.searchPlaceId(item);
 
             if (g > 0 && t == 0 && p == 0) {
-                $("#devPlanParams").append('<button title="' + item + '" id="g' + g + '" class="devPlanParam btn btn-xs btn-primary" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + g + '" type="g">' + ((item.length > 50) ? item.substr(0, 50) + '...' : item) + '' + '</button>');
+                $(".devPlanParams").append('<button title="' + item + '" id="g' + g + '" class="devPlanParam btn btn-xs btn-primary" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + g + '" type="g">' + ((item.length > 50) ? item.substr(0, 50) + '...' : item) + '' + '</button>');
                 Settings.setTimetableParams(Settings.getTimetableParams().addGroup(g));
             }
             if (g == 0 && t > 0 && p == 0) {
-                $("#devPlanParams").append('<button title="' + item + '"  id="t' + t + '" class="devPlanParam btn btn-xs btn-success" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + t + '" type="t">' + ((item.length > 50) ? item.substr(0, 50) + '...' : item) + '' + '</button>');
+                $(".devPlanParams").append('<button title="' + item + '"  id="t' + t + '" class="devPlanParam btn btn-xs btn-success" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + t + '" type="t">' + ((item.length > 50) ? item.substr(0, 50) + '...' : item) + '' + '</button>');
                 Settings.setTimetableParams(Settings.getTimetableParams().addTutor(t));
             }
             if (g == 0 && t == 0 && p > 0) {
-                $("#devPlanParams").append('<button  title="' + item + '"  id="p' + p + '" class="devPlanParam btn btn-xs btn-info" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + p + '" type="p">' + ((item.length > 50) ? item.substr(0, 50) + '...' : item) + '' + '</button>');
+                $(".devPlanParams").append('<button  title="' + item + '"  id="p' + p + '" class="devPlanParam btn btn-xs btn-info" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + p + '" type="p">' + ((item.length > 50) ? item.substr(0, 50) + '...' : item) + '' + '</button>');
                 Settings.setTimetableParams(Settings.getTimetableParams().addPlace(p));
             }
             if (Settings.getTimetableParams().isEmpty()) {
-                $("#devPlanUrl").empty();
+                $(".devPlanUrl").empty();
             } else {
-                $("#devPlanUrl").empty().append('<a href="timetable.html?timetable=' + Settings.getTimetableParams().toString() + '">link</a>');
+                $(".devPlanUrl").empty().append('http://devplan.uek.krakow.pl/timetable.html?timetable=<wbr>' + Settings.getTimetableParams().toString());
             }
+            $('.devPlanQrCodeImg').empty().qrcode('http://devplan.uek.krakow.pl/timetable.html?timetable=' + Settings.getTimetableParams().toString());
         };
         Settings.removeTimetableParam = function (item) {
             var item = $(item);
@@ -974,10 +1001,11 @@ var devPlan;
 
             item.remove();
             if (Settings.getTimetableParams().isEmpty()) {
-                $("#devPlanUrl").empty();
+                $(".devPlanUrl").empty();
             } else {
-                $("#devPlanUrl").empty().append('<a href="timetable.html?timetable=' + Settings.getTimetableParams().toString() + '">link</a>');
+                $(".devPlanUrl").empty().append('http://devplan.uek.krakow.pl/timetable.html?timetable=<wbr>' + Settings.getTimetableParams().toString());
             }
+            $('.devPlanQrCodeImg').empty().qrcode('http://devplan.uek.krakow.pl/timetable.html?timetable=' + Settings.getTimetableParams().toString());
         };
         Settings.classCounter = false;
 
@@ -1096,7 +1124,6 @@ var devPlan;
     })();
     devPlan.Generate = Generate;
 })(devPlan || (devPlan = {}));
-
 var devPlan;
 (function (devPlan) {
     function bindAnimation() {
@@ -1118,7 +1145,6 @@ var devPlan;
             $("#search-input").attr('value', devPlan.Settings.getUrlParam('search'));
             devPlan.Settings.load();
 
-            console.log(devPlan.Settings.getTimetablePeriod());
             var params;
             if (devPlan.Settings.getUrlParam('timetable').length != 0) {
                 params = Cash.Params.fromString(devPlan.Settings.getUrlParam('timetable'));
@@ -1151,11 +1177,7 @@ var devPlan;
                 $("#search-panel-input").attr('value', devPlan.Settings.getUrlParam('search'));
             }
 
-            $.when(Cash.Api.getGroupsList(), Cash.Api.getTutorsList(), Cash.Api.getPlacesList()).done(function (groups, tutors, places) {
-                Init.setGroups(groups[0]);
-                Init.setTutors(tutors[0]);
-                Init.setPlaces(places[0]);
-
+            $.when(Cash.Api.getGroupsList(true), Cash.Api.getTutorsList(true), Cash.Api.getPlacesList(true)).done(function (groups, tutors, places) {
                 $("#search-input").removeAttr('disabled').attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn').attr('data-provide', "typeahead");
 
                 var data = Init.typeaheadDataCreator(Init.getGroups(), Init.getTutors(), Init.getPlaces());
@@ -1192,7 +1214,43 @@ var devPlan;
                     });
                 });
             }).fail(function () {
-                console.log("Fail creating typeahead");
+                if ($.jStorage.storageAvailable() == true) {
+                    $("#search-input").removeAttr('disabled').attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn').attr('data-provide', "typeahead");
+
+                    var data = Init.typeaheadDataCreator(Init.getGroups(), Init.getTutors(), Init.getPlaces());
+
+                    $("#search-input").typeahead({
+                        source: data,
+                        items: 15,
+                        updater: function (item) {
+                            var group = Init.searchGroupId(item);
+                            var tutor = Init.searchTutorId(item);
+                            var place = Init.searchPlaceId(item);
+                            if (group > 0 && tutor == 0 && place == 0) {
+                                window.location.replace('timetable.html?timetable=g' + group);
+                            }
+                            if (group == 0 && tutor > 0 && place == 0) {
+                                window.location.replace('timetable.html?timetable=t' + tutor);
+                            }
+                            if (group == 0 && tutor == 0 && place > 0) {
+                                window.location.replace('timetable.html?timetable=p' + place);
+                            }
+                        }
+                    });
+
+                    devPlan.Settings.loadTimetableParam();
+
+                    $(".devPlanTypeahead").each(function (index) {
+                        $('#' + index + '.devPlanTypeahead').removeAttr('disabled').attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn').attr('data-provide', "typeahead");
+                        $('#' + index + '.devPlanTypeahead').typeahead({
+                            source: data,
+                            items: 15,
+                            updater: function (item) {
+                                devPlan.Settings.addTimetableParam(item);
+                            }
+                        });
+                    });
+                }
             });
         }
         Init.getGroups = function () {
@@ -1201,8 +1259,8 @@ var devPlan;
 
         Init.setGroups = function (groups) {
             if (typeof groups === "undefined") { groups = []; }
-            for (var i = 0; i < groups.length; i++) {
-                Init.groups.push(new Cash.Group(groups[i]));
+            for (var group in groups) {
+                Init.groups.push(new Cash.Group(groups[group]));
             }
             Init.groups = Init.getGroups().sort(function (a, b) {
                 return a.getName() - b.getName();
@@ -1229,8 +1287,8 @@ var devPlan;
 
         Init.setTutors = function (tutors) {
             if (typeof tutors === "undefined") { tutors = []; }
-            for (var i = 0; i < tutors.length; i++) {
-                Init.tutors.push(new Cash.Tutor(tutors[i]));
+            for (var tutor in tutors) {
+                Init.tutors.push(new Cash.Tutor(tutors[tutor]));
             }
             Init.tutors = Init.getTutors().sort(function (a, b) {
                 return a.getName() - b.getName();
@@ -1255,10 +1313,10 @@ var devPlan;
             return Init.places;
         };
 
-        Init.setPlaces = function (tutors) {
-            if (typeof tutors === "undefined") { tutors = []; }
-            for (var i = 0; i < tutors.length; i++) {
-                Init.places.push(new Cash.Place(tutors[i]));
+        Init.setPlaces = function (places) {
+            if (typeof places === "undefined") { places = []; }
+            for (var place in places) {
+                Init.places.push(new Cash.Place(places[place]));
             }
             Init.places = Init.getPlaces().sort(function (a, b) {
                 return a.getLocation() - b.getLocation();

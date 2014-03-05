@@ -1529,7 +1529,9 @@ var devPlan;
 
                 $("#devPlanWizardNavbarLink").toggleClass("btn-info").toggleClass("btn-success").attr("href", "timetable.html?timetable=" + params.toString()).removeAttr("data-toggle").removeAttr("data-target").empty().text("Mój devPlan");
 
-                $(".devPlanWizardLink").attr("href", "timetable.html?timetable=" + params.toString()).removeAttr("data-toggle").removeAttr("data-target").empty().text("Mój devPlan");
+                $("#devPlanWizardLink").attr("href", "timetable.html?timetable=" + params.toString()).removeAttr("data-toggle").removeAttr("data-target").toggleClass("btn-info").toggleClass("btn-success").empty().text("Mój devPlan");
+
+                $(".devPlanLink").attr("href", "timetable.html?timetable=" + params.toString()).removeAttr("data-toggle").removeAttr("data-target").empty().text("Mój devPlan");
             } else {
                 $("#devPlanSettingsNavbarIconLink").remove();
                 $("#devPlanSettingsNavbarLink").remove();

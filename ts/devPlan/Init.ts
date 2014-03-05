@@ -510,6 +510,7 @@ module devPlan {
                     .removeAttr("data-target");
 
                 $("#devPlanWizardNavbarLink")
+
                     .toggleClass("btn-info")
                     .toggleClass("btn-success")
                     .attr("href", "timetable.html?timetable=" + params.toString())
@@ -517,9 +518,19 @@ module devPlan {
                     .removeAttr("data-target")
                     .empty()
                     .text("Mój devPlan");
-                
 
-                $(".devPlanWizardLink")
+                $("#devPlanWizardLink")
+                    .attr("href", "timetable.html?timetable=" + params.toString())
+                    .removeAttr("data-toggle")
+                    .removeAttr("data-target")
+
+                    .toggleClass("btn-info")
+                    .toggleClass("btn-success")
+                    .empty()
+                    .text("Mój devPlan");
+                  
+
+                $(".devPlanLink")
                     .attr("href", "timetable.html?timetable=" + params.toString())
                     .removeAttr("data-toggle")
                     .removeAttr("data-target")

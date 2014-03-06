@@ -42,54 +42,59 @@ module devPlan {
          */
         static timetable: Cash.Timetable;
         constructor() {
-            $("#search-input").attr('value', Settings.getUrlParam('search'));
             Settings.load();
-
-            var params: Cash.Params;
-            if (Settings.getUrlParam('timetable').length != 0) {
-                params = Cash.Params.fromString(Settings.getUrlParam('timetable'));
-                Init.setUpButtons(Settings.getTimetableParams());
-                Settings.setTimetableParams(params);
-            } else {
+            /**
+             * Ustawia przyciski
+             */
+            Init.setUpButtons(Settings.getTimetableParams());
+            /**
+             * Tworzy obiekt Params
+             */
+            var params: Cash.Params = Cash.Params.fromString(Settings.getUrlParam('timetable'));
+            /**
+             * Sprawdza czy obiekt Params jest pusty
+             */
+            if (params.isEmpty()) {
+                /**
+                 * Pobiera zapisane ustawienia grup
+                 */
                 params = Settings.getTimetableParams();
-                Init.setUpButtons(params);
             }
-
-
-            if ($("#timetable-results").length == 1) {
+            /**
+             * Generowanie planu zajęć
+             * Sprawdza czy istnieje element
+             */
+            if ($("#timetable-results").length) {
                 /**
                  * Sprawdza czy istnieje jakikolwiek parametr do planu
-                    */
-                if (params.isEmpty() == false) {
+                 */
+                if (!params.isEmpty()) {
                     $.when(Cash.Api.getTimetable(params, true))
                         .done((response: any) => {
-                            Init.showTimetable(Init.setTimetable(response).getTimetable());
-                            $("#timetable-panel-spinner").remove();
+                            Init.showTimetable(Init.getTimetable());
+                               $("#timetable-panel-spinner").remove();
                         }).fail(() => {
 
                             $.when(Cash.Api.registerTimetable(params))
-                                .done((response: any) => {
+                                .done(() => {
                                     $.when(Cash.Api.getTimetable(params, true))
                                         .done((response: any) => {
-                                            Init.showTimetable(Init.setTimetable(response).getTimetable());
-                                            $("#timetable-panel-spinner").remove();
-                                        }).fail(() => {
+                                            Init.showTimetable(Init.getTimetable());
+                                               $("#timetable-panel-spinner").remove();
+                                        }).fail((response: any) => {
                                         });
                                 }).fail(() => {
-                                    Init.showTimetable(Init.setTimetable()
-                                        .getTimetable());
                                 });
+
                         });
+                }else{
+                   $("#timetable-panel-spinner").remove();    
                 }
+             
             }
             /**
-             * Zakładka szukaj
+             * Pobieranie listy grup pracowników i miejsc
              */
-            if ($("#search-panel-input").length != 0) {
-                $("#search-panel-input")
-                    .attr('value', Settings.getUrlParam('search'));
-            }
-
             $.when(Cash.Api.getGroupsList(true),
                 Cash.Api.getTutorsList(true),
                 Cash.Api.getPlacesList(true))
@@ -126,10 +131,7 @@ module devPlan {
                             }
                         }
                     });
-                    /**
-                     * Add information about selected groups places and tutors
-                     */
-                    Settings.loadTimetableParam();
+
                     /**
                      * 
                      */
@@ -280,7 +282,6 @@ module devPlan {
             Init.places = Init.getPlaces().sort((a: any, b: any) => {return a.getLocation() - b.getLocation() });
             return Init;
         }
-
         /**
          *
          */
@@ -309,55 +310,11 @@ module devPlan {
             Init.timetable = new Cash.Timetable(timetable);
             return Init;
         }
-
-        /**
-         *
-         */
-        static showSearchResults(query: string = ""): void {
-            $("#search-results").empty();
-            query = query.toString().toUpperCase();
-            if (query.length >= 3) {
-                var data = '';
-                for (var i = 0; i < Init.getGroups().length; i++) {
-                    if (Init.getGroups()[i].getName().toString().toUpperCase().indexOf(query) !== -1) {
-                        data = data +
-                        '<li class="list-group-item">' +
-                        '<a href="timetable.html?timetable=g' + Init.getGroups()[i].getId() + '">' + Init.getGroups()[i].getName() + '</a>' +
-                        '</li>';
-                    }
-                }
-                for (var i = 0; i < Init.getTutors().length; i++) {
-                    if (Init.getTutors()[i].getName().toString().toUpperCase().indexOf(query) !== -1) {
-                        data = data +
-                        '<li class="list-group-item">' +
-                        '<a href="timetable.html?timetable=t' + Init.getTutors()[i].getId() + '">' + Init.getTutors()[i].getName() + '</a>' +
-                        '<span class="pull-right">' +
-                        '<a href="' + Init.getTutors()[i].getMoodleUrl() + '" title="Wizytówka E-Uczelnia"><i class="fa fa-globe fa-fw"></i></a>' +
-                        '</span>' +
-                        '</li>';
-                    }
-                }
-                for (var i = 0; i < Init.getPlaces().length; i++) {
-                    if (Init.getPlaces()[i].getLocation().toString().toUpperCase().indexOf(query) !== -1) {
-                        data = data +
-                        '<li class="list-group-item">' +
-                        '<a href="timetable.html?timetable=p' + Init.getPlaces()[i].getId() + '">' + Init.getPlaces()[i].getLocation() + '</a>' +
-                        '</li>';
-                    }
-                }
-                $("#search-panel-body").attr("display", "none");
-                if (data.length == 0) {
-                    data = "<tr><td class='text-center'>Brak wyników. Spróbuj jeszcze raz ;)</td</td>";
-                }
-                $("#search-results").append(data);
-            } else {
-                data = "<tr><td class='text-center'>Zbyt krótka fraza.</td</td>";
-            }
-        }
         /**
          *
          */
         static showTimetable(timetable: Cash.Timetable): void {
+            console.log("showTimetable", timetable);
             var data = "";
             var date = "";
             $("#timetable-results").empty();
@@ -464,26 +421,18 @@ module devPlan {
                             data = data + '</li>';
                         }
                     }
-
-
                 }
                 //end of loop
                 if (data.length == 0 && Settings.getActivityNameFilter().length > 0) {
                     data = data + '<li class="list-group-item"><p class="h4 text-center">Brak wyników</p>';
                 }
-
-
             } else {
                 data = data + '<li class="list-group-item"><p class="h4 text-center">Przykro nam. Ten devPlan nie posiada żadnych zajęć.</p>';
             }
             $("#timetable-results").append(data);
             // binds chevron animation
             bindAnimation();
-
-
         }
-
-
         /**
          * 
          */
@@ -500,55 +449,56 @@ module devPlan {
             }
             return data;
         }
-
-
+        /**
+         * 
+         */
         static setUpButtons(params: Cash.Params): void {
             if (params.isEmpty() == false) {
-                $("#devPlanWizardNavbarIconLink")
-                    .attr("href", "timetable.html?timetable=" + params.toString())
-                    .removeAttr("data-toggle")
-                    .removeAttr("data-target");
-
-                $("#devPlanWizardNavbarLink")
-
-                    .toggleClass("btn-info")
-                    .toggleClass("btn-success")
-                    .attr("href", "timetable.html?timetable=" + params.toString())
+                $(".devPlanWizardNavbarIconLink")
                     .removeAttr("data-toggle")
                     .removeAttr("data-target")
-                    .empty()
-                    .text("Mój devPlan");
+                    .toggleClass("btn-warning")
+                    .toggleClass("btn-success")
+                    .attr("href", "timetable.html?timetable=" + params.toString());
 
-                $("#devPlanWizardLink")
-                    .attr("href", "timetable.html?timetable=" + params.toString())
+                $(".devPlanWizardNavbarLink")
                     .removeAttr("data-toggle")
                     .removeAttr("data-target")
-
-                    .toggleClass("btn-info")
+                    .toggleClass("btn-warning")
                     .toggleClass("btn-success")
                     .empty()
-                    .text("Mój devPlan");
-                  
+                    .attr("href", "timetable.html?timetable=" + params.toString())
+                    .attr("title", "Twój devPlan")
+                    .text("Twój devPlan");
+
+                $(".devPlanWizardLink")
+                    .removeAttr("data-toggle")
+                    .removeAttr("data-target")
+                    .toggleClass("btn-warning")
+                    .toggleClass("btn-success")
+                    .empty()
+                    .attr("href", "timetable.html?timetable=" + params.toString())
+                    .attr("title", "Twój devPlan")
+                    .text("Twój devPlan");
 
                 $(".devPlanLink")
                     .attr("href", "timetable.html?timetable=" + params.toString())
                     .removeAttr("data-toggle")
                     .removeAttr("data-target")
+                    .attr("title", "Twój devPlan")
                     .empty()
-                    .text("Mój devPlan");
+                    .text("Twój devPlan");
 
             } else {
-                $("#devPlanSettingsNavbarIconLink").remove();
-                $("#devPlanSettingsNavbarLink").remove();
 
-                $("#timetable-panel-spinner-icon")
+
+                $(".timetable-panel-spinner-icon")
                     .empty()
-                    .append('<button class="btn btn-info"' +
+                    .append('<button class="btn btn-warning title="Stwórz devPlan" ' +
                     'data-toggle="modal" data-target="#devPlanWizard">' +
-                    'Stwórz swój <strong>devPlan</strong>' +
+                    'Stwórz <strong>devPlan</strong>' +
                     '</button>');
             }
-
         }
     }
 }

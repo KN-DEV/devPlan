@@ -140,6 +140,9 @@ button.devPlanParam {
 .navbar-form {
 	width: auto;
 }
+.navbar-form.pull-right {
+	padding-right:0px;
+}
 
 
 @media print {

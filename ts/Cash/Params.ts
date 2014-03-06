@@ -70,7 +70,7 @@ module Cash {
          * 
          */
         public removeGroup(id: number): Cash.Params {
-            
+
             for (var i = 0; i < this.getGroups().length; i++) {
                 if (this.getGroups()[i] == id) {
                     this.getGroups().splice(i, 1);
@@ -117,11 +117,11 @@ module Cash {
          * 
          */
         public removeTutor(id: number): Cash.Params {
-            
-            
+
+
             for (var i = 0; i < this.getTutors().length; i++) {
                 if (this.getTutors()[i] == id) {
-                   this.getTutors().splice(i, 1);
+                    this.getTutors().splice(i, 1);
                 }
             }
             return this;
@@ -167,7 +167,7 @@ module Cash {
         public removePlace(id: number): Cash.Params {
             for (var i = 0; i < this.getPlaces().length; i++) {
                 if (this.getPlaces()[i] == id) {
-                   this.getPlaces().splice(i, 1);
+                    this.getPlaces().splice(i, 1);
                 }
             }
             return this;
@@ -195,21 +195,23 @@ module Cash {
             return data;
         }
         /**
-         * 
+         * Creates new Cash.Params object from given query
          */
-        public static fromString(query: string): Cash.Params {
+        public static fromString(str: string = ""): Cash.Params {
             var params = new Cash.Params();
-            var timetable = query.match(/[gtp][0-9]*/gi);
-            
-            for (var i = 0; i < timetable.length; i++) {
-                if (timetable[i].toString().toLowerCase().indexOf("g") != -1) {
-                    params.addGroup(parseInt(timetable[i].slice(1).toString()));
-                }
-                if (timetable[i].toString().toLowerCase().indexOf("t") != -1) {
-                    params.addTutor(parseInt(timetable[i].slice(1).toString()));
-                }
-                if (timetable[i].toString().toLowerCase().indexOf("p") != -1) {
-                    params.addPlace(parseInt(timetable[i].slice(1).toString()));
+            var paramsArray: string[] = str.match(/[gtp][0-9]*/gi);
+
+            if (paramsArray != null) {
+                for (var i = 0; i < paramsArray.length; i++) {
+                    if (paramsArray[i].toString().toLowerCase().indexOf("g") != -1) {
+                        params.addGroup(parseInt(paramsArray[i].slice(1).toString()));
+                    }
+                    if (paramsArray[i].toString().toLowerCase().indexOf("t") != -1) {
+                        params.addTutor(parseInt(paramsArray[i].slice(1).toString()));
+                    }
+                    if (paramsArray[i].toString().toLowerCase().indexOf("p") != -1) {
+                        params.addPlace(parseInt(paramsArray[i].slice(1).toString()));
+                    }
                 }
             }
             return params;

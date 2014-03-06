@@ -369,7 +369,7 @@ module devPlan {
             var g = Init.searchGroupId(item);
             var t = Init.searchTutorId(item);
             var p = Init.searchPlaceId(item);
-
+ console.log(item);
             if (g > 0 && t == 0 && p == 0) {
                 $(".devPlanParams").append('<button title="' + item + '" id="g' + g +
                     '" class="devPlanParam btn btn-xs btn-primary" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + g +

@@ -438,19 +438,22 @@ var Cash;
             return data;
         };
 
-        Params.fromString = function (query) {
+        Params.fromString = function (str) {
+            if (typeof str === "undefined") { str = ""; }
             var params = new Cash.Params();
-            var timetable = query.match(/[gtp][0-9]*/gi);
+            var paramsArray = str.match(/[gtp][0-9]*/gi);
 
-            for (var i = 0; i < timetable.length; i++) {
-                if (timetable[i].toString().toLowerCase().indexOf("g") != -1) {
-                    params.addGroup(parseInt(timetable[i].slice(1).toString()));
-                }
-                if (timetable[i].toString().toLowerCase().indexOf("t") != -1) {
-                    params.addTutor(parseInt(timetable[i].slice(1).toString()));
-                }
-                if (timetable[i].toString().toLowerCase().indexOf("p") != -1) {
-                    params.addPlace(parseInt(timetable[i].slice(1).toString()));
+            if (paramsArray != null) {
+                for (var i = 0; i < paramsArray.length; i++) {
+                    if (paramsArray[i].toString().toLowerCase().indexOf("g") != -1) {
+                        params.addGroup(parseInt(paramsArray[i].slice(1).toString()));
+                    }
+                    if (paramsArray[i].toString().toLowerCase().indexOf("t") != -1) {
+                        params.addTutor(parseInt(paramsArray[i].slice(1).toString()));
+                    }
+                    if (paramsArray[i].toString().toLowerCase().indexOf("p") != -1) {
+                        params.addPlace(parseInt(paramsArray[i].slice(1).toString()));
+                    }
                 }
             }
             return params;
@@ -469,20 +472,20 @@ var Cash;
 (function (Cash) {
     var RegisteredTimetable = (function () {
         function RegisteredTimetable(object) {
-            if (typeof object === "undefined") { object = { id: "", access_url: "", params: new Cash.Params() }; }
-            this.id = "";
+            if (typeof object === "undefined") { object = { _id: "", access_url: "", params: new Cash.Params() }; }
+            this._id = "";
             this.access_url = "";
             this.params = new Cash.Params();
-            this.setId(object.id);
+            this.setId(object._id);
             this.setAccessUrl(object.access_url);
             this.setParams(object.params);
         }
         RegisteredTimetable.prototype.getId = function () {
-            return this.id;
+            return this._id;
         };
 
         RegisteredTimetable.prototype.setId = function (id) {
-            this.id = id;
+            this._id = id;
         };
 
         RegisteredTimetable.prototype.getAccessUrl = function () {
@@ -534,7 +537,7 @@ var Cash;
     var Timetable = (function (_super) {
         __extends(Timetable, _super);
         function Timetable(object) {
-            if (typeof object === "undefined") { object = { id: "", access_url: "", params: new Cash.Params(), activities: [] }; }
+            if (typeof object === "undefined") { object = { _id: "", access_url: "", params: new Cash.Params(), activities: [] }; }
             _super.call(this, object);
             this.activities = [];
             this.resource_versions = [];
@@ -551,7 +554,6 @@ var Cash;
             activities = activities.sort(function (a, b) {
                 return a.starts_at_timestamp - b.starts_at_timestamp;
             });
-            console.log(activities);
             var id;
             var newActivity;
             var activity_info;
@@ -619,14 +621,17 @@ var Cash;
                 url: Cash.Api.host + "groups",
                 type: "GET",
                 success: function (data) {
+                    console.log("Cash.Api.getTutorsList() - success", data);
                     devPlan.Init.setGroups(data);
                 },
                 error: function () {
+                    console.log("Cash.Api.getTutorsList() - error");
                 },
                 cacheJStorage: cache,
                 cacheTTL: (3600 * ttl),
+                cacheKey: "Cash.groups",
                 isCacheValid: function () {
-                    return true;
+                    return $.jStorage.get("Cash.places", false);
                 }
             });
         };
@@ -638,14 +643,17 @@ var Cash;
                 url: Cash.Api.host + "tutors",
                 type: "GET",
                 success: function (data) {
+                    console.log("Cash.Api.getTutorsList() - success", data);
                     devPlan.Init.setTutors(data);
                 },
                 error: function () {
+                    console.log("Cash.Api.getTutorsList() - error");
                 },
                 cacheJStorage: cache,
-                cacheTTL: (3600 * ttl),
+                cacheTTL: (3600000 * ttl),
+                cacheKey: "Cash.tutors",
                 isCacheValid: function () {
-                    return true;
+                    return $.jStorage.get("Cash.places", false);
                 }
             });
         };
@@ -659,13 +667,16 @@ var Cash;
                 dataType: 'json',
                 success: function (data) {
                     devPlan.Init.setPlaces(data);
+                    console.log("Cash.Api.getPlacesList() - success", data);
                 },
                 error: function () {
+                    console.log("Cash.Api.getPlacesList() - error");
                 },
                 cacheJStorage: cache,
-                cacheTTL: (3600 * ttl),
+                cacheKey: "Cash.places",
+                cacheTTL: (3600000 * ttl),
                 isCacheValid: function () {
-                    return true;
+                    return $.jStorage.get("Cash.places", false);
                 }
             });
         };
@@ -681,9 +692,10 @@ var Cash;
                     place_id: params.getPlaces()
                 },
                 success: function (data) {
-                    console.log("Cash.Api.registerTimetable() - success", params, data);
+                    console.log("Cash.Api.registerTimetable() - success", params.toString(), data);
                 },
                 error: function () {
+                    console.log("Cash.Api.registerTimetable() - error", params.toString());
                 },
                 cacheJStorage: false
             });
@@ -697,33 +709,17 @@ var Cash;
                 type: "GET",
                 dataType: 'json',
                 success: function (data) {
+                    devPlan.Init.setTimetable(data);
+                    console.log("Cash.Api.getTimetable() - success", params.toString(), data);
                 },
                 error: function () {
+                    console.log("Cash.Api.getTimetable() - error", params.toString());
                 },
                 cacheJStorage: cache,
-                cacheTTL: (3600 * ttl),
+                cacheKey: params.toString(),
+                cacheTTL: (3600000 * ttl),
                 isCacheValid: function () {
-                    console.log(Cash.Api.host + "timetables/" + params.toString() + "GETundefined");
-                    var value = $.jStorage.get(Cash.Api.host + "timetables/" + params.toString() + "GETundefined", false);
-                    console.log(value);
-                    $.when(Cash.Api.getTimetableVersion(params)).done(function (test) {
-                        if (test.versions == value.versions) {
-                            console.log(true, test.versions, value.versions);
-
-                            return true;
-                        } else {
-                            console.log(false, test.versions, value.versions);
-
-                            return false;
-                        }
-                    }).fail(function (test) {
-                        if (value != false) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                        ;
-                    });
+                    return false;
                 }
             });
         };
@@ -734,13 +730,22 @@ var Cash;
                 type: "GET",
                 dataType: 'json',
                 success: function (data) {
+                    console.log("Cash.Api.getTimetableVersion() - success", params.toString(), data);
                 },
                 error: function () {
-                }
+                    console.log("Cash.Api.getTimetable() - error", params.toString());
+                },
+                cacheJStorage: false
             });
         };
-
-        Api.checkVersion = function (oldVersion, newVersion) {
+        Api.isUpToDateVersion = function (local, downloaded) {
+            if (typeof local == "Object") {
+                console.log("TEST", local);
+                return false;
+            } else {
+                console.log(JSON.stringify(local.versions) == JSON.stringify(downloaded.versions));
+                return JSON.stringify(local.versions) == JSON.stringify(downloaded.versions);
+            }
         };
         Api.host = "http://cash.dev.uek.krakow.pl/v0_1/";
         return Api;
@@ -1010,7 +1015,7 @@ var devPlan;
             var g = devPlan.Init.searchGroupId(item);
             var t = devPlan.Init.searchTutorId(item);
             var p = devPlan.Init.searchPlaceId(item);
-
+            console.log(item);
             if (g > 0 && t == 0 && p == 0) {
                 $(".devPlanParams").append('<button title="' + item + '" id="g' + g + '" class="devPlanParam btn btn-xs btn-primary" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + g + '" type="g">' + ((item.length > 50) ? item.substr(0, 50) + '...' : item) + '' + '</button>');
                 Settings.setTimetableParams(Settings.getTimetableParams().addGroup(g));
@@ -1185,40 +1190,34 @@ var devPlan;
 (function (devPlan) {
     var Init = (function () {
         function Init() {
-            $("#search-input").attr('value', devPlan.Settings.getUrlParam('search'));
             devPlan.Settings.load();
 
-            var params;
-            if (devPlan.Settings.getUrlParam('timetable').length != 0) {
-                params = Cash.Params.fromString(devPlan.Settings.getUrlParam('timetable'));
-                Init.setUpButtons(devPlan.Settings.getTimetableParams());
-                devPlan.Settings.setTimetableParams(params);
-            } else {
+            Init.setUpButtons(devPlan.Settings.getTimetableParams());
+
+            var params = Cash.Params.fromString(devPlan.Settings.getUrlParam('timetable'));
+
+            if (params.isEmpty()) {
                 params = devPlan.Settings.getTimetableParams();
-                Init.setUpButtons(params);
             }
 
-            if ($("#timetable-results").length == 1) {
-                if (params.isEmpty() == false) {
+            if ($("#timetable-results").length) {
+                if (!params.isEmpty()) {
                     $.when(Cash.Api.getTimetable(params, true)).done(function (response) {
-                        Init.showTimetable(Init.setTimetable(response).getTimetable());
+                        Init.showTimetable(Init.getTimetable());
                         $("#timetable-panel-spinner").remove();
                     }).fail(function () {
-                        $.when(Cash.Api.registerTimetable(params)).done(function (response) {
+                        $.when(Cash.Api.registerTimetable(params)).done(function () {
                             $.when(Cash.Api.getTimetable(params, true)).done(function (response) {
-                                Init.showTimetable(Init.setTimetable(response).getTimetable());
+                                Init.showTimetable(Init.getTimetable());
                                 $("#timetable-panel-spinner").remove();
-                            }).fail(function () {
+                            }).fail(function (response) {
                             });
                         }).fail(function () {
-                            Init.showTimetable(Init.setTimetable().getTimetable());
                         });
                     });
+                } else {
+                    $("#timetable-panel-spinner").remove();
                 }
-            }
-
-            if ($("#search-panel-input").length != 0) {
-                $("#search-panel-input").attr('value', devPlan.Settings.getUrlParam('search'));
             }
 
             $.when(Cash.Api.getGroupsList(true), Cash.Api.getTutorsList(true), Cash.Api.getPlacesList(true)).done(function (groups, tutors, places) {
@@ -1244,8 +1243,6 @@ var devPlan;
                         }
                     }
                 });
-
-                devPlan.Settings.loadTimetableParam();
 
                 $(".devPlanTypeahead").each(function (index) {
                     $('#' + index + '.devPlanTypeahead').removeAttr('disabled').attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn').attr('data-provide', "typeahead");
@@ -1390,38 +1387,8 @@ var devPlan;
             return Init;
         };
 
-        Init.showSearchResults = function (query) {
-            if (typeof query === "undefined") { query = ""; }
-            $("#search-results").empty();
-            query = query.toString().toUpperCase();
-            if (query.length >= 3) {
-                var data = '';
-                for (var i = 0; i < Init.getGroups().length; i++) {
-                    if (Init.getGroups()[i].getName().toString().toUpperCase().indexOf(query) !== -1) {
-                        data = data + '<li class="list-group-item">' + '<a href="timetable.html?timetable=g' + Init.getGroups()[i].getId() + '">' + Init.getGroups()[i].getName() + '</a>' + '</li>';
-                    }
-                }
-                for (var i = 0; i < Init.getTutors().length; i++) {
-                    if (Init.getTutors()[i].getName().toString().toUpperCase().indexOf(query) !== -1) {
-                        data = data + '<li class="list-group-item">' + '<a href="timetable.html?timetable=t' + Init.getTutors()[i].getId() + '">' + Init.getTutors()[i].getName() + '</a>' + '<span class="pull-right">' + '<a href="' + Init.getTutors()[i].getMoodleUrl() + '" title="Wizytówka E-Uczelnia"><i class="fa fa-globe fa-fw"></i></a>' + '</span>' + '</li>';
-                    }
-                }
-                for (var i = 0; i < Init.getPlaces().length; i++) {
-                    if (Init.getPlaces()[i].getLocation().toString().toUpperCase().indexOf(query) !== -1) {
-                        data = data + '<li class="list-group-item">' + '<a href="timetable.html?timetable=p' + Init.getPlaces()[i].getId() + '">' + Init.getPlaces()[i].getLocation() + '</a>' + '</li>';
-                    }
-                }
-                $("#search-panel-body").attr("display", "none");
-                if (data.length == 0) {
-                    data = "<tr><td class='text-center'>Brak wyników. Spróbuj jeszcze raz ;)</td</td>";
-                }
-                $("#search-results").append(data);
-            } else {
-                data = "<tr><td class='text-center'>Zbyt krótka fraza.</td</td>";
-            }
-        };
-
         Init.showTimetable = function (timetable) {
+            console.log("showTimetable", timetable);
             var data = "";
             var date = "";
             $("#timetable-results").empty();
@@ -1525,18 +1492,15 @@ var devPlan;
 
         Init.setUpButtons = function (params) {
             if (params.isEmpty() == false) {
-                $("#devPlanWizardNavbarIconLink").attr("href", "timetable.html?timetable=" + params.toString()).removeAttr("data-toggle").removeAttr("data-target");
+                $(".devPlanWizardNavbarIconLink").removeAttr("data-toggle").removeAttr("data-target").toggleClass("btn-warning").toggleClass("btn-success").attr("href", "timetable.html?timetable=" + params.toString());
 
-                $("#devPlanWizardNavbarLink").toggleClass("btn-info").toggleClass("btn-success").attr("href", "timetable.html?timetable=" + params.toString()).removeAttr("data-toggle").removeAttr("data-target").empty().text("Mój devPlan");
+                $(".devPlanWizardNavbarLink").removeAttr("data-toggle").removeAttr("data-target").toggleClass("btn-warning").toggleClass("btn-success").empty().attr("href", "timetable.html?timetable=" + params.toString()).attr("title", "Twój devPlan").text("Twój devPlan");
 
-                $("#devPlanWizardLink").attr("href", "timetable.html?timetable=" + params.toString()).removeAttr("data-toggle").removeAttr("data-target").toggleClass("btn-info").toggleClass("btn-success").empty().text("Mój devPlan");
+                $(".devPlanWizardLink").removeAttr("data-toggle").removeAttr("data-target").toggleClass("btn-warning").toggleClass("btn-success").empty().attr("href", "timetable.html?timetable=" + params.toString()).attr("title", "Twój devPlan").text("Twój devPlan");
 
-                $(".devPlanLink").attr("href", "timetable.html?timetable=" + params.toString()).removeAttr("data-toggle").removeAttr("data-target").empty().text("Mój devPlan");
+                $(".devPlanLink").attr("href", "timetable.html?timetable=" + params.toString()).removeAttr("data-toggle").removeAttr("data-target").attr("title", "Twój devPlan").empty().text("Twój devPlan");
             } else {
-                $("#devPlanSettingsNavbarIconLink").remove();
-                $("#devPlanSettingsNavbarLink").remove();
-
-                $("#timetable-panel-spinner-icon").empty().append('<button class="btn btn-info"' + 'data-toggle="modal" data-target="#devPlanWizard">' + 'Stwórz swój <strong>devPlan</strong>' + '</button>');
+                $(".timetable-panel-spinner-icon").empty().append('<button class="btn btn-warning title="Stwórz devPlan" ' + 'data-toggle="modal" data-target="#devPlanWizard">' + 'Stwórz <strong>devPlan</strong>' + '</button>');
             }
         };
         Init.groups = [];

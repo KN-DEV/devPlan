@@ -22,8 +22,7 @@
 <link href="assets/css/custom.css" rel="stylesheet">
 </head>
 <body>
-	<nav class="hidden-print avbar navbar-default navbar-fixed-top"
-		role="navigation">
+	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
 		<div class="container">
 			<div class="row">
 				<div class="col-lg-12 col-md-12 col-sm-12 col-12-xs">
@@ -32,24 +31,24 @@
 							<a class="navbar-btn btn btn-info" data-toggle="collapse"
 								data-target="#devPlanSearch" title="Szukaj"><i
 								class="fa fa-fw fa-search"></i></a> <a
-								id="devPlanWizardNavbarIconLink"
-								class="navbar-btn btn btn-success" title="Mój devPlan"
-								data-toggle="modal" data-target="#devPlanWizard"><i
-								class="fa fa-fw fa-calendar"></i></a><a
-								id="devPlanSettingsNavbarIconLink"
-								class="navbar-btn btn btn-primary" data-toggle="modal"
-								title="Twój devPlan" data-target="#devPlanWizard"><i
-								class="fa fa-fw fa-gear"></i></a>
+								class="navbar-btn btn btn-success devPlanWizardNavbarIconLink"
+								title="Twój devPlan" data-toggle="modal"
+								data-target="#devPlanWizard"><i class="fa fa-fw fa-calendar"></i></a>
+							<a
+								class="navbar-btn btn btn-primary devPlanSettingsNavbarIconLink"
+								data-toggle="modal" title="Ustawienia"
+								data-target="#devPlanWizard"><i class="fa fa-fw fa-gear"></i></a>
 						</div>
 						<a class="navbar-brand" href="index.html" title="devPlan"><strong>devPlan</strong></a>
 					</div>
 					<div class="collapse navbar-collapse " id="devPlanSearch">
 						<div class="navbar-form pull-right hidden-xs">
 							<div class="btn-group">
-								<a id="devPlanWizardNavbarLink" class="btn btn-info"
-									data-toggle="modal" data-target="#devPlanWizard">Stwórz <strong>devPlan</strong>
-								</a><a id="devPlanSettingsNavbarLink" class="btn btn-primary"
-									data-toggle="modal" title="Twój devPlan"
+								<a class="btn btn-warning devPlanWizardNavbarLink"
+									data-toggle="modal" data-target="#devPlanWizard"
+									title="Stwórz devPlan">Stwórz <strong>devPlan</strong>
+								</a><a class="btn btn-primary devPlanSettingsNavbarLink"
+									data-toggle="modal" title="Ustawienia"
 									data-target="#devPlanWizard"><i class="fa fa-fw fa-gear"></i>
 								</a>
 							</div>
@@ -59,6 +58,7 @@
 							<div id="navbar-search">
 								<input id="search-input" name="search" autocomplete="off"
 									disabled="disabled" type="text" class="form-control" size="40"
+									title="Wprowadź nazwę grupy lub nazwisko prowadzącego"
 									placeholder="KrDzIs3011Io / dr Paweł Wołoszyn" />
 							</div>
 						</form>
@@ -174,7 +174,7 @@
 							<p class="lead">Dajemy Ci możliwość eksportu devPlanu do
 								takich kalendarzy jak Google Calendar, Outlook itp.</p>
 							<p>
-								<a class="btn btn-info" data-toggle="modal"
+								<a class="btn btn-warning" data-toggle="modal"
 									data-target="#devPlanExportGoogle">Eksportuj devPlan do
 									Google Calendar itp</a>
 							</p>

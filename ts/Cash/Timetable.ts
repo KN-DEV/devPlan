@@ -10,7 +10,7 @@ module Cash {
         /**
          *
          */
-        id: string;
+        _id: string;
         /**
          *
          */
@@ -40,7 +40,7 @@ module Cash {
         /**
          *
          */
-        private id: string = "";
+        private _id: string = "";
         /**
          *
          */
@@ -52,8 +52,8 @@ module Cash {
         /**
          * 
          */
-        constructor(object = { id: "", access_url: "", params: new Cash.Params() }) {
-            this.setId(object.id);
+        constructor(object = { _id: "", access_url: "", params: new Cash.Params() }) {
+            this.setId(object._id);
             this.setAccessUrl(object.access_url);
             this.setParams(object.params);
 
@@ -64,13 +64,13 @@ module Cash {
         *
         */
         public getId(): string {
-            return this.id;
+            return this._id;
         }
         /**
          *
          */
         private setId(id: string): void {
-            this.id = id;
+            this._id = id;
         }
         /**
          *
@@ -174,7 +174,7 @@ module Cash {
         /**
          * 
          */
-        constructor(object = { id: "", access_url: "", params: new Cash.Params(), activities: [] }) {
+        constructor(object = { _id: "", access_url: "", params: new Cash.Params(), activities: [] }) {
             super(object);
             this.setActivities(object.activities);
         }
@@ -189,7 +189,6 @@ module Cash {
          */
         private setActivities(activities: Cash.ActivityInterface[]): void {
             activities = activities.sort((a: any, b: any) => {return a.starts_at_timestamp - b.starts_at_timestamp });
-            console.log(activities);
             var id: number;
             var newActivity: Cash.Activity;
             var activity_info: Cash.ActivityInfo;

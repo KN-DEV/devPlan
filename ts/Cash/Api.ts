@@ -20,16 +20,18 @@ module Cash {
                 url: Cash.Api.host + "groups",
                 type: "GET",
                 success: (data) => {
-                    //  console.log("Cash.Api.getTutorsList() - success", data);
+                    console.log("Cash.Api.getTutorsList() - success", data);
                     devPlan.Init.setGroups(data);
                 },
                 error: () => {
-                    //console.log("Cash.Api.getTutorsList() - error");
+                    console.log("Cash.Api.getTutorsList() - error");
                 },
                 cacheJStorage: cache,
                 cacheTTL: (3600 * ttl),
+                cacheKey: "Cash.groups",
                 isCacheValid: () => {
-                    return true;
+                    return $.jStorage.get("Cash.places", false);
+
                 }
             });
         }
@@ -41,16 +43,18 @@ module Cash {
                 url: Cash.Api.host + "tutors",
                 type: "GET",
                 success: (data) => {
-                    //   console.log("Cash.Api.getTutorsList() - success", data);
+                    console.log("Cash.Api.getTutorsList() - success", data);
                     devPlan.Init.setTutors(data);
                 },
                 error: () => {
-                    //console.log("Cash.Api.getTutorsList() - error");
+                    console.log("Cash.Api.getTutorsList() - error");
                 },
                 cacheJStorage: cache,
-                cacheTTL: (3600 * ttl),
+                cacheTTL: (3600000 * ttl),
+                cacheKey: "Cash.tutors",
                 isCacheValid: () => {
-                    return true;
+                    return $.jStorage.get("Cash.places", false);
+
                 }
 
             });
@@ -64,16 +68,18 @@ module Cash {
                 type: "GET",
                 dataType: 'json',
                 success: (data) => {
-                    //     console.log("Cash.Api.getPlacesList() - success", data);
                     devPlan.Init.setPlaces(data);
+                    console.log("Cash.Api.getPlacesList() - success", data);
                 },
                 error: () => {
-                    //console.log("Cash.Api.getPlacesList() - error");
+                    console.log("Cash.Api.getPlacesList() - error");
                 },
                 cacheJStorage: cache,
-                cacheTTL: (3600 * ttl),
+                cacheKey: "Cash.places",
+                cacheTTL: (3600000 * ttl),
                 isCacheValid: () => {
-                    return true;
+                    return $.jStorage.get("Cash.places", false);
+
                 }
             });
         }
@@ -92,12 +98,12 @@ module Cash {
                     place_id: params.getPlaces()
                 },
                 success: (data: any) => {
-                    console.log("Cash.Api.registerTimetable() - success", params, data);
+                    console.log("Cash.Api.registerTimetable() - success", params.toString(), data);
                 },
                 error: () => {
-                    //    console.log("Cash.Api.registerTimetable() - error", params);
+                    console.log("Cash.Api.registerTimetable() - error", params.toString());
                 },
-                cacheJStorage: false,
+                cacheJStorage: false
             });
         }
         /**
@@ -110,69 +116,46 @@ module Cash {
                 dataType: 'json',
                 // cache: false,
                 success: (data: any) => {
-                    //console.log("Cash.Api.getTimetable() - success", params.toString(), data);
+                    devPlan.Init.setTimetable(data);
+                    console.log("Cash.Api.getTimetable() - success", params.toString(), data);
                 },
                 error: () => {
-                    // console.log("Cash.Api.getTimetable() - error", params);
+                    console.log("Cash.Api.getTimetable() - error", params.toString());
                 },
                 cacheJStorage: cache,
-                cacheTTL: (3600 * ttl),
+                cacheKey: params.toString(),
+                cacheTTL: (3600000 * ttl),
                 isCacheValid: () => {
-                    console.log(Cash.Api.host + "timetables/" + params.toString() + "GETundefined");
-                    var value: any = $.jStorage.get(Cash.Api.host + "timetables/" + params.toString() + "GETundefined", false);
-                    console.log(value);
-                    $.when(Cash.Api.getTimetableVersion(params))
-                        .done((test) => {
-                            if (test.versions == value.versions) {
-                                console.log(true, test.versions, value.versions);
-
-                                return true;
-                            } else {
-                                console.log(false, test.versions, value.versions);
-
-                                return false;
-                            }
-                        })
-                        .fail((test) => {
-
-                            if (value != false) {
-                                return true;
-                            } else {
-                            return false
-                            };
-
-                        });
+                    return false;
                 }
             });
-
         }
         /**
          *
          */
-        public static getTimetableVersion(params: Cash.Params): JQueryXHR {
+        public static getTimetableVersion(params: Cash.Params): any {
             return $.ajax({
                 url: Cash.Api.host + "timetables/" + params.toString() + "/versions",
                 type: "GET",
                 dataType: 'json',
                 // cache: false,
                 success: (data: any) => {
-                    //console.log("Cash.Api.getTimetable() - success", params.toString(), data);
+                    console.log("Cash.Api.getTimetableVersion() - success", params.toString(), data);
                 },
                 error: () => {
-                    // console.log("Cash.Api.getTimetable() - error", params);
-                }
-
+                    console.log("Cash.Api.getTimetable() - error", params.toString());
+                },
+                cacheJStorage: false,
             });
         }
-
-
-        public static checkVersion(oldVersion, newVersion) {
-
-
-
-
+        public static isUpToDateVersion(local: any, downloaded: any): boolean {
+            if (typeof local == "Object") {
+                console.log("TEST", local);
+                return false;
+            } else {
+                console.log(JSON.stringify(local.versions) == JSON.stringify(downloaded.versions));
+                return JSON.stringify(local.versions) == JSON.stringify(downloaded.versions);
+            }
         }
     }
-
-
 }

@@ -126,7 +126,13 @@ module Cash {
                 cacheKey: params.toString(),
                 cacheTTL: (3600000 * ttl),
                 isCacheValid: () => {
-                    return false;
+
+                    return true;
+//                    $.when(Cash.Api.getTimetableVersion(params))
+//                        .done((currentInfo: any = null) => {
+//                            console.log($.jStorage.get(params.toString()));
+//                            return Cash.Api.isUpToDateVersion($.jStorage.get(params.toString()), currentInfo);
+//                        }).always(() => {return $.jStorage.get(params.toString(), false) });
                 }
             });
         }
@@ -149,8 +155,8 @@ module Cash {
             });
         }
         public static isUpToDateVersion(local: any, downloaded: any): boolean {
-            if (typeof local == "Object") {
-                console.log("TEST", local);
+            if (local == null || downloaded == null) {
+                console.log("TEST", local, downloaded);
                 return false;
             } else {
                 console.log(JSON.stringify(local.versions) == JSON.stringify(downloaded.versions));

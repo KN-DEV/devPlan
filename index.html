@@ -194,7 +194,7 @@
 			</div>
 		</div>
 	</div>
-<!-- devPlan Settings start-->
+	<!-- devPlan Settings start-->
 	<div class="modal fade" id="devPlan-settings" tabindex="-1"
 		role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
@@ -492,8 +492,9 @@
 					<ul class="list-inline">
 						<li><a href="index.html" title="Strona startowa devPlan"><strong>devPlan</strong></a></li>
 						<li class="footer-menu-divider">&sdot;</li>
-						<li><a class="devPlanLink" href="timetable.html"  data-toggle="modal"
-							 data-target="#devPlanWizard" title="Mój devPlan">Stwórz swój devPlan</a></li>
+						<li><a class="devPlanLink" href="timetable.html"
+							data-toggle="modal" data-target="#devPlanWizard"
+							title="Mój devPlan">Stwórz swój devPlan</a></li>
 						<li class="footer-menu-divider">&sdot;</li>
 						<li><a data-toggle="modal" data-target="#issue"
 							title="Zgłoś błąd" class="">Zgłoś błąd</a></li>
@@ -519,6 +520,8 @@
 	<script src="assets/js/devPlan.js"></script>
 	<script type="text/javascript">
 		new devPlan.Init();
+		console
+				.log((window.location.origin + '/index.html') != window.location.href);
 	</script>
 	<script src="assets/js/analytics.js"></script>
 </body>

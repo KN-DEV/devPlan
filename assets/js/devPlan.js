@@ -719,7 +719,7 @@ var Cash;
                 cacheKey: params.toString(),
                 cacheTTL: (3600000 * ttl),
                 isCacheValid: function () {
-                    return false;
+                    return true;
                 }
             });
         };
@@ -739,8 +739,8 @@ var Cash;
             });
         };
         Api.isUpToDateVersion = function (local, downloaded) {
-            if (typeof local == "Object") {
-                console.log("TEST", local);
+            if (local == null || downloaded == null) {
+                console.log("TEST", local, downloaded);
                 return false;
             } else {
                 console.log(JSON.stringify(local.versions) == JSON.stringify(downloaded.versions));
@@ -1200,27 +1200,39 @@ var devPlan;
                 params = devPlan.Settings.getTimetableParams();
             }
 
+            console.log(window.location.protocol + '//' + window.location.hostname + window.location.pathname + 'index.html');
+            console.log(window.location.protocol + '//' + window.location.hostname + window.location.pathname + '/index.html');
+            console.log(window.location.href);
+            if (window.location.href.indexOf("index.html") == -1 && window.location.href.indexOf("timetable.html") == -1 && !params.isEmpty()) {
+                window.location.replace('timetable.html?timetable=' + params.toString());
+            }
+
             if ($("#timetable-results").length) {
                 if (!params.isEmpty()) {
                     $.when(Cash.Api.getTimetable(params, true)).done(function (response) {
                         Init.showTimetable(Init.getTimetable());
                         $("#timetable-panel-spinner").remove();
                     }).fail(function () {
-                        $.when(Cash.Api.registerTimetable(params)).done(function () {
-                            $.when(Cash.Api.getTimetable(params, true)).done(function (response) {
-                                Init.showTimetable(Init.getTimetable());
-                                $("#timetable-panel-spinner").remove();
-                            }).fail(function (response) {
+                        if (Init.getTimetable() == null) {
+                            $.when(Cash.Api.registerTimetable(params)).done(function () {
+                                $.when(Cash.Api.getTimetable(params, true)).done(function (response) {
+                                    Init.showTimetable(Init.getTimetable());
+                                    $("#timetable-panel-spinner").remove();
+                                }).fail(function (response) {
+                                });
+                            }).fail(function () {
                             });
-                        }).fail(function () {
-                        });
+                        } else {
+                            Init.showTimetable(Init.getTimetable());
+                            $("#timetable-panel-spinner").remove();
+                        }
                     });
                 } else {
                     $("#timetable-panel-spinner").remove();
                 }
             }
 
-            $.when(Cash.Api.getGroupsList(true), Cash.Api.getTutorsList(true), Cash.Api.getPlacesList(true)).done(function (groups, tutors, places) {
+            $.when(Cash.Api.getGroupsList(true, 72), Cash.Api.getTutorsList(true, 72), Cash.Api.getPlacesList(true, 72)).done(function (groups, tutors, places) {
                 $("#search-input").removeAttr('disabled').attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn').attr('data-provide', "typeahead");
 
                 var data = Init.typeaheadDataCreator(Init.getGroups(), Init.getTutors(), Init.getPlaces());

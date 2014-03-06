@@ -60,6 +60,15 @@ module devPlan {
                  */
                 params = Settings.getTimetableParams();
             }
+
+            /**
+             * Auto redirect to devPlan
+             */
+            if (window.location.href.indexOf("index.html") == -1 &&
+                window.location.href.indexOf("timetable.html") == -1 &&
+                !params.isEmpty()) {
+                window.location.replace('timetable.html?timetable=' + params.toString());
+            }
             /**
              * Generowanie planu zajęć
              * Sprawdza czy istnieje element
@@ -69,35 +78,43 @@ module devPlan {
                  * Sprawdza czy istnieje jakikolwiek parametr do planu
                  */
                 if (!params.isEmpty()) {
+
+
+
                     $.when(Cash.Api.getTimetable(params, true))
                         .done((response: any) => {
                             Init.showTimetable(Init.getTimetable());
-                               $("#timetable-panel-spinner").remove();
+                            $("#timetable-panel-spinner").remove();
                         }).fail(() => {
 
-                            $.when(Cash.Api.registerTimetable(params))
-                                .done(() => {
-                                    $.when(Cash.Api.getTimetable(params, true))
-                                        .done((response: any) => {
-                                            Init.showTimetable(Init.getTimetable());
-                                               $("#timetable-panel-spinner").remove();
-                                        }).fail((response: any) => {
-                                        });
-                                }).fail(() => {
-                                });
+                            if (Init.getTimetable() == null) {
 
+                                $.when(Cash.Api.registerTimetable(params))
+                                    .done(() => {
+                                        $.when(Cash.Api.getTimetable(params, true))
+                                            .done((response: any) => {
+                                                Init.showTimetable(Init.getTimetable());
+                                                $("#timetable-panel-spinner").remove();
+                                            }).fail((response: any) => {
+                                            });
+                                    }).fail(() => {
+                                    });
+                            } else {
+                                Init.showTimetable(Init.getTimetable());
+                                $("#timetable-panel-spinner").remove();
+                            }
                         });
-                }else{
-                   $("#timetable-panel-spinner").remove();    
+                } else {
+                    $("#timetable-panel-spinner").remove();
                 }
-             
+
             }
             /**
              * Pobieranie listy grup pracowników i miejsc
              */
-            $.when(Cash.Api.getGroupsList(true),
-                Cash.Api.getTutorsList(true),
-                Cash.Api.getPlacesList(true))
+            $.when(Cash.Api.getGroupsList(true, 72),
+                Cash.Api.getTutorsList(true, 72),
+                Cash.Api.getPlacesList(true, 72))
                 .done((groups: any, tutors: any, places: any) => {
 
                     $("#search-input")

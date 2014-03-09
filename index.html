@@ -194,6 +194,8 @@
 			</div>
 		</div>
 	</div>
+	
+	
 	<!-- devPlan Settings start-->
 	<div class="modal fade" id="devPlan-settings" tabindex="-1"
 		role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -215,52 +217,61 @@
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
+
 					<button type="button" class="close" data-dismiss="modal"
 						aria-hidden="true">&times;</button>
-					<h6 class="modal-title" id="myModalLabel">
-						<div class="btn-group">
-							<ul class="nav nav-pills">
-								<li class="active"><a data-toggle="tab"
-									href="#devPlanSettingsGeneral">Ustawienia</a></li>
-								<li><a data-toggle="tab" href="#devPlanSettingsView">Wygląd</a></li>
-								<li><a data-toggle="tab" href="#devPlanExport">Eksport</a></li>
-							</ul>
-						</div>
-					</h6>
+					<div class="clearfix"></div>
+					<h4 class="modal-title">Ustawienia</h4>
+					<ul class="nav nav-pills nav-justified">
+						<li class="active"><a data-toggle="tab"
+							href="#devPlanSettingsGeneral">Główne</a></li>
+						<li><a data-toggle="tab" href="#devPlanSettingsView">Wygląd</a></li>
+						<li><a data-toggle="tab" href="#devPlanExport">Eksport</a></li>
+					</ul>
 				</div>
 				<div class="tab-content">
 					<div class="tab-pane active" id="devPlanSettingsGeneral">
 						<div class="modal-body">
-							<fieldset>
 
-								<legend>Twój devPlan:</legend>
-								<p>
-									Skopiuj devPlan lub go
-									<button type="button" class="btn btn-link" data-toggle="modal"
-										data-target="#devPlanQrCode">
-										<i class="fa fa-fw fa-qrcode"></i> zeskanuj
-									</button>
-									i podziel się z innymi.
-								</p>
-								<div class="form-group devPlanUrl"></div>
-
-								<div class="form-group devPlanParams"></div>
-								<div class="form-group">
-									<label>Wprowadz nazwe grupy lub wykładowcy</label> <input
-										id="0" autocomplete="off" disabled="disabled" value=""
-										name="devPlanTypeahead" type="text"
-										class="form-control col-lg-12 col-md-12 col-sm-12 col-xs-12 devPlanTypeahead"
-										placeholder="KrDzIs3011Io / dr Paweł Wołoszyn" />
+							<p>
+								Skopiuj devPlan lub go
+								<button type="button" class="btn btn-link" data-toggle="modal"
+									data-target="#devPlanQrCode">
+									<i class="fa fa-fw fa-qrcode"></i> zeskanuj
+								</button>
+								i podziel się z innymi.
+							</p>
+							<div class="form-group devPlanUrl"></div>
+							<div class="form-group">
+								<label>Twój devPlan zawiera zajęcia:</label>
+								<div class="btn-toolbar devPlanParams"></div>
+							</div>
+							<div class="form-group">
+								<label>Wprowadź nazwę:</label> <input for="devPlanTypeahead0"
+									id="0" autocomplete="off" disabled="disabled" value=""
+									name="devPlanTypeahead" type="text"
+									class="form-control devPlanTypeahead" />
+								<p class="help-block">Wprowadź nazwę grupy (dziekańskiej lub
+									językowej), nazwisko prowadzącego lub interesującą Cię nazwę
+									sali.</p>
+							</div>
+							<div class="form-group">
+								<div class="checkbox">
+									<label><input type="checkbox"
+										class="devPlanSettingsTimetableRedirectrect"
+										onClick="devPlan.Settings.setTimetableRedirect(!devPlan.Settings.getTimetableRedirect()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
+										Automatycznie przekierowywuj do devPlan</label>
 								</div>
-							</fieldset>
+							</div>
+
+
 						</div>
 						<div class="modal-footer">
-							<button type="button" class="btn btn-default"
+							<button type="button" class="btn btn-default pull-left"
 								data-dismiss="modal">Zamknij</button>
-
 							<button class="btn btn-success"
 								onclick="devPlan.Settings.saveTimetable(); window.location.replace('timetable.html')">
-								Zapamiętaj mój devPlan</button>
+								Zapamiętaj</button>
 						</div>
 					</div>
 
@@ -286,102 +297,113 @@
 								data-dismiss="modal">Zamknij</button>
 						</div>
 					</div>
-
-
-
 					<div class="tab-pane fade " id="devPlanSettingsView">
 						<div class="modal-body">
 							<fieldset>
 								<legend>Ustawienia okresu czasu</legend>
 								<div class="radio">
-									<label> <input type="radio" name="timetableType"
-										id="timetableType1" value="1"
+									<label> <input type="radio" value="1"
+										name="devPlanSettingsTimetableType"
+										class="devPlanSettingsTimetableType"
 										onClick="devPlan.Settings.setTimetableType(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
 										Wyświetlaj tylko nadchodzące zajęcia
 									</label>
 								</div>
 								<div class="radio">
-									<label> <input type="radio" name="timetableType"
-										id="timetableType0" value="0"
+									<label> <input type="radio" value="0"
+										name="devPlanSettingsTimetableType"
+										class="devPlanSettingsTimetableType"
 										onClick="devPlan.Settings.setTimetableType(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
 										Wyświetlaj cały plan zajęć
 									</label>
 								</div>
 								<legend>Ilość wyświetlanych dni</legend>
 								<div class="radio">
-									<label> <input type="radio" name="timetablePeriod"
-										id="timetablePeriod3" value="3"
+									<label> <input type="radio" value="3"
+										name="devPlanSettingsTimetablePeriod"
+										class="devPlanSettingsTimetablePeriod"
 										onClick="devPlan.Settings.setTimetablePeriod(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
 										3
 									</label>
 								</div>
 								<div class="radio">
-									<label> <input type="radio" name="timetablePeriod"
-										id="timetablePeriod7" value="7"
+									<label> <input type="radio" value="7"
+										name="devPlanSettingsTimetablePeriod"
+										class="devPlanSettingsTimetablePeriod"
 										onClick="devPlan.Settings.setTimetablePeriod(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
 										7
 									</label>
 								</div>
 								<div class="radio">
-									<label> <input type="radio" name="timetablePeriod"
-										id="timetablePeriod14" value="14"
+									<label> <input type="radio" value="14"
+										name="devPlanSettingsTimetablePeriod"
+										class="devPlanSettingsTimetablePeriod"
 										onClick="devPlan.Settings.setTimetablePeriod(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
 										14
 									</label>
 								</div>
 								<div class="radio">
-									<label> <input type="radio" name="timetablePeriod"
-										id="timetablePeriod0" value="0"
+									<label> <input type="radio" value="0"
+										name="devPlanSettingsTimetablePeriod"
+										class="devPlanSettingsTimetablePeriod"
 										onClick="devPlan.Settings.setTimetablePeriod(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
 										wszystkie dni
 									</label>
 								</div>
 								<legend>Ustawienia informacji</legend>
 								<div class="checkbox">
-									<label> <input id="activityTutor" type="checkbox"
+									<label> <input type="checkbox"
+										class="devPlanSettingsActivityTutor"
 										onClick="devPlan.Settings.setActivityTutor(!devPlan.Settings.getActivityTutor()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
 										Wyświetlaj informacje o prowadzącym
 									</label>
 								</div>
 								<div class="checkbox">
-									<label> <input id="activityNote" type="checkbox"
+									<label> <input type="checkbox"
+										class="devPlanSettingsActivityNote"
 										onClick="devPlan.Settings.setActivityNote(!devPlan.Settings.getActivityNote()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
 										Wyświetlaj notatki do zajęć
 									</label>
 								</div>
 								<div class="checkbox">
-									<label> <input id="activityBell" type="checkbox" s
+									<label> <input type="checkbox"
+										class="devPlanSettingsActivityBell"
 										onClick="devPlan.Settings.setActivityBell(!devPlan.Settings.getActivityBell()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
 										Wyświetlaj godzinę rozpoczęcia i zakończenia zajęć
 									</label>
 								</div>
 								<div class="checkbox">
-									<label> <input id="activityLocation" type="checkbox"
+									<label> <input type="checkbox"
+										class="devPlanSettingsActivityLocation"
 										onClick="devPlan.Settings.setActivityLocation(!devPlan.Settings.getActivityLocation()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
 										Wyświetlaj informacje o lokalizacji zajęć
 									</label>
 								</div>
 								<div class="checkbox">
-									<label> <input id="activityCategory" type="checkbox"
+									<label> <input type="checkbox"
+										class="devPlanSettingsActivityCategory"
 										onClick="devPlan.Settings.setActivityCategory(!devPlan.Settings.getActivityCategory()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
 										Wyświetlaj informacje o typie zajęć
 									</label>
 								</div>
 								<div class="checkbox">
-									<label> <input id="activityGroup" type="checkbox"
+									<label> <input type="checkbox"
+										class="devPlanSettingsActivityGroup"
 										onClick="devPlan.Settings.setActivityGroup(!devPlan.Settings.getActivityGroup()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
 
 										Wyświetlaj informacje o grupach uczestniczących w zajęciach
 									</label>
 								</div>
 								<div class="checkbox">
-									<label> <input id="classCounter" type="checkbox"
+									<label> <input type="checkbox"
+										class="devPlanSettingsActivityClassCounter"
 										onClick="devPlan.Settings.setClassCounter(!devPlan.Settings.getClassCounter()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
 										Wyświetlaj informacje na tamat numeru kolejnych zajęć
 									</label>
 								</div>
 								<div class="checkbox">
-									<label> <input id="classHourCounter" type="checkbox"
+									<label> <input type="checkbox"
+										class="devPlanSettingsActivityClassHourCounter"
 										onClick="devPlan.Settings.setClassHourCounter(!devPlan.Settings.getClassHourCounter()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
 										Wyświetlaj informacje na temat ilości godzin lekcyjnych
 									</label>
@@ -389,7 +411,7 @@
 							</fieldset>
 						</div>
 						<div class="modal-footer">
-							<button type="button" class="btn btn-default"
+							<button type="button" class="btn btn-default pull-left"
 								data-dismiss="modal">Zamknij</button>
 						</div>
 					</div>
@@ -416,7 +438,8 @@
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Zamknij</button>
+					<button type="button" class="btn btn-default pull-left"
+						data-dismiss="modal">Zamknij</button>
 				</div>
 			</div>
 		</div>
@@ -441,7 +464,8 @@
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Zamknij</button>
+					<button type="button" class="btn btn-default pull-left"
+						data-dismiss="modal">Zamknij</button>
 				</div>
 			</div>
 		</div>
@@ -474,8 +498,8 @@
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal"
-						title="Nie wysyłaj i zamknij">Zamknij</button>
+					<button type="button" class="btn btn-default pull-left"
+						data-dismiss="modal">Zamknij</button>
 					<button class="btn btn-primary" data-dismiss="modal"
 						aria-hidden="true" onclick="sendIssue();" title="Wyślij i zamknij">
 						<i class="fa fa-fw fa-save"></i>Wyślij zgłoszenie
@@ -485,6 +509,9 @@
 		</div>
 	</div>
 	<!-- issue stop -->
+	
+	
+	
 	<footer class="hidden-print">
 		<div class="container">
 			<div class="row">
@@ -506,8 +533,7 @@
 			</div>
 		</div>
 	</footer>
-	<script
-		src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 	<script src="assets/js/jquery.cookie.js"></script>
 	<script
 		src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
@@ -520,8 +546,6 @@
 	<script src="assets/js/devPlan.js"></script>
 	<script type="text/javascript">
 		new devPlan.Init();
-		console
-				.log((window.location.origin + '/index.html') != window.location.href);
 	</script>
 	<script src="assets/js/analytics.js"></script>
 </body>

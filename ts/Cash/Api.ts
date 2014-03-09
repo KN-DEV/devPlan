@@ -128,11 +128,11 @@ module Cash {
                 isCacheValid: () => {
 
                     return true;
-//                    $.when(Cash.Api.getTimetableVersion(params))
-//                        .done((currentInfo: any = null) => {
-//                            console.log($.jStorage.get(params.toString()));
-//                            return Cash.Api.isUpToDateVersion($.jStorage.get(params.toString()), currentInfo);
-//                        }).always(() => {return $.jStorage.get(params.toString(), false) });
+                    //                    $.when(Cash.Api.getTimetableVersion(params))
+                    //                        .done((currentInfo: any = null) => {
+                    //                            console.log($.jStorage.get(params.toString()));
+                    //                            return Cash.Api.isUpToDateVersion($.jStorage.get(params.toString()), currentInfo);
+                    //                        }).always(() => {return $.jStorage.get(params.toString(), false) });
                 }
             });
         }

@@ -18,12 +18,17 @@
 
 
 module devPlan {
+
+    export enum CacheTime {
+        Group= 6,
+        Tutor= 6,
+        Place= 6,
+        Timetable= 6
+    }
     /**
      * 
      */
     export class Init {
-
-
         /**
          * Keeps list of groups from Cash service
          */
@@ -64,9 +69,11 @@ module devPlan {
             /**
              * Auto redirect to devPlan
              */
-            if (window.location.href.indexOf("index.html") == -1 &&
-                window.location.href.indexOf("timetable.html") == -1 &&
-                !params.isEmpty()) {
+            if (
+                //czy jest właczone przekierowywanie
+                Settings.getTimetableRedirect() && !params.isEmpty() &&
+                (window.location.href.indexOf("index.html") == -1 &&
+                window.location.href.indexOf("timetable.html") == -1)) {
                 window.location.replace('timetable.html?timetable=' + params.toString());
             }
             /**
@@ -81,7 +88,7 @@ module devPlan {
 
 
 
-                    $.when(Cash.Api.getTimetable(params, true))
+                    $.when(Cash.Api.getTimetable(params, true, CacheTime.Timetable))
                         .done((response: any) => {
                             Init.showTimetable(Init.getTimetable());
                             $("#timetable-panel-spinner").remove();
@@ -91,7 +98,7 @@ module devPlan {
 
                                 $.when(Cash.Api.registerTimetable(params))
                                     .done(() => {
-                                        $.when(Cash.Api.getTimetable(params, true))
+                                        $.when(Cash.Api.getTimetable(params, true, CacheTime.Timetable))
                                             .done((response: any) => {
                                                 Init.showTimetable(Init.getTimetable());
                                                 $("#timetable-panel-spinner").remove();
@@ -109,55 +116,46 @@ module devPlan {
                 }
 
             }
-            /**
-             * Pobieranie listy grup pracowników i miejsc
-             */
-            $.when(Cash.Api.getGroupsList(true, 72),
-                Cash.Api.getTutorsList(true, 72),
-                Cash.Api.getPlacesList(true, 72))
+
+            $.when(Cash.Api.getGroupsList(true, CacheTime.Group),
+                Cash.Api.getTutorsList(true, CacheTime.Tutor),
+                Cash.Api.getPlacesList(true, CacheTime.Place))
                 .done((groups: any, tutors: any, places: any) => {
 
-                    $("#search-input")
-                        .removeAttr('disabled')
-                        .attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn')
-                        .attr('data-provide', "typeahead");
-
-                    /**
-                     *Tablica nazw dla typeahead
-                     */
-                    var data: string[] = Init.typeaheadDataCreator(Init.getGroups(), Init.getTutors(), Init.getPlaces());
 
                     /**
                      * Navbar search
                      */
-                    $("#search-input").typeahead({
-                        source: data,
-                        items: 15,
-                        updater: (item: any) => {
-                            var group: number = Init.searchGroupId(item);
-                            var tutor: number = Init.searchTutorId(item);
-                            var place: number = Init.searchPlaceId(item);
-                            if (group > 0 && tutor == 0 && place == 0) {
-                                window.location.replace('timetable.html?timetable=g' + group);
+                    $("#search-input")
+                        .removeAttr('disabled')
+                        .attr('data-provide', "typeahead")
+                        .typeahead({
+                            source: Init.typeaheadDataCreator(Init.getGroups(), Init.getTutors(), Init.getPlaces()),
+                            items: 15,
+                            updater: (item: any) => {
+                                var group: number = Init.searchGroupId(item);
+                                var tutor: number = Init.searchTutorId(item);
+                                var place: number = Init.searchPlaceId(item);
+                                if (group > 0 && tutor == 0 && place == 0) {
+                                    window.location.replace('timetable.html?timetable=g' + group);
+                                }
+                                if (group == 0 && tutor > 0 && place == 0) {
+                                    window.location.replace('timetable.html?timetable=t' + tutor);
+                                }
+                                if (group == 0 && tutor == 0 && place > 0) {
+                                    window.location.replace('timetable.html?timetable=p' + place);
+                                }
                             }
-                            if (group == 0 && tutor > 0 && place == 0) {
-                                window.location.replace('timetable.html?timetable=t' + tutor);
-                            }
-                            if (group == 0 && tutor == 0 && place > 0) {
-                                window.location.replace('timetable.html?timetable=p' + place);
-                            }
-                        }
-                    });
+                        });
 
                     /**
                      * 
                      */
                     $(".devPlanTypeahead").each((index) => {
                         $('#' + index + '.devPlanTypeahead').removeAttr('disabled')
-                            .attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn')
                             .attr('data-provide', "typeahead");
                         $('#' + index + '.devPlanTypeahead').typeahead({
-                            source: data,
+                            source: Init.typeaheadDataCreator(Init.getGroups(), Init.getTutors(), Init.getPlaces()),
                             items: 15,
                             updater: (item: any) => {
                                 Settings.addTimetableParam(item);
@@ -169,7 +167,6 @@ module devPlan {
                     if ($.jStorage.storageAvailable() == true) {
                         $("#search-input")
                             .removeAttr('disabled')
-                            .attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn')
                             .attr('data-provide', "typeahead");
 
                         /**
@@ -207,7 +204,6 @@ module devPlan {
                          */
                         $(".devPlanTypeahead").each((index) => {
                             $('#' + index + '.devPlanTypeahead').removeAttr('disabled')
-                                .attr('placeholder', 'KrDzIs3011Io / dr Paweł Wołoszyn')
                                 .attr('data-provide', "typeahead");
                             $('#' + index + '.devPlanTypeahead').typeahead({
                                 source: data,
@@ -356,32 +352,30 @@ module devPlan {
                     } while (timetable.getActivities()[++j] != null &&
                         activity.getName() == timetable.getActivities()[j].getName() &&
                         activity.getEndsAtTimestamp() == timetable.getActivities()[j].getEndsAtTimestamp());
-
                     /**
                      * 
                      */
                     var indexgroup = "";
                     groups = groups.sort((a: any, b: any): any => { return a.getName() >= b.getName(); });
                     for (var k = 0; k < groups.length; k++) {
-                        indexgroup = indexgroup + groups[k].getName();
+                        indexgroup = indexgroup + ' ' + groups[k].getName();
                     }
                     /**
                      * 
                      */
-                    if (activity.getDate() >= Settings.getCurrentDate() ||
-                        Settings.getTimetableType() == 0) {
-
-                        if ((activity.getName().toLowerCase().indexOf(Settings.getActivityNameFilter().toLowerCase()) > -1) ||
-                            (activity.getTutor().getName().toLowerCase().indexOf(Settings.getActivityNameFilter().toLowerCase()) > -1) ||
-                            (indexgroup.toLowerCase().indexOf(Settings.getActivityNameFilter().toLowerCase()) > -1) ||
-                            (activity.getDate().indexOf(Settings.getActivityNameFilter().toLowerCase()) > -1)) {
-
+                    if (activity.getDate() >= Settings.getCurrentDate(Settings.getPage()) || Settings.getTimetableType() == 0) {
+                        /**
+                         * Filtr
+                         */
+                        if (activity.contains(Settings.getActivityNameFilter(), indexgroup) == true) {
+                            /**
+                             * Cały dzień
+                             */
                             if (date != activity.getDate()) {
-
                                 /**
                                  * Ilość kolejnych zajęć
                                  */
-                                if (Settings.getTimetablePeriod() != 0 && daysCounter >= Settings.getTimetablePeriod()) {
+                                if (Settings.getTimetablePeriod() != 0 && daysCounter >= Settings.getTimetablePeriod() && Settings.getTimetableType() != 0) {
                                     break;
                                 }
                                 daysCounter++;
@@ -400,42 +394,10 @@ module devPlan {
                                 activity.getEndsAtTimestamp() == timetable.getActivities()[i - 1].getEndsAtTimestamp()) {
                                 continue;
                             }
-                            data = data +
-                            '<li id="activity' + activity.getId() + '" class="list-group-item activity ' + activity.getCategory().replace(/\s/gi, "-") + '">' +
-                            '<p class="h5">' +
-                            Generate.nameInformation(timetable.getActivities()[i]) +
-                            Generate.tutorInformation(timetable.getActivities()[i]);
-                            '</p><div class="clearfix"></div>';
-                            if (Settings.getActivityNote() && activity.getNotes() != null) {
-                                data = data + '<p class="h6">' +
-                                Generate.noteInformation(timetable.getActivities()[i]) +
-                                '</p><div class="clearfix"></div>';
-                            }
-                            if (Settings.getActivityBell() ||
-                                Settings.getActivityLocation() || Settings.getActivityCategory() ||
-                                Settings.getClassCounter() || Settings.getClassHourCounter()) {
-                                //
-                                data = data + '<p class="h6">' + Generate.bellInformation(timetable.getActivities()[i]) +
-                                Generate.locationInformation(timetable.getActivities()[i]) +
-                                Generate.categoryInformation(timetable.getActivities()[i]) +
-                                Generate.activityCounter(timetable.getPositionOfActivity(activity), timetable.getMaxNumberOfOccurencesOfActivity(activity)) +
-                                Generate.hourInformation(activity.getNumberOfSchoolLessons(), timetable.sumAllHoursOfActivity(activity), timetable.sumAllHoursOfActivity(activity, true));
-                                data = data + '</p><div class="clearfix"></div>';
-                            }
-                            if (Settings.getActivityGroup()) {
-                                data = data + '<p class="h6">';
-                                for (var j = 0; j < groups.length; j++) {
-                                    if (groups[j] != null) {
-                                        data = data + '<a href="timetable.html?timetable=g' + groups[j].getId() + '"class="group" title="Kliknij aby zobaczyć devPlan: ' + groups[j].getName() + '">' + groups[j].getName() + "</a>" + '<wbr>';
-                                        if (j < (groups.length - 1)) {
-                                            data = data + ' | ';
-                                        }
-                                    }
-                                }
-                                data = data + '</p>';
-                            }
-                            data = data + '<div class="clearfix"></div>';
-                            data = data + '</li>';
+                            /**
+                             * Pojedyncze zajęcia
+                             */
+                            data = data + Generate.generateActivity(timetable, activity, groups);
                         }
                     }
                 }
@@ -449,6 +411,11 @@ module devPlan {
             $("#timetable-results").append(data);
             // binds chevron animation
             bindAnimation();
+            $('.activity').popover({
+                placement: 'auto',
+                trigger: 'click',
+                html: true
+            });
         }
         /**
          * 
@@ -507,8 +474,6 @@ module devPlan {
                     .text("Twój devPlan");
 
             } else {
-
-
                 $(".timetable-panel-spinner-icon")
                     .empty()
                     .append('<button class="btn btn-warning title="Stwórz devPlan" ' +
@@ -518,6 +483,29 @@ module devPlan {
             }
         }
     }
+}
+
+
+function containsIndexGroups(indexgroups: string = '', query: string = ''): boolean {
+    var items: string[] = query.toString().toLowerCase().split(" ");
+    indexgroups = indexgroups.toString().toLowerCase();
+    var item: string = "";
+    var values: boolean[] = [];
+
+    for (var i = 0; i < items.length; i++) {
+        item = items[i];
+        if (indexgroups.indexOf(item) > -1) {
+            values.push(true);
+        } else {
+            values.push(false);
+        }
+    }
+    for (i = 0; i < values.length; i++) {
+        if (values[i] == false) {
+            return false;
+        }
+    }
+    return true;
 }
 /**
  * 

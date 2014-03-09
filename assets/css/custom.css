@@ -54,7 +54,8 @@ i.animate-down {
 }
 
 li.date {
-	
+	margin-left:-15px;
+	margin-right:-15px;
 }
 
 span.name {
@@ -62,21 +63,21 @@ span.name {
 	/* 	float:right; */
 }
 
-p.note {
+span.note {
 	
 }
 
 span.bell {
 	
 }
+span.location {
+}
+
 
 span.category {
 	float: right;
 }
 
-a.location {
-	font-size: 1em;
-}
 
 span.counter {
 	float: right;
@@ -86,13 +87,12 @@ span.hour {
 	float: right;
 }
 
-a.tutor {
+span.tutor {
 	float: right;
-	font-size: 0.8em;
+/* 	font-size: 0.9em; */
 }
 
-a.group {
-	font-size: 0.8em;
+span.group {
 }
 
 li.activity {
@@ -130,7 +130,7 @@ li.activity {
 }
 
 button.devPlanParam {
-	margin-bottom: 3px;
+	margin-bottom: 5px;
 }
 
 .navbar-collapse .navbar-form {
@@ -140,13 +140,18 @@ button.devPlanParam {
 .navbar-form {
 	width: auto;
 }
+
 .navbar-form.pull-right {
-	padding-right:0px;
+	padding-right: 0px;
 }
 
-
 @media print {
-  a[href]:after {
-    content: none;
-  }
+	a[href]:after {
+		content: none;
+	}
+}
+
+.btn-group {
+	margin-bottom: 5px;
+}
 }

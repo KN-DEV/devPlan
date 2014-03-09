@@ -22,7 +22,6 @@ module Cash {
     }
 
     export interface TimetableInterface extends RegisteredTimetableInterface {
-
         /**
          * 
          */
@@ -168,8 +167,7 @@ module Cash {
         private maxNumberOfOccurencesOfActivity: number[] = [];
         /**
          * 
-         */
-
+         */  
         private activityInfo: any = [[]];
         /**
          * 

@@ -7,9 +7,14 @@ module Cash {
      * Model of place data
      */
     export class Place {
+        /**
+         * 
+         */
         public id: number = 0;
+        /**
+         * 
+         */
         public location: string = "";
-
         /**
          * 
          */

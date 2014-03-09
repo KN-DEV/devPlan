@@ -142,6 +142,7 @@ module Cash {
 
 
 
+
         /**
          * 
          */
@@ -154,7 +155,7 @@ module Cash {
             this.setGroup(object.group);
             this.setId(object.id);
             this.setName(object.name);
-            this.setNotes(object.notes);
+            this.setNotes((object.notes == null ? "" : object.notes));
             this.setPlace(object.place);
             this.setStartsAt(object.starts_at);
             this.setStartsAtTimestamp(object.starts_at_timestamp);
@@ -170,8 +171,9 @@ module Cash {
         /**
          * 
          */
-        public setCategory(category: string): void {
+        public setCategory(category: string): Activity {
             this.category = category;
+            return this;
         }
         /**
          * 
@@ -182,8 +184,9 @@ module Cash {
         /**
          * 
          */
-        public setDate(date: string): void {
+        public setDate(date: string): Activity {
             this.date = date;
+            return this;
         }
         /**
          * 
@@ -359,9 +362,43 @@ module Cash {
             }
             return (counter / 2);
         }
-
+        /**
+         * 
+         */
         public static generateHash(activity: Cash.Activity): string {
             return activity.getGroup().getId() + '-' + activity.getName() + '-' + activity.getCategory() + '-' + activity.getTutor().getId();
         }
+        /**
+         * 
+         */
+        public contains(query: string, indexgroup: string = ''): boolean {
+            var items: string[] = query.toString().toLowerCase().split(" ");
+            var item: string = "";
+            var values: boolean[] = [];
+            for (var i = 0; i < items.length; i++) {
+                item = items[i];
+                if (
+                    (this.getName().toLowerCase().indexOf(item) > -1) ||
+                    (this.getTutor().getName().toLowerCase().indexOf(item) > -1) ||
+                    (this.getNotes().toLowerCase().indexOf(item) > -1) ||
+                    (this.getCategory().toLowerCase().indexOf(item) > -1) ||
+                    (this.getStartsAt().toLowerCase().indexOf(item) > -1) ||
+                    (this.getEndsAt().toLowerCase().indexOf(item) > -1) ||
+                    (this.getPlace().getLocation().toLowerCase().indexOf(item) > -1) ||
+                    (containsIndexGroups(indexgroup, item))) {
+                    //
+                    values.push(true);
+                } else {
+                    values.push(false);
+                }
+            }
+            for (i = 0; i < values.length; i++) {
+                if (values[i] == false) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
     }
 }

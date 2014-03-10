@@ -791,14 +791,14 @@ var devPlan;
             return Settings;
         };
 
-        Settings.incresePage = function () {
+        Settings.increasePage = function () {
             console.log("days", Settings.getPage());
             Settings.setPage(Settings.getPage() + Settings.getTimetablePeriod());
             console.log("days", Settings.getPage());
             return Settings;
         };
 
-        Settings.decresePage = function () {
+        Settings.decreasePage = function () {
             console.log("days", Settings.getPage());
             Settings.setPage(Settings.getPage() - Settings.getTimetablePeriod());
             console.log("days", Settings.getPage());

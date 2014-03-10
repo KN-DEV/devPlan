@@ -84,7 +84,7 @@ module devPlan {
         /**
          * 
          */
-        public static incresePage(): Settings {
+        public static increasePage(): Settings {
             console.log("days", Settings.getPage());
             Settings.setPage(Settings.getPage() + Settings.getTimetablePeriod());
             console.log("days", Settings.getPage());
@@ -93,7 +93,7 @@ module devPlan {
         /**
          * 
          */
-        public static decresePage(): Settings {
+        public static decreasePage(): Settings {
             console.log("days", Settings.getPage());
             Settings.setPage(Settings.getPage() - Settings.getTimetablePeriod());
             console.log("days", Settings.getPage());

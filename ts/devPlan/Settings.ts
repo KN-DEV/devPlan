@@ -6,9 +6,6 @@
 module devPlan {
     /**
      * 
-
-    /**
-     * 
      */
     export class Settings {
         /**
@@ -190,7 +187,6 @@ module devPlan {
          */
         static setActivityNote(status: boolean = false): Settings {
             Settings.activityNote = status;
-
             if (Settings.getActivityNote()) {
                 $(".devPlanSettingsActivityNote").attr("checked", "checked");
             }

@@ -8,13 +8,9 @@
 <meta name="keywords"
 	content="plan, zajęć, plan zajęć, spersonalizowany, uek, uniwersytet, ekonomiczny, grupy, prowadzący, Kraków, dev, devplan, koło, naukowe, programistów, szukaj, android, windows, ios">
 <title>devPlan - Mój plan</title>
-<link
-	href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"
-	rel="stylesheet">
+<link href="assets/css/bootstrap.min.css" rel="stylesheet">
 <link href="assets/css/bootstrap-theme.min.css" rel="stylesheet">
-<link
-	href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"
-	rel="stylesheet">
+<link href="assets/css/font-awesome.min.css" rel="stylesheet">
 <link
 	href='http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900,100italic,300italic,400italic,700italic,900italic'
 	rel='stylesheet' type='text/css'>
@@ -76,39 +72,38 @@
 						<div class="row">
 							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 
-								<input type="text"
-									class="form-control form-inline	devPlanSettingsActivityNameFilter"
-									onkeyup="devPlan.Settings.setActivityNameFilter(this.value).save();	devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
+								<!-- 								<input type="text" -->
+								<!-- 									class="form-control form-inline	devPlanSettingsActivityNameFilter" -->
+								<!-- 									onkeyup="devPlan.Settings.setActivityNameFilter(this.value).save();	devPlan.Init.showTimetable(devPlan.Init.getTimetable());"> -->
 
 
-								<!-- 								<div class="input-group"> -->
-								<!-- 									devPlanTimetableActivityFilter start  -->
+								<div class="input-group">
+									<!-- 									devPlanTimetableActivityFilter start -->
+									<input type="text"
+										class="form-control form-inline devPlanSettingsActivityNameFilter"
+										onkeyup="devPlan.Settings.setActivityNameFilter(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
+									<!-- 									devPlanTimetableActivityFilter stop -->
 
-								<!-- 									<input type="text" -->
-								<!-- 										class="form-control form-inline devPlanSettingsActivityNameFilter" -->
-								<!-- 										onkeyup="devPlan.Settings.setActivityNameFilter(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());"> -->
-								<!-- 							devPlanTimetableActivityFilter stop -->
+									<!-- 																	devPlanTimetablePeriodNavigation start -->
 
-								<!-- 									devPlanTimetablePeriodNavigation start -->
+									<div class="input-group-btn ">
 
-								<!-- 									<div class="input-group-btn "> -->
+										<button
+											class="btn btn-primary devPlanTimetablePeriodNavigation"
+											type="button"
+											onClick="devPlan.Settings.decreasePage(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
+											<i class="fa fa-fw fa-chevron-left"></i>
+										</button>
+										<button
+											class="btn btn-primary devPlanTimetablePeriodNavigation"
+											type="button"
+											onClick="devPlan.Settings.increasePage(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
+											<i class="fa fa-fw fa-chevron-right"></i>
+										</button>
+									</div>
+									<!-- 																	devPlanTimetablePeriodNavigation stop -->
 
-								<!-- 										<button -->
-								<!-- 											class="btn btn-primary devPlanTimetablePeriodNavigation" -->
-								<!-- 											type="button" -->
-								<!-- 											onClick="devPlan.Settings.decreasePage(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());"> -->
-								<!-- 											<i class="fa fa-fw fa-chevron-left"></i> -->
-								<!-- 										</button> -->
-								<!-- 										<button -->
-								<!-- 											class="btn btn-primary devPlanTimetablePeriodNavigation" -->
-								<!-- 											type="button" -->
-								<!-- 											onClick="devPlan.Settings.increasePage(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());"> -->
-								<!-- 											<i class="fa fa-fw fa-chevron-right"></i> -->
-								<!-- 										</button> -->
-								<!-- 									</div> -->
-								<!-- 									devPlanTimetablePeriodNavigation stop -->
-
-								<!-- 								</div> -->
+								</div>
 							</div>
 						</div>
 					</div>
@@ -158,7 +153,6 @@
 				<div class="tab-content">
 					<div class="tab-pane active" id="devPlanSettingsGeneral">
 						<div class="modal-body">
-
 							<p>
 								Skopiuj devPlan lub go
 								<button type="button" class="btn btn-link" data-toggle="modal"
@@ -245,7 +239,7 @@
 								</div>
 								<legend>Ilość wyświetlanych dni</legend>
 								<div class="radio">
-									<label> <input type="radio" value="3"
+									<label> <input type="radio" value=3
 										name="devPlanSettingsTimetablePeriod"
 										class="devPlanSettingsTimetablePeriod"
 										onClick="devPlan.Settings.setTimetablePeriod(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
@@ -253,7 +247,7 @@
 									</label>
 								</div>
 								<div class="radio">
-									<label> <input type="radio" value="7"
+									<label> <input type="radio" value=7
 										name="devPlanSettingsTimetablePeriod"
 										class="devPlanSettingsTimetablePeriod"
 										onClick="devPlan.Settings.setTimetablePeriod(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
@@ -261,7 +255,7 @@
 									</label>
 								</div>
 								<div class="radio">
-									<label> <input type="radio" value="14"
+									<label> <input type="radio" value=14
 										name="devPlanSettingsTimetablePeriod"
 										class="devPlanSettingsTimetablePeriod"
 										onClick="devPlan.Settings.setTimetablePeriod(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
@@ -269,7 +263,7 @@
 									</label>
 								</div>
 								<div class="radio">
-									<label> <input type="radio" value="0"
+									<label> <input type="radio" value=0
 										name="devPlanSettingsTimetablePeriod"
 										class="devPlanSettingsTimetablePeriod"
 										onClick="devPlan.Settings.setTimetablePeriod(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
@@ -456,15 +450,12 @@
 			</div>
 		</div>
 	</footer>
-	<script
-		src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<script src="assets/js/jquery.min.js"></script>
 	<script src="assets/js/jquery.cookie.js"></script>
-	<script
-		src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+	<script src="assets/js/bootstrap.min.js"></script>
 	<script src="assets/js/bootstrap3-typeahead.min.js"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2.js"></script>
-	<script
-		src="//cdnjs.cloudflare.com/ajax/libs/jStorage/0.4.4/jstorage.min.js"></script>
+	<script src="assets/js/json2.js"></script>
+	<script src="assets/js/jstorage.min.js"></script>
 	<script src="assets/js/jquery.qrcode.min.js"></script>
 	<script src="assets/js/jquery-ajax-localstorage-cache.min.js"></script>
 	<script src="assets/js/devPlan.js"></script>

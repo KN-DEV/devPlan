@@ -877,7 +877,6 @@ var devPlan;
         Settings.setActivityNote = function (status) {
             if (typeof status === "undefined") { status = false; }
             Settings.activityNote = status;
-
             if (Settings.getActivityNote()) {
                 $(".devPlanSettingsActivityNote").attr("checked", "checked");
             }

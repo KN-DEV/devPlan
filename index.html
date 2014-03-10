@@ -17,6 +17,14 @@
 	rel='stylesheet' type='text/css'>
 <link href="assets/css/landing-page.css" rel="stylesheet">
 <link href="assets/css/custom.css" rel="stylesheet">
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/jquery.cookie.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+<script src="assets/js/bootstrap3-typeahead.min.js"></script>
+<script src="assets/js/json2.js"></script>
+<script src="assets/js/jstorage.min.js"></script>
+<script src="assets/js/jquery.qrcode.min.js"></script>
+<script src="assets/js/jquery-ajax-localstorage-cache.min.js"></script>
 </head>
 <body>
 	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -228,7 +236,6 @@
 				<div class="tab-content">
 					<div class="tab-pane active" id="devPlanSettingsGeneral">
 						<div class="modal-body">
-
 							<p>
 								Skopiuj devPlan lub go
 								<button type="button" class="btn btn-link" data-toggle="modal"
@@ -254,7 +261,7 @@
 							<div class="form-group">
 								<div class="checkbox">
 									<label><input type="checkbox"
-										class="devPlanSettingsTimetableRedirectrect"
+										class="devPlanSettingsTimetableRedirect"
 										onClick="devPlan.Settings.setTimetableRedirect(!devPlan.Settings.getTimetableRedirect()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
 										Automatycznie przekierowywuj do devPlan</label>
 								</div>
@@ -315,7 +322,7 @@
 								</div>
 								<legend>Ilość wyświetlanych dni</legend>
 								<div class="radio">
-									<label> <input type="radio" value="3"
+									<label> <input type="radio" value=3
 										name="devPlanSettingsTimetablePeriod"
 										class="devPlanSettingsTimetablePeriod"
 										onClick="devPlan.Settings.setTimetablePeriod(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
@@ -323,7 +330,7 @@
 									</label>
 								</div>
 								<div class="radio">
-									<label> <input type="radio" value="7"
+									<label> <input type="radio" value=7
 										name="devPlanSettingsTimetablePeriod"
 										class="devPlanSettingsTimetablePeriod"
 										onClick="devPlan.Settings.setTimetablePeriod(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
@@ -331,7 +338,7 @@
 									</label>
 								</div>
 								<div class="radio">
-									<label> <input type="radio" value="14"
+									<label> <input type="radio" value=14
 										name="devPlanSettingsTimetablePeriod"
 										class="devPlanSettingsTimetablePeriod"
 										onClick="devPlan.Settings.setTimetablePeriod(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
@@ -339,7 +346,7 @@
 									</label>
 								</div>
 								<div class="radio">
-									<label> <input type="radio" value="0"
+									<label> <input type="radio" value=0
 										name="devPlanSettingsTimetablePeriod"
 										class="devPlanSettingsTimetablePeriod"
 										onClick="devPlan.Settings.setTimetablePeriod(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
@@ -505,9 +512,6 @@
 		</div>
 	</div>
 	<!-- issue stop -->
-
-
-
 	<footer class="hidden-print">
 		<div class="container">
 			<div class="row">
@@ -529,14 +533,7 @@
 			</div>
 		</div>
 	</footer>
-	<script src="assets/js/jquery.min.js"></script>
-	<script src="assets/js/jquery.cookie.js"></script>
-	<script src="assets/js/bootstrap.min.js"></script>
-	<script src="assets/js/bootstrap3-typeahead.min.js"></script>
-	<script src="assets/js/json2.js"></script>
-	<script src="assets/js/jstorage.min.js"></script>
-	<script src="assets/js/jquery.qrcode.min.js"></script>
-	<script src="assets/js/jquery-ajax-localstorage-cache.min.js"></script>
+
 	<script src="assets/js/devPlan.js"></script>
 	<script type="text/javascript">
 		new devPlan.Init();

@@ -1,153 +1,3 @@
-var devPlan;
-(function (devPlan) {
-    function bindAnimation() {
-        $('li.date').find('a').on("click", function () {
-            $(this).parent().find('i.fa-chevron-up').toggleClass('animate-down');
-        });
-    }
-    devPlan.bindAnimation = bindAnimation;
-})(devPlan || (devPlan = {}));
-var devPlan;
-(function (devPlan) {
-    var Generate = (function () {
-        function Generate() {
-        }
-        Generate.dateInformation = function (activity) {
-            var date = new Date(activity.getStartsAtTimestamp() * 1000);
-            return '<li class="list-group-item list-group-item-info date"    data-toggle="collapse" data-parent="#accordion" href="#' + activity.getDate() + '.activities"><p id="' + activity.getDate() + '" class="h4" >' + '<span>' + Generate.dayOfWeek[date.getDay()] + '</span> ' + '<span class="pull-right">' + date.getDate() + ' - ' + Generate.month[date.getMonth()] + ' - ' + date.getFullYear() + '' + '</span>' + '</p></li>';
-        };
-
-        Generate.nameInformation = function (activity) {
-            return '<span class="name">' + (activity.getName().length != 0 ? activity.getName() : '&nbsp;') + '</span>';
-        };
-
-        Generate.noteInformation = function (activity) {
-            return (activity.getNotes() != null) ? '<span class="note" title="Notatka dotycząca zajęć">Notatka: ' + activity.getNotes() + '</span>' : '';
-        };
-
-        Generate.bellInformation = function (activity) {
-            return '<span class="bell" title="Zajęcia rozpoczynają się o: ' + activity.getStartsAt() + ' i kończą o ' + activity.getEndsAt() + '">' + '<strong><i class="fa fa-fw fa-bell"></i>' + activity.getStartsAt() + " - " + activity.getEndsAt() + '</strong></span>';
-        };
-
-        Generate.categoryInformation = function (activity) {
-            var color = "";
-            switch (activity.getCategory()) {
-                case "wykład":
-                    color = "warning";
-                    break;
-                case "wykład do wyboru":
-                    color = "warning";
-                    break;
-                case "lektorat":
-                    color = "success";
-                    break;
-                case "ćwiczenia":
-                    color = "primary";
-                    break;
-                case "egzamin":
-                    color = "danger";
-                    break;
-                default:
-                    color = "danger";
-                    break;
-            }
-            return '<span class="label label-' + color + ' category" title="Typ zajęć">' + '<i class="fa fa-fw fa-tag"></i>' + activity.getCategory() + '</span>';
-        };
-
-        Generate.locationInformation = function (activity) {
-            if (activity.getPlace().getLocation().length > 0) {
-                return '<span class="location" title="Kliknij aby zobaczyć devPlan: ' + activity.getPlace().getLocation() + '"><i class="fa fa-fw fa-map-marker"></i>' + '<a href="timetable.html?timetable=p' + activity.getPlace().getId() + '">' + activity.getPlace().getLocation() + '</a>' + '</span>';
-            }
-            return '';
-        };
-
-        Generate.activityCounter = function (min, max) {
-            return '<span class="counter" title="Zajęcia z kolei: ' + min + '">Zajęcia z kolei: ' + min + '/' + max + '</span><wbr>';
-        };
-
-        Generate.hourInformation = function (value, have, all) {
-            return '<span class="hour" title="Ilość jednostek lekcyjnych:">' + 'Godziny lekcyjne od ' + ((have - value) + 1) + ' do ' + have + '(' + all + ')</span> ';
-        };
-
-        Generate.tutorInformation = function (activity) {
-            return '<span class="tutor"><small>' + (activity.getTutor().getMoodleUrl() != null ? '<a href="' + activity.getTutor().getMoodleUrl() + '" title=" ' + activity.getTutor().getName() + ' - Wizytówka E-Uczelna "><i class="fa fa-globe fa-fw"></i></a>' : "") + '<a href="timetable.html?timetable=t' + activity.getTutor().id + '" title="Kliknij aby zobaczyć devPlan: ' + activity.getTutor().getName() + '">' + activity.getTutor().getName() + '</a></small><span>';
-        };
-
-        Generate.devPlanParamButton = function (item, id, type) {
-            var color;
-            switch (type) {
-                case "g":
-                    color = "primary";
-                    break;
-                case "t":
-                    color = "success";
-                    break;
-                case "p":
-                    color = "info";
-                    break;
-                default:
-                    color = "default";
-                    break;
-            }
-            return '<div class="btn-group btn-group-sm devPlanParam">' + '<button title="' + item + '" class="btn btn-' + color + '" >' + '<strong>' + ((item.length > 50) ? item.substr(0, 50) + '...' : item) + '' + '</strong>' + '</button>' + '<button class="btn btn-danger"  data-value="' + id + '"' + ' data-type="' + type + '" onclick="devPlan.Settings.removeTimetableParam(this);">' + '<i class="fa fa-fw fa-trash-o"></i>' + '</button>' + '</div>';
-        };
-
-        Generate.groupList = function (groups) {
-            if (typeof groups === "undefined") { groups = []; }
-            var data = '';
-            for (var j = 0; j < groups.length; j++) {
-                if (groups[j] != null) {
-                    data = data + '<span class="group"><a href="timetable.html?timetable=g' + groups[j].getId() + '"title="Kliknij aby zobaczyć devPlan: ' + groups[j].getName() + '">' + groups[j].getName() + "</a></span>" + '<wbr>';
-                    if (j < (groups.length - 1)) {
-                        data = data + ' | ';
-                    }
-                }
-            }
-            return data;
-        };
-
-        Generate.generateActivity = function (timetable, activity, groups) {
-            if (typeof groups === "undefined") { groups = []; }
-            var data = '';
-            data = data + '<li id="activity' + activity.getId() + '" class="list-group-item activity ' + activity.getCategory().replace(/\s/gi, "-") + '">' + '<p class="h4">' + Generate.nameInformation(activity) + ((devPlan.Settings.getActivityTutor() == true) ? Generate.tutorInformation(activity) : '') + '</p>' + '<div class="clearfix"></div>' + ((devPlan.Settings.getActivityNote() == true) ? ('<p class="h5">' + Generate.noteInformation(activity) + '</p><div class="clearfix"></div>') : '');
-
-            if (devPlan.Settings.getActivityBell() || devPlan.Settings.getActivityLocation() || devPlan.Settings.getActivityCategory() || devPlan.Settings.getClassCounter() || devPlan.Settings.getClassHourCounter()) {
-                data = data + '<p class="h5">' + (devPlan.Settings.getActivityBell() ? Generate.bellInformation(activity) : '') + ' ' + (devPlan.Settings.getActivityLocation() ? Generate.locationInformation(activity) : '') + ' ' + (devPlan.Settings.getActivityCategory() ? Generate.categoryInformation(activity) : '') + ' ' + (devPlan.Settings.getClassCounter() ? Generate.activityCounter(timetable.getPositionOfActivity(activity), timetable.getMaxNumberOfOccurencesOfActivity(activity)) : '') + ' ' + (devPlan.Settings.getClassHourCounter() ? Generate.hourInformation(activity.getNumberOfSchoolLessons(), timetable.sumAllHoursOfActivity(activity), timetable.sumAllHoursOfActivity(activity, true)) : '') + ' ';
-                data = data + '</p><div class="clearfix"></div>';
-            }
-            if (devPlan.Settings.getActivityGroup()) {
-                data = data + '<p class="h6">' + Generate.groupList(groups) + '</p><div class="clearfix"></div>';
-            }
-            data = data + '</li>';
-            return data;
-        };
-        Generate.dayOfWeek = [
-            "Niedziela",
-            "Poniedziałek",
-            "Wtorek",
-            "Środa",
-            "Czwartek",
-            "Piątek",
-            "Sobota"
-        ];
-        Generate.month = [
-            "Styczeń",
-            "Luty",
-            "Marzec",
-            "Kwiecień",
-            "Maj",
-            "Czerwiec",
-            "Lipiec",
-            "Sierpień",
-            "Wrzesień",
-            "Październik",
-            "Listopad",
-            "Grudzień"
-        ];
-        return Generate;
-    })();
-    devPlan.Generate = Generate;
-})(devPlan || (devPlan = {}));
 var Cash;
 (function (Cash) {
     
@@ -962,8 +812,8 @@ var devPlan;
         Settings.setClassCounter = function (status) {
             if (typeof status === "undefined") { status = false; }
             Settings.classCounter = status;
-            if (Settings.getClassCounter()) {
-                $(".devPlanSettingsActivityClassCounter").attr("checked", "checked");
+            if (Settings.getClassCounter() == true) {
+                $("input.devPlanSettingsActivityClassCounter").attr("checked", "checked");
             }
             return Settings;
         };
@@ -975,8 +825,8 @@ var devPlan;
         Settings.setClassHourCounter = function (status) {
             if (typeof status === "undefined") { status = false; }
             Settings.classHourCounter = status;
-            if (Settings.getClassHourCounter()) {
-                $(".devPlanSettingsActivityClassHourCounter").attr("checked", "checked");
+            if (Settings.getClassHourCounter() == true) {
+                $("input.devPlanSettingsActivityClassHourCounter").attr("checked", "checked");
             }
             return Settings;
         };
@@ -988,8 +838,8 @@ var devPlan;
         Settings.setActivityCategory = function (status) {
             if (typeof status === "undefined") { status = false; }
             Settings.activityCategory = status;
-            if (Settings.getActivityCategory()) {
-                $(".devPlanSettingsActivityCategory").attr("checked", "checked");
+            if (Settings.getActivityCategory() == true) {
+                $("input.devPlanSettingsActivityCategory").attr("checked", "checked");
             }
             return Settings;
         };
@@ -1002,7 +852,7 @@ var devPlan;
             if (typeof status === "undefined") { status = false; }
             Settings.activityBell = status;
             if (Settings.getActivityBell()) {
-                $(".devPlanSettingsActivityBell").attr("checked", "checked");
+                $("input.devPlanSettingsActivityBell").attr("checked", "checked");
             }
             return Settings;
         };
@@ -1015,7 +865,7 @@ var devPlan;
             if (typeof status === "undefined") { status = false; }
             Settings.activityLocation = status;
             if (Settings.getActivityLocation()) {
-                $(".devPlanSettingsActivityLocation").attr("checked", "checked");
+                $("input.devPlanSettingsActivityLocation").attr("checked", "checked");
             }
             return Settings;
         };
@@ -1028,7 +878,7 @@ var devPlan;
             if (typeof status === "undefined") { status = false; }
             Settings.activityNote = status;
             if (Settings.getActivityNote()) {
-                $(".devPlanSettingsActivityNote").attr("checked", "checked");
+                $("input.devPlanSettingsActivityNote").attr("checked", "checked");
             }
             return Settings;
         };
@@ -1041,7 +891,7 @@ var devPlan;
             if (typeof status === "undefined") { status = false; }
             Settings.activityGroup = status;
             if (Settings.getActivityGroup()) {
-                $(".devPlanSettingsActivityGroup").attr("checked", "checked");
+                $("input.devPlanSettingsActivityGroup").attr("checked", "checked");
             }
             return Settings;
         };
@@ -1054,7 +904,7 @@ var devPlan;
             if (typeof status === "undefined") { status = false; }
             Settings.activityTutor = status;
             if (Settings.getActivityTutor()) {
-                $(".devPlanSettingsActivityTutor").attr("checked", "checked");
+                $("input.devPlanSettingsActivityTutor").attr("checked", "checked");
             }
             return Settings;
         };
@@ -1065,14 +915,14 @@ var devPlan;
         Settings.setTimetableType = function (status) {
             if (typeof status === "undefined") { status = 0; }
             Settings.timetableType = status;
-            $('.devPlanSettingsTimetableType[value=' + Settings.getTimetableType() + ']').attr("checked", "checked");
             if (Settings.getTimetableType() == 0) {
-                $(".devPlanSettingsTimetablePeriod").attr("disabled", "disabled");
-                $(".devPlanTimetablePeriodNavigation").attr("disabled", "disabled");
+                $("input.devPlanSettingsTimetablePeriod").attr("disabled", "disabled");
+                $("button.devPlanTimetablePeriodNavigation").attr("disabled", "disabled");
             } else {
-                $(".devPlanSettingsTimetablePeriod").removeAttr("disabled");
-                $(".devPlanTimetablePeriodNavigation").removeAttr("disabled");
+                $("input.devPlanSettingsTimetablePeriod").removeAttr("disabled");
+                $("button.devPlanTimetablePeriodNavigation").removeAttr("disabled");
             }
+            $('input.devPlanSettingsTimetableType[value=\"' + Settings.getTimetableType() + '\"]').attr("checked", "checked");
             return Settings;
         };
         Settings.getTimetablePeriod = function () {
@@ -1083,7 +933,7 @@ var devPlan;
             if (typeof status === "undefined") { status = 0; }
             Settings.timetablePeriod = status;
             Settings.setPage();
-            $('.devPlanSettingsTimetablePeriod[value=' + Settings.getTimetablePeriod() + ']').attr("checked", "checked");
+            $('input.devPlanSettingsTimetablePeriod[value=\"' + devPlan.Settings.getTimetablePeriod() + '\"]').attr("checked", "checked");
             return Settings;
         };
 
@@ -1095,7 +945,7 @@ var devPlan;
             if (typeof status === "undefined") { status = false; }
             Settings.timetableRedirect = status;
             if (Settings.getTimetableRedirect()) {
-                $(".devPlanSettingsTimetableRedirect").attr("checked", "checked");
+                $("input.devPlanSettingsTimetableRedirect").attr("checked", "checked");
             }
             return Settings;
         };
@@ -1117,13 +967,14 @@ var devPlan;
         Settings.setActivityNameFilter = function (status) {
             if (typeof status === "undefined") { status = ""; }
             Settings.activityNameFilter = status;
-            $('.devPlanSettingsActivityNameFilter').attr('value', Settings.getActivityNameFilter());
+            $('input.devPlanSettingsActivityNameFilter').attr('value', Settings.getActivityNameFilter());
             return Settings;
         };
 
         Settings.load = function () {
             $.cookie.json = true;
             var data = $.cookie('devPlan.Settings');
+            console.log(data);
             if (data) {
                 Settings.setClassCounter(data.classCounter);
                 Settings.setClassHourCounter(data.classHourCounter);
@@ -1137,6 +988,7 @@ var devPlan;
                 Settings.setTimetablePeriod(data.timetablePeriod);
                 Settings.setTimetableRedirect(data.timetableRedirect);
             }
+
             var data = $.cookie('devPlan.Params');
             if (data) {
                 Settings.setTimetableParams(new Cash.Params(data.group_id, data.tutor_id, data.place_id));
@@ -1293,6 +1145,156 @@ var devPlan;
     })();
     devPlan.Settings = Settings;
 })(devPlan || (devPlan = {}));
+var devPlan;
+(function (devPlan) {
+    var Generate = (function () {
+        function Generate() {
+        }
+        Generate.dateInformation = function (activity) {
+            var date = new Date(activity.getStartsAtTimestamp() * 1000);
+            return '<li class="list-group-item list-group-item-info date"    data-toggle="collapse" data-parent="#accordion" href="#' + activity.getDate() + '.activities"><p id="' + activity.getDate() + '" class="h4" >' + '<span>' + Generate.dayOfWeek[date.getDay()] + '</span> ' + '<span class="pull-right">' + date.getDate() + ' - ' + Generate.month[date.getMonth()] + ' - ' + date.getFullYear() + '' + '</span>' + '</p></li>';
+        };
+
+        Generate.nameInformation = function (activity) {
+            return '<span class="name">' + (activity.getName().length != 0 ? activity.getName() : '&nbsp;') + '</span>';
+        };
+
+        Generate.noteInformation = function (activity) {
+            return (activity.getNotes() != null) ? '<span class="note" title="Notatka dotycząca zajęć">Notatka: ' + activity.getNotes() + '</span>' : '';
+        };
+
+        Generate.bellInformation = function (activity) {
+            return '<span class="bell" title="Zajęcia rozpoczynają się o: ' + activity.getStartsAt() + ' i kończą o ' + activity.getEndsAt() + '">' + '<strong><i class="fa fa-fw fa-bell"></i>' + activity.getStartsAt() + " - " + activity.getEndsAt() + '</strong></span>';
+        };
+
+        Generate.categoryInformation = function (activity) {
+            var color = "";
+            switch (activity.getCategory()) {
+                case "wykład":
+                    color = "warning";
+                    break;
+                case "wykład do wyboru":
+                    color = "warning";
+                    break;
+                case "lektorat":
+                    color = "success";
+                    break;
+                case "ćwiczenia":
+                    color = "primary";
+                    break;
+                case "egzamin":
+                    color = "danger";
+                    break;
+                default:
+                    color = "danger";
+                    break;
+            }
+            return '<span class="label label-' + color + ' category" title="Typ zajęć">' + '<i class="fa fa-fw fa-tag"></i>' + activity.getCategory() + '</span>';
+        };
+
+        Generate.locationInformation = function (activity) {
+            if (activity.getPlace().getLocation().length > 0) {
+                return '<span class="location" title="Kliknij aby zobaczyć devPlan: ' + activity.getPlace().getLocation() + '"><i class="fa fa-fw fa-map-marker"></i>' + '<a href="timetable.html?timetable=p' + activity.getPlace().getId() + '">' + activity.getPlace().getLocation() + '</a>' + '</span>';
+            }
+            return '';
+        };
+
+        Generate.activityCounter = function (min, max) {
+            return '<span class="counter" title="Zajęcia z kolei: ' + min + '">Zajęcia z kolei: ' + min + '/' + max + '</span><wbr>';
+        };
+
+        Generate.hourInformation = function (value, have, all) {
+            return '<span class="hour" title="Ilość jednostek lekcyjnych:">' + 'Godziny lekcyjne od ' + ((have - value) + 1) + ' do ' + have + '(' + all + ')</span> ';
+        };
+
+        Generate.tutorInformation = function (activity) {
+            return '<span class="tutor"><small>' + (activity.getTutor().getMoodleUrl() != null ? '<a href="' + activity.getTutor().getMoodleUrl() + '" title=" ' + activity.getTutor().getName() + ' - Wizytówka E-Uczelna "><i class="fa fa-globe fa-fw"></i></a>' : "") + '<a href="timetable.html?timetable=t' + activity.getTutor().id + '" title="Kliknij aby zobaczyć devPlan: ' + activity.getTutor().getName() + '">' + activity.getTutor().getName() + '</a></small><span>';
+        };
+
+        Generate.devPlanParamButton = function (item, id, type) {
+            var color;
+            switch (type) {
+                case "g":
+                    color = "primary";
+                    break;
+                case "t":
+                    color = "success";
+                    break;
+                case "p":
+                    color = "info";
+                    break;
+                default:
+                    color = "default";
+                    break;
+            }
+            return '<div class="btn-group btn-group-sm devPlanParam">' + '<button title="' + item + '" class="btn btn-' + color + '" >' + '<strong>' + ((item.length > 50) ? item.substr(0, 50) + '...' : item) + '' + '</strong>' + '</button>' + '<button class="btn btn-danger"  data-value="' + id + '"' + ' data-type="' + type + '" onclick="devPlan.Settings.removeTimetableParam(this);">' + '<i class="fa fa-fw fa-trash-o"></i>' + '</button>' + '</div>';
+        };
+
+        Generate.groupList = function (groups) {
+            if (typeof groups === "undefined") { groups = []; }
+            var data = '';
+            for (var j = 0; j < groups.length; j++) {
+                if (groups[j] != null) {
+                    data = data + '<span class="group"><a href="timetable.html?timetable=g' + groups[j].getId() + '"title="Kliknij aby zobaczyć devPlan: ' + groups[j].getName() + '">' + groups[j].getName() + "</a></span>" + '<wbr>';
+                    if (j < (groups.length - 1)) {
+                        data = data + ' | ';
+                    }
+                }
+            }
+            return data;
+        };
+
+        Generate.generateActivity = function (timetable, activity, groups) {
+            if (typeof groups === "undefined") { groups = []; }
+            var data = '';
+            data = data + '<li id="activity' + activity.getId() + '" class="list-group-item activity ' + activity.getCategory().replace(/\s/gi, "-") + '">' + '<p class="h4">' + Generate.nameInformation(activity) + ((devPlan.Settings.getActivityTutor() == true) ? Generate.tutorInformation(activity) : '') + '</p>' + '<div class="clearfix"></div>' + ((devPlan.Settings.getActivityNote() == true) ? ('<p class="h5">' + Generate.noteInformation(activity) + '</p><div class="clearfix"></div>') : '');
+
+            if (devPlan.Settings.getActivityBell() || devPlan.Settings.getActivityLocation() || devPlan.Settings.getActivityCategory() || devPlan.Settings.getClassCounter() || devPlan.Settings.getClassHourCounter()) {
+                data = data + '<p class="h5">' + (devPlan.Settings.getActivityBell() ? Generate.bellInformation(activity) : '') + ' ' + (devPlan.Settings.getActivityLocation() ? Generate.locationInformation(activity) : '') + ' ' + (devPlan.Settings.getActivityCategory() ? Generate.categoryInformation(activity) : '') + ' ' + (devPlan.Settings.getClassCounter() ? Generate.activityCounter(timetable.getPositionOfActivity(activity), timetable.getMaxNumberOfOccurencesOfActivity(activity)) : '') + ' ' + (devPlan.Settings.getClassHourCounter() ? Generate.hourInformation(activity.getNumberOfSchoolLessons(), timetable.sumAllHoursOfActivity(activity), timetable.sumAllHoursOfActivity(activity, true)) : '') + ' ';
+                data = data + '</p><div class="clearfix"></div>';
+            }
+            if (devPlan.Settings.getActivityGroup()) {
+                data = data + '<p class="h6">' + Generate.groupList(groups) + '</p><div class="clearfix"></div>';
+            }
+            data = data + '</li>';
+            return data;
+        };
+        Generate.dayOfWeek = [
+            "Niedziela",
+            "Poniedziałek",
+            "Wtorek",
+            "Środa",
+            "Czwartek",
+            "Piątek",
+            "Sobota"
+        ];
+        Generate.month = [
+            "Styczeń",
+            "Luty",
+            "Marzec",
+            "Kwiecień",
+            "Maj",
+            "Czerwiec",
+            "Lipiec",
+            "Sierpień",
+            "Wrzesień",
+            "Październik",
+            "Listopad",
+            "Grudzień"
+        ];
+        return Generate;
+    })();
+    devPlan.Generate = Generate;
+})(devPlan || (devPlan = {}));
+var devPlan;
+(function (devPlan) {
+    function bindAnimation() {
+        $('li.date').find('a').on("click", function () {
+            $(this).parent().find('i.fa-chevron-up').toggleClass('animate-down');
+        });
+    }
+    devPlan.bindAnimation = bindAnimation;
+})(devPlan || (devPlan = {}));
 if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
     var msViewportStyle = document.createElement("style");
     msViewportStyle.appendChild(document.createTextNode("@-ms-viewport{width:auto!important}"));
@@ -1320,7 +1322,7 @@ var devPlan;
                 params = devPlan.Settings.getTimetableParams();
             }
 
-            if (devPlan.Settings.getTimetableRedirect() && !params.isEmpty() && (window.location.href.indexOf("index.html") == -1 && window.location.href.indexOf("timetable.html") == -1)) {
+            if (devPlan.Settings.getTimetableRedirect() && !params.isEmpty() && (window.location.href.indexOf("timetable.html") == -1)) {
                 window.location.replace('timetable.html?timetable=' + params.toString());
             }
 
@@ -1659,3 +1661,4 @@ function sendIssue() {
         }
     });
 }
+//# sourceMappingURL=devPlan.js.map

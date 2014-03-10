@@ -71,9 +71,9 @@ module devPlan {
              */
             if (
                 //czy jest właczone przekierowywanie
-                Settings.getTimetableRedirect() && !params.isEmpty() &&
-                (window.location.href.indexOf("index.html") == -1 &&
-                window.location.href.indexOf("timetable.html") == -1)) {
+                Settings.getTimetableRedirect() &&
+                !params.isEmpty() &&
+                (window.location.href.indexOf("timetable.html") == -1)) {
                 window.location.replace('timetable.html?timetable=' + params.toString());
             }
             /**

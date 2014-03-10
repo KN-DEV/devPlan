@@ -107,8 +107,8 @@ module devPlan {
          */
         static setClassCounter(status: boolean = false): Settings {
             Settings.classCounter = status;
-            if (Settings.getClassCounter()) {
-                $(".devPlanSettingsActivityClassCounter").attr("checked", "checked");
+            if (Settings.getClassCounter() == true) {
+                $("input.devPlanSettingsActivityClassCounter").attr("checked", "checked");
             }
             return Settings;
         }
@@ -123,8 +123,8 @@ module devPlan {
          */
         static setClassHourCounter(status: boolean = false): Settings {
             Settings.classHourCounter = status;
-            if (Settings.getClassHourCounter()) {
-                $(".devPlanSettingsActivityClassHourCounter").attr("checked", "checked");
+            if (Settings.getClassHourCounter() == true) {
+                $("input.devPlanSettingsActivityClassHourCounter").attr("checked", "checked");
             }
             return Settings;
         }
@@ -139,8 +139,8 @@ module devPlan {
          */
         static setActivityCategory(status: boolean = false): Settings {
             Settings.activityCategory = status;
-            if (Settings.getActivityCategory()) {
-                $(".devPlanSettingsActivityCategory").attr("checked", "checked");
+            if (Settings.getActivityCategory() == true) {
+                $("input.devPlanSettingsActivityCategory").attr("checked", "checked");
             }
             return Settings;
         }
@@ -156,7 +156,7 @@ module devPlan {
         static setActivityBell(status: boolean = false): Settings {
             Settings.activityBell = status;
             if (Settings.getActivityBell()) {
-                $(".devPlanSettingsActivityBell").attr("checked", "checked");
+                $("input.devPlanSettingsActivityBell").attr("checked", "checked");
             }
             return Settings;
         }
@@ -172,7 +172,7 @@ module devPlan {
         static setActivityLocation(status: boolean = false): Settings {
             Settings.activityLocation = status;
             if (Settings.getActivityLocation()) {
-                $(".devPlanSettingsActivityLocation").attr("checked", "checked");
+                $("input.devPlanSettingsActivityLocation").attr("checked", "checked");
             }
             return Settings;
         }
@@ -188,7 +188,7 @@ module devPlan {
         static setActivityNote(status: boolean = false): Settings {
             Settings.activityNote = status;
             if (Settings.getActivityNote()) {
-                $(".devPlanSettingsActivityNote").attr("checked", "checked");
+                $("input.devPlanSettingsActivityNote").attr("checked", "checked");
             }
             return Settings;
         }
@@ -204,7 +204,7 @@ module devPlan {
         static setActivityGroup(status: boolean = false): Settings {
             Settings.activityGroup = status;
             if (Settings.getActivityGroup()) {
-                $(".devPlanSettingsActivityGroup").attr("checked", "checked");
+                $("input.devPlanSettingsActivityGroup").attr("checked", "checked");
             }
             return Settings;
         }
@@ -220,7 +220,7 @@ module devPlan {
         static setActivityTutor(status: boolean = false): Settings {
             Settings.activityTutor = status;
             if (Settings.getActivityTutor()) {
-                $(".devPlanSettingsActivityTutor").attr("checked", "checked");
+                $("input.devPlanSettingsActivityTutor").attr("checked", "checked");
             }
             return Settings;
         }
@@ -232,14 +232,19 @@ module devPlan {
          */
         static setTimetableType(status: number = 0): Settings {
             Settings.timetableType = status;
-            $('.devPlanSettingsTimetableType[value=' + Settings.getTimetableType() + ']').attr("checked", "checked");
             if (Settings.getTimetableType() == 0) {
-                $(".devPlanSettingsTimetablePeriod").attr("disabled", "disabled");
-                $(".devPlanTimetablePeriodNavigation").attr("disabled", "disabled");
+                $("input.devPlanSettingsTimetablePeriod")
+                    .attr("disabled", "disabled");
+                $("button.devPlanTimetablePeriodNavigation")
+                    .attr("disabled", "disabled");
             } else {
-                $(".devPlanSettingsTimetablePeriod").removeAttr("disabled");
-                $(".devPlanTimetablePeriodNavigation").removeAttr("disabled");
+                $("input.devPlanSettingsTimetablePeriod")
+                    .removeAttr("disabled");
+                $("button.devPlanTimetablePeriodNavigation")
+                    .removeAttr("disabled");
             }
+            $('input.devPlanSettingsTimetableType[value=\"' + Settings.getTimetableType() + '\"]')
+                .attr("checked", "checked");
             return Settings;
 
         }
@@ -258,7 +263,7 @@ module devPlan {
         static setTimetablePeriod(status: number = 0): Settings {
             Settings.timetablePeriod = status;
             Settings.setPage();
-            $('.devPlanSettingsTimetablePeriod[value=' + Settings.getTimetablePeriod() + ']').attr("checked", "checked");
+            $('input.devPlanSettingsTimetablePeriod[value=\"' + devPlan.Settings.getTimetablePeriod() + '\"]').attr("checked", "checked");
             return Settings;
         }
         /**
@@ -273,7 +278,7 @@ module devPlan {
         static setTimetableRedirect(status: boolean = false): Settings {
             Settings.timetableRedirect = status;
             if (Settings.getTimetableRedirect()) {
-                $(".devPlanSettingsTimetableRedirect").attr("checked", "checked");
+                $("input.devPlanSettingsTimetableRedirect").attr("checked", "checked");
             }
             return Settings;
         }
@@ -301,7 +306,7 @@ module devPlan {
          */
         static setActivityNameFilter(status: string = ""): Settings {
             Settings.activityNameFilter = status;
-            $('.devPlanSettingsActivityNameFilter').attr('value', Settings.getActivityNameFilter());
+            $('input.devPlanSettingsActivityNameFilter').attr('value', Settings.getActivityNameFilter());
             return Settings;
         }
         /**
@@ -310,6 +315,7 @@ module devPlan {
         static load(): Settings {
             $.cookie.json = true;
             var data: any = $.cookie('devPlan.Settings');
+            console.log(data);
             if (data) {
                 Settings.setClassCounter(data.classCounter);
                 Settings.setClassHourCounter(data.classHourCounter);
@@ -323,6 +329,7 @@ module devPlan {
                 Settings.setTimetablePeriod(data.timetablePeriod);
                 Settings.setTimetableRedirect(data.timetableRedirect);
             }
+            
             var data: any = $.cookie('devPlan.Params');
             if (data) {
                 Settings.setTimetableParams(new Cash.Params(data.group_id, data.tutor_id, data.place_id));

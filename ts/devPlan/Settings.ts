@@ -244,7 +244,13 @@ module devPlan {
 
         }
         static getTimetablePeriod(): number {
-            return Settings.timetablePeriod;
+            // return parseInt(Settings.timetablePeriod);
+            //
+            // unary + operator acts like parseInt function
+            // +a is practically the same as doing a * 1,
+            // but it converts value to number if needed
+            // var period: number = +Settings.timetablePeriod;
+            return +Settings.timetablePeriod;
         }
         /**
          *

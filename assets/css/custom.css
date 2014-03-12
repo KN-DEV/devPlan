@@ -151,6 +151,6 @@ button.devPlanParam {
 	}
 }
 
-.btn-group {
+.devPlanParams > .btn-group {
 	margin-bottom: 5px;
 }

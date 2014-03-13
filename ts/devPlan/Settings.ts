@@ -329,7 +329,7 @@ module devPlan {
                 Settings.setTimetablePeriod(data.timetablePeriod);
                 Settings.setTimetableRedirect(data.timetableRedirect);
             }
-            
+
             var data: any = $.cookie('devPlan.Params');
             if (data) {
                 Settings.setTimetableParams(new Cash.Params(data.group_id, data.tutor_id, data.place_id));
@@ -400,12 +400,12 @@ module devPlan {
             var result = new RegExp(key + "=([^&]*)", "i").exec(window.location.search.replace(/\+/g, " "));
             return result && decodeURIComponent(result[1]) || "";
         }
+
+
         /**
-         *
+         * Transform to mysql datestamp
          */
-        static getCurrentDate(daysToAdd: number = 0): string {
-            var date = new Date();
-            date.setDate(date.getDate() + daysToAdd);
+        static transformDateToDateStamp(date: Date = new Date()) {
             var month: string = "";
             if (date.getMonth() <= 9) {
                 month = '0' + (date.getMonth() + 1);
@@ -419,6 +419,14 @@ module devPlan {
                 day = date.getDate().toString();
             };
             return date.getFullYear() + '-' + month + '-' + day;
+        }
+        /**
+         *
+         */
+        static getCurrentDate(daysToAdd: number = 0): string {
+            var date = new Date();
+            date.setDate(date.getDate() + daysToAdd);
+            return Settings.transformDateToDateStamp(date);
         }
         /**
          * 

@@ -375,8 +375,15 @@ module Cash {
             var items: string[] = query.toString().toLowerCase().split(" ");
             var item: string = "";
             var values: boolean[] = [];
+            var date: Date = new Date((this.getStartsAtTimestamp() * 1000));
             for (var i = 0; i < items.length; i++) {
                 item = items[i];
+                console.log(date.getFullYear(),
+                    devPlan.Generate.month[(date.getMonth() + 1)],
+                    devPlan.Generate.dayOfWeek[date.getDay()],
+                    devPlan.Settings.transformDateToTimeStamp(date)
+                    );
+
                 if (
                     (this.getName().toLowerCase().indexOf(item) > -1) ||
                     (this.getTutor().getName().toLowerCase().indexOf(item) > -1) ||
@@ -385,6 +392,13 @@ module Cash {
                     (this.getStartsAt().toLowerCase().indexOf(item) > -1) ||
                     (this.getEndsAt().toLowerCase().indexOf(item) > -1) ||
                     (this.getPlace().getLocation().toLowerCase().indexOf(item) > -1) ||
+                    //
+                    (date.getFullYear().toString().toLowerCase().indexOf(item) > -1) ||
+                    (devPlan.Settings.transformDateToDateStamp(date).toLowerCase().indexOf(item) > -1) ||
+                    (devPlan.Generate.month[date.getMonth()].toLowerCase().indexOf(item) > -1) ||
+                    (devPlan.Generate.dayOfWeek[date.getDay()].toLowerCase().indexOf(item) > -1) ||
+                    (date.getDate().toString().toLowerCase().indexOf(item) > -1) ||
+
                     (containsIndexGroups(indexgroup, item))) {
                     //
                     values.push(true);

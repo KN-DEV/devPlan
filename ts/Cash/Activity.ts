@@ -138,11 +138,6 @@ module Cash {
             "15:40", "16:25", "16:30", "17:15", "17:20", "18:05",
             "18:10", "18:55", "19:00", "19:45", "19:50", "20:35",
         ];
-
-
-
-
-
         /**
          * 
          */
@@ -378,14 +373,7 @@ module Cash {
             var date: Date = new Date((this.getStartsAtTimestamp() * 1000));
             for (var i = 0; i < items.length; i++) {
                 item = items[i];
-                console.log(date.getFullYear(),
-                    devPlan.Generate.month[(date.getMonth() + 1)],
-                    devPlan.Generate.dayOfWeek[date.getDay()],
-                    devPlan.Settings.transformDateToTimeStamp(date)
-                    );
-
-                if (
-                    (this.getName().toLowerCase().indexOf(item) > -1) ||
+                if ((this.getName().toLowerCase().indexOf(item) > -1) ||
                     (this.getTutor().getName().toLowerCase().indexOf(item) > -1) ||
                     (this.getNotes().toLowerCase().indexOf(item) > -1) ||
                     (this.getCategory().toLowerCase().indexOf(item) > -1) ||

@@ -25,10 +25,13 @@ module devPlan {
         Place= 6,
         Timetable= 6
     }
+
     /**
      * 
      */
     export class Init {
+
+        public static placesInUse: boolean = false;
         /**
          * Keeps list of groups from Cash service
          */
@@ -117,9 +120,11 @@ module devPlan {
 
             }
 
-            $.when(Cash.Api.getGroupsList(true, CacheTime.Group),
+            $.when(
+                Cash.Api.getGroupsList(true, CacheTime.Group),
                 Cash.Api.getTutorsList(true, CacheTime.Tutor),
-                Cash.Api.getPlacesList(true, CacheTime.Place))
+                (devPlan.Init.placesInUse == true ? Cash.Api.getPlacesList(true, CacheTime.Place) : null)
+                )
                 .done((groups: any, tutors: any, places: any) => {
 
 
@@ -130,7 +135,11 @@ module devPlan {
                         .removeAttr('disabled')
                         .attr('data-provide', "typeahead")
                         .typeahead({
-                            source: Init.typeaheadDataCreator(Init.getGroups(), Init.getTutors(), Init.getPlaces()),
+                            source: Init.typeaheadDataCreator(
+                                Init.getGroups(),
+                                Init.getTutors(),
+                                devPlan.Init.placesInUse == true ? Init.getPlaces() : []
+                                ),
                             items: 15,
                             updater: (item: any) => {
                                 var group: number = Init.searchGroupId(item);
@@ -142,7 +151,8 @@ module devPlan {
                                 if (group == 0 && tutor > 0 && place == 0) {
                                     window.location.replace('timetable.html?timetable=t' + tutor);
                                 }
-                                if (group == 0 && tutor == 0 && place > 0) {
+
+                                if (devPlan.Init.placesInUse == true && group == 0 && tutor == 0 && place > 0) {
                                     window.location.replace('timetable.html?timetable=p' + place);
                                 }
                             }
@@ -155,7 +165,11 @@ module devPlan {
                         $('#' + index + '.devPlanTypeahead').removeAttr('disabled')
                             .attr('data-provide', "typeahead");
                         $('#' + index + '.devPlanTypeahead').typeahead({
-                            source: Init.typeaheadDataCreator(Init.getGroups(), Init.getTutors(), Init.getPlaces()),
+                            source: Init.typeaheadDataCreator(
+                                Init.getGroups(),
+                                Init.getTutors(),
+                                devPlan.Init.placesInUse == true ? Init.getPlaces() : []
+                                ),
                             items: 15,
                             updater: (item: any) => {
                                 Settings.addTimetableParam(item);
@@ -190,7 +204,7 @@ module devPlan {
                                 if (group == 0 && tutor > 0 && place == 0) {
                                     window.location.replace('timetable.html?timetable=t' + tutor);
                                 }
-                                if (group == 0 && tutor == 0 && place > 0) {
+                                if (devPlan.Init.placesInUse == true && group == 0 && tutor == 0 && place > 0) {
                                     window.location.replace('timetable.html?timetable=p' + place);
                                 }
                             }

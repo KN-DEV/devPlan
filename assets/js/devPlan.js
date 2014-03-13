@@ -278,9 +278,10 @@ var Cash;
             var items = query.toString().toLowerCase().split(" ");
             var item = "";
             var values = [];
+            var date = new Date((this.getStartsAtTimestamp() * 1000));
             for (var i = 0; i < items.length; i++) {
                 item = items[i];
-                if ((this.getName().toLowerCase().indexOf(item) > -1) || (this.getTutor().getName().toLowerCase().indexOf(item) > -1) || (this.getNotes().toLowerCase().indexOf(item) > -1) || (this.getCategory().toLowerCase().indexOf(item) > -1) || (this.getStartsAt().toLowerCase().indexOf(item) > -1) || (this.getEndsAt().toLowerCase().indexOf(item) > -1) || (this.getPlace().getLocation().toLowerCase().indexOf(item) > -1) || (containsIndexGroups(indexgroup, item))) {
+                if ((this.getName().toLowerCase().indexOf(item) > -1) || (this.getTutor().getName().toLowerCase().indexOf(item) > -1) || (this.getNotes().toLowerCase().indexOf(item) > -1) || (this.getCategory().toLowerCase().indexOf(item) > -1) || (this.getStartsAt().toLowerCase().indexOf(item) > -1) || (this.getEndsAt().toLowerCase().indexOf(item) > -1) || (this.getPlace().getLocation().toLowerCase().indexOf(item) > -1) || (date.getFullYear().toString().toLowerCase().indexOf(item) > -1) || (devPlan.Settings.transformDateToDateStamp(date).toLowerCase().indexOf(item) > -1) || (devPlan.Generate.month[date.getMonth()].toLowerCase().indexOf(item) > -1) || (devPlan.Generate.dayOfWeek[date.getDay()].toLowerCase().indexOf(item) > -1) || (date.getDate().toString().toLowerCase().indexOf(item) > -1) || (containsIndexGroups(indexgroup, item))) {
                     values.push(true);
                 } else {
                     values.push(false);
@@ -1051,10 +1052,8 @@ var devPlan;
             return result && decodeURIComponent(result[1]) || "";
         };
 
-        Settings.getCurrentDate = function (daysToAdd) {
-            if (typeof daysToAdd === "undefined") { daysToAdd = 0; }
-            var date = new Date();
-            date.setDate(date.getDate() + daysToAdd);
+        Settings.transformDateToDateStamp = function (date) {
+            if (typeof date === "undefined") { date = new Date(); }
             var month = "";
             if (date.getMonth() <= 9) {
                 month = '0' + (date.getMonth() + 1);
@@ -1070,6 +1069,13 @@ var devPlan;
             }
             ;
             return date.getFullYear() + '-' + month + '-' + day;
+        };
+
+        Settings.getCurrentDate = function (daysToAdd) {
+            if (typeof daysToAdd === "undefined") { daysToAdd = 0; }
+            var date = new Date();
+            date.setDate(date.getDate() + daysToAdd);
+            return Settings.transformDateToDateStamp(date);
         };
 
         Settings.addTimetableParam = function (item) {
@@ -1194,7 +1200,10 @@ var devPlan;
 
         Generate.locationInformation = function (activity) {
             if (activity.getPlace().getLocation().length > 0) {
-                return '<span class="location" title="Kliknij aby zobaczyć devPlan: ' + activity.getPlace().getLocation() + '"><i class="fa fa-fw fa-map-marker"></i>' + '<a href="timetable.html?timetable=p' + activity.getPlace().getId() + '">' + activity.getPlace().getLocation() + '</a>' + '</span>';
+                if (devPlan.Init.placesInUse == true) {
+                    return '<span class="location" title="Kliknij aby zobaczyć devPlan ' + activity.getPlace().getLocation() + '"><i class="fa fa-fw fa-map-marker"></i>' + '<a href="timetable.html?timetable=p' + activity.getPlace().getId() + '">' + activity.getPlace().getLocation() + '</a>' + '</span>';
+                }
+                return '<span class="location" title="Sala ' + activity.getPlace().getLocation() + '"><i class="fa fa-fw fa-map-marker"></i>' + activity.getPlace().getLocation() + '</span>';
             }
             return '';
         };
@@ -1351,9 +1360,9 @@ var devPlan;
                 }
             }
 
-            $.when(Cash.Api.getGroupsList(true, 6 /* Group */), Cash.Api.getTutorsList(true, 6 /* Tutor */), Cash.Api.getPlacesList(true, 6 /* Place */)).done(function (groups, tutors, places) {
+            $.when(Cash.Api.getGroupsList(true, 6 /* Group */), Cash.Api.getTutorsList(true, 6 /* Tutor */), (devPlan.Init.placesInUse == true ? Cash.Api.getPlacesList(true, 6 /* Place */) : null)).done(function (groups, tutors, places) {
                 $("#search-input").removeAttr('disabled').attr('data-provide', "typeahead").typeahead({
-                    source: Init.typeaheadDataCreator(Init.getGroups(), Init.getTutors(), Init.getPlaces()),
+                    source: Init.typeaheadDataCreator(Init.getGroups(), Init.getTutors(), devPlan.Init.placesInUse == true ? Init.getPlaces() : []),
                     items: 15,
                     updater: function (item) {
                         var group = Init.searchGroupId(item);
@@ -1365,7 +1374,8 @@ var devPlan;
                         if (group == 0 && tutor > 0 && place == 0) {
                             window.location.replace('timetable.html?timetable=t' + tutor);
                         }
-                        if (group == 0 && tutor == 0 && place > 0) {
+
+                        if (devPlan.Init.placesInUse == true && group == 0 && tutor == 0 && place > 0) {
                             window.location.replace('timetable.html?timetable=p' + place);
                         }
                     }
@@ -1374,7 +1384,7 @@ var devPlan;
                 $(".devPlanTypeahead").each(function (index) {
                     $('#' + index + '.devPlanTypeahead').removeAttr('disabled').attr('data-provide', "typeahead");
                     $('#' + index + '.devPlanTypeahead').typeahead({
-                        source: Init.typeaheadDataCreator(Init.getGroups(), Init.getTutors(), Init.getPlaces()),
+                        source: Init.typeaheadDataCreator(Init.getGroups(), Init.getTutors(), devPlan.Init.placesInUse == true ? Init.getPlaces() : []),
                         items: 15,
                         updater: function (item) {
                             devPlan.Settings.addTimetableParam(item);
@@ -1400,7 +1410,7 @@ var devPlan;
                             if (group == 0 && tutor > 0 && place == 0) {
                                 window.location.replace('timetable.html?timetable=t' + tutor);
                             }
-                            if (group == 0 && tutor == 0 && place > 0) {
+                            if (devPlan.Init.placesInUse == true && group == 0 && tutor == 0 && place > 0) {
                                 window.location.replace('timetable.html?timetable=p' + place);
                             }
                         }
@@ -1614,6 +1624,8 @@ var devPlan;
                 $(".timetable-panel-spinner-icon").empty().append('<button class="btn btn-warning title="Stwórz devPlan" ' + 'data-toggle="modal" data-target="#devPlanWizard">' + 'Stwórz <strong>devPlan</strong>' + '</button>');
             }
         };
+        Init.placesInUse = false;
+
         Init.groups = [];
 
         Init.tutors = [];

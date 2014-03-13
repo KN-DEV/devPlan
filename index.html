@@ -33,6 +33,7 @@
 			<div class="row">
 				<div class="col-lg-12 col-md-12 col-sm-12 col-12-xs">
 					<div class="navbar-header">
+						<!-- xs -->
 						<div class="btn-group pull-right visible-xs">
 							<a class="navbar-btn btn btn-info" data-toggle="collapse"
 								data-target="#devPlanSearch" title="Szukaj"><i
@@ -45,6 +46,7 @@
 								data-toggle="modal" title="Ustawienia"
 								data-target="#devPlanWizard"><i class="fa fa-fw fa-gear"></i></a>
 						</div>
+						<!-- xs -->
 						<a class="navbar-brand" href="index.html" title="devPlan"><strong>devPlan</strong></a>
 					</div>
 					<div class="collapse navbar-collapse " id="devPlanSearch">
@@ -64,7 +66,7 @@
 							<div id="navbar-search">
 								<input id="search-input" name="search" autocomplete="off"
 									disabled="disabled" type="text" class="form-control" size="40"
-									title="Wprowadź nazwę grupy lub nazwisko prowadzącego" />
+									title="Szukaj" placeholder="Szukaj" />
 							</div>
 						</form>
 					</div>
@@ -208,7 +210,6 @@
 						aria-hidden="true">&times;</button>
 					<h4 class="modal-title" id="myModalLabel">Ustawienia</h4>
 				</div>
-
 			</div>
 		</div>
 	</div>
@@ -219,12 +220,12 @@
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
+
 					<button type="button" class="close" data-dismiss="modal"
 						aria-hidden="true">
 						<i class="fa fa-fw fa-times"></i>
 					</button>
 					<h4 class="modal-title">Ustawienia</h4>
-
 					<ul class="nav nav-pills nav-justified">
 						<li class="active"><a data-toggle="tab"
 							href="#devPlanSettingsGeneral">Główne</a></li>
@@ -276,13 +277,8 @@
 								Zapamiętaj</button>
 						</div>
 					</div>
-
-
-
-
 					<div class="tab-pane" id="devPlanExport">
 						<div class="modal-body">
-
 							<p class="lead">Dajemy Ci możliwość eksportu devPlanu do
 								takich kalendarzy jak Google Calendar, Outlook itp.</p>
 							<p>
@@ -302,113 +298,98 @@
 					<div class="tab-pane fade " id="devPlanSettingsView">
 						<div class="modal-body">
 							<fieldset>
-								<legend>Ustawienia okresu czasu</legend>
+								<legend>Zajęcia: </legend>
 								<div class="radio">
-									<label> <input type="radio" value="1"
+									<label><input type="radio" value="1"
 										name="devPlanSettingsTimetableType"
 										class="devPlanSettingsTimetableType"
 										onClick="devPlan.Settings.setTimetableType(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
-										Wyświetlaj tylko nadchodzące zajęcia
-									</label>
+										Nadchodzące </label>
 								</div>
 								<div class="radio">
-									<label> <input type="radio" value="0"
+									<label><input type="radio" value="0"
 										name="devPlanSettingsTimetableType"
 										class="devPlanSettingsTimetableType"
 										onClick="devPlan.Settings.setTimetableType(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
-										Wyświetlaj cały plan zajęć
-									</label>
+										Wszystkie </label>
 								</div>
 								<legend>Ilość wyświetlanych dni</legend>
 								<div class="radio">
-									<label> <input type="radio" value=3
+									<label><input type="radio" value=3
 										name="devPlanSettingsTimetablePeriod"
 										class="devPlanSettingsTimetablePeriod"
 										onClick="devPlan.Settings.setTimetablePeriod(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
-										3
-									</label>
+										3 </label>
 								</div>
 								<div class="radio">
-									<label> <input type="radio" value=7
+									<label><input type="radio" value=7
 										name="devPlanSettingsTimetablePeriod"
 										class="devPlanSettingsTimetablePeriod"
 										onClick="devPlan.Settings.setTimetablePeriod(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
-										7
-									</label>
+										7 </label>
 								</div>
 								<div class="radio">
-									<label> <input type="radio" value=14
+									<label><input type="radio" value=14
 										name="devPlanSettingsTimetablePeriod"
 										class="devPlanSettingsTimetablePeriod"
 										onClick="devPlan.Settings.setTimetablePeriod(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
-										14
-									</label>
+										14 </label>
 								</div>
 								<div class="radio">
-									<label> <input type="radio" value=0
+									<label><input type="radio" value=0
 										name="devPlanSettingsTimetablePeriod"
 										class="devPlanSettingsTimetablePeriod"
 										onClick="devPlan.Settings.setTimetablePeriod(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
-										wszystkie dni
-									</label>
+										Wszystkie </label>
 								</div>
-								<legend>Ustawienia informacji</legend>
+								<legend>Wyświetlaj: </legend>
 								<div class="checkbox">
-									<label> <input type="checkbox"
+									<label><input type="checkbox"
 										class="devPlanSettingsActivityTutor"
 										onClick="devPlan.Settings.setActivityTutor(!devPlan.Settings.getActivityTutor()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
-										Wyświetlaj informacje o prowadzącym
-									</label>
+										informacje o prowadzącym </label>
 								</div>
 								<div class="checkbox">
-									<label> <input type="checkbox"
+									<label><input type="checkbox"
 										class="devPlanSettingsActivityNote"
 										onClick="devPlan.Settings.setActivityNote(!devPlan.Settings.getActivityNote()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
-										Wyświetlaj notatki do zajęć
-									</label>
+										notatki do zajęć </label>
 								</div>
 								<div class="checkbox">
-									<label> <input type="checkbox"
+									<label><input type="checkbox"
 										class="devPlanSettingsActivityBell"
 										onClick="devPlan.Settings.setActivityBell(!devPlan.Settings.getActivityBell()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
-										Wyświetlaj godzinę rozpoczęcia i zakończenia zajęć
-									</label>
+										godzinę rozpoczęcia i zakończenia zajęć </label>
 								</div>
 								<div class="checkbox">
-									<label> <input type="checkbox"
+									<label><input type="checkbox"
 										class="devPlanSettingsActivityLocation"
 										onClick="devPlan.Settings.setActivityLocation(!devPlan.Settings.getActivityLocation()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
-										Wyświetlaj informacje o lokalizacji zajęć
-									</label>
+										informacje o lokalizacji zajęć </label>
 								</div>
 								<div class="checkbox">
-									<label> <input type="checkbox"
+									<label><input type="checkbox"
 										class="devPlanSettingsActivityCategory"
 										onClick="devPlan.Settings.setActivityCategory(!devPlan.Settings.getActivityCategory()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
-										Wyświetlaj informacje o typie zajęć
-									</label>
+										informacje o typie zajęć </label>
 								</div>
 								<div class="checkbox">
-									<label> <input type="checkbox"
+									<label><input type="checkbox"
 										class="devPlanSettingsActivityGroup"
 										onClick="devPlan.Settings.setActivityGroup(!devPlan.Settings.getActivityGroup()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
-
-										Wyświetlaj informacje o grupach uczestniczących w zajęciach
-									</label>
+										informacje o grupach uczestniczących w zajęciach </label>
 								</div>
 								<div class="checkbox">
-									<label> <input type="checkbox"
+									<label><input type="checkbox"
 										class="devPlanSettingsActivityClassCounter"
 										onClick="devPlan.Settings.setClassCounter(!devPlan.Settings.getClassCounter()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
-										Wyświetlaj informacje na tamat numeru kolejnych zajęć
-									</label>
+										informacje na tamat numeru kolejnych zajęć </label>
 								</div>
 								<div class="checkbox">
-									<label> <input type="checkbox"
+									<label><input type="checkbox"
 										class="devPlanSettingsActivityClassHourCounter"
 										onClick="devPlan.Settings.setClassHourCounter(!devPlan.Settings.getClassHourCounter()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
-										Wyświetlaj informacje na temat ilości godzin lekcyjnych
-									</label>
+										informacje na temat ilości godzin lekcyjnych </label>
 								</div>
 							</fieldset>
 						</div>

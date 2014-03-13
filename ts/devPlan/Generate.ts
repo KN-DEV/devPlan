@@ -6,6 +6,9 @@ module devPlan {
      * 
      */
     export class Generate {
+        /**
+         * 
+         */
         static dayOfWeek: string[] = [
             "Niedziela",
             "Poniedziałek",
@@ -15,6 +18,9 @@ module devPlan {
             "Piątek",
             "Sobota"
         ];
+        /**
+         * 
+         */
         static month: string[] = [
             "Styczeń",
             "Luty",
@@ -105,13 +111,21 @@ module devPlan {
          */
         static locationInformation(activity: Cash.Activity): string {
             if (activity.getPlace().getLocation().length > 0) {
-                return '<span class="location" title="Kliknij aby zobaczyć devPlan: ' +
+
+                if (devPlan.Init.placesInUse == true) {
+                    return '<span class="location" title="Kliknij aby zobaczyć devPlan ' +
+                        activity.getPlace().getLocation() +
+                        '"><i class="fa fa-fw fa-map-marker"></i>' +
+                        '<a href="timetable.html?timetable=p' +
+                        activity.getPlace().getId() + '">' +
+                        activity.getPlace().getLocation() +
+                        '</a>' +
+                        '</span>';
+                }
+                return '<span class="location" title="Sala ' +
                     activity.getPlace().getLocation() +
                     '"><i class="fa fa-fw fa-map-marker"></i>' +
-                    '<a href="timetable.html?timetable=p' +
-                    activity.getPlace().getId() + '">' +
                     activity.getPlace().getLocation() +
-                    '</a>' +
                     '</span>';
             }
             return '';

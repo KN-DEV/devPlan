@@ -1,73 +1,11 @@
+/// <reference path="../Cash/Activity.d.ts" />
 /// <reference path="./Group.ts" />
 /// <reference path="./Tutor.ts" />
-/// <reference path="./Place.ts" />m
+/// <reference path="./Place.ts" />
 /**
  * 
  */
-module Cash {
-
-    export interface ActivityInterface {
-        /**
-         *
-         */
-        category: string;
-        /**
-         *
-         */
-        date: string;
-        /**
-         *
-         */
-        day_of_week: string;
-        /**
-         *
-         */
-        ends_at: string;
-        /**
-         *
-         */
-        ends_at_timestamp: number;
-        /**
-         *
-         */
-        group: Cash.GroupInterface;
-        /**
-         *
-         */
-        id: number;
-        /**
-         *
-         */
-        name: string;
-        /**
-         *
-         */
-        notes: string;
-        /**
-         *
-         */
-        place: Cash.PlaceInterface;
-        /**
-         *
-         */
-        starts_at: string;
-        /**
-         *
-         */
-        starts_at_timestamp: number;
-        /**
-         *
-         */
-        state: number;
-        /**
-         *
-         */
-        tutor: Cash.TutorInterface;
-        /**
-        *
-        */
-        alarms: string[];
-    }
+module devPlan {
     /**
      * 
      */
@@ -95,7 +33,7 @@ module Cash {
         /**
          * 
          */
-        private group: Cash.Group = new Cash.Group();
+        private group: devPlan.Group = new devPlan.Group();
         /**
          * 
          */
@@ -111,7 +49,7 @@ module Cash {
         /**
          * 
          */
-        private place: Cash.Place = new Cash.Place();
+        private place: devPlan.Place = new devPlan.Place();
         /**
          * 
          */
@@ -127,7 +65,7 @@ module Cash {
         /**
          * 
          */
-        private tutor: Cash.Tutor = new Cash.Tutor();
+        private tutor: devPlan.Tutor = new devPlan.Tutor();
         /**
         * 
         */
@@ -142,20 +80,29 @@ module Cash {
          * 
          */
         constructor(object: Cash.ActivityInterface) {
-            this.setCategory(object.category);
-            this.setDate(object.date);
-            this.setDayOfWeek(object.day_of_week);
-            this.setEndsAt(object.ends_at);
-            this.setEndsAtTimestamp(object.ends_at_timestamp);
-            this.setGroup(object.group);
-            this.setId(object.id);
-            this.setName(object.name);
-            this.setNotes((object.notes == null ? "" : object.notes));
-            this.setPlace(object.place);
-            this.setStartsAt(object.starts_at);
-            this.setStartsAtTimestamp(object.starts_at_timestamp);
-            this.setState(object.state);
-            this.setTutor(object.tutor);
+            this.setCategory(object.category)
+                .setDate(object.date)
+                .setDayOfWeek(object.day_of_week)
+                .setEndsAt(object.ends_at)
+                .setEndsAtTimestamp(object.ends_at_timestamp)
+                .setStartsAt(object.starts_at)
+                .setStartsAtTimestamp(object.starts_at_timestamp)
+                .setState(object.state)
+                .setId(object.id)
+                .setName(object.name);
+            if (object.notes != null) {
+                this.setNotes(object.notes);
+            }
+            if (object.group != null) {
+                this.setGroup(object.group);
+            }
+
+            if (object.place != null) {
+                this.setPlace(object.place);
+            }
+            if (object.tutor != null) {
+                this.setTutor(object.tutor);
+            }
         }
         /**
          * 
@@ -192,8 +139,9 @@ module Cash {
         /**
          * 
          */
-        public setDayOfWeek(day_of_week: string): void {
+        public setDayOfWeek(day_of_week: string): Activity {
             this.day_of_week = day_of_week;
+            return this;
         }
         /**
          * 
@@ -204,8 +152,9 @@ module Cash {
         /**
          * 
          */
-        public setEndsAt(ends_at: string): void {
+        public setEndsAt(ends_at: string): Activity {
             this.ends_at = ends_at;
+            return this;
 
         }
         /**
@@ -217,22 +166,22 @@ module Cash {
         /**
          * 
          */
-        public setEndsAtTimestamp(ends_at_timestamp: any): void {
+        public setEndsAtTimestamp(ends_at_timestamp: any): Activity {
             this.ends_at_timestamp = ends_at_timestamp;
-
+            return this;
         }
         /**
          * 
          */
-        public getGroup(): Cash.Group {
+        public getGroup(): devPlan.Group {
             return this.group;
         }
         /**
          * 
          */
-        public setGroup(group: Cash.GroupInterface): void {
-            this.group = new Cash.Group(group);
-
+        public setGroup(group: Cash.GroupInterface): Activity {
+            this.group = new devPlan.Group(group.id, group.name);
+            return this;
         }
         /**
          * 
@@ -243,8 +192,9 @@ module Cash {
         /**
          * 
          */
-        public setId(id: number): void {
+        public setId(id: number): Activity {
             this.id = id;
+            return this;
 
         }
         /**
@@ -256,8 +206,9 @@ module Cash {
         /**
          * 
          */
-        public setName(name: string): void {
+        public setName(name: string): Activity {
             this.name = name;
+            return this;
 
         }
         /**
@@ -269,8 +220,9 @@ module Cash {
         /**
          * 
          */
-        public setNotes(notes: string): void {
+        public setNotes(notes: string): Activity {
             this.notes = notes;
+            return this;
         }
         /**
          * 
@@ -281,9 +233,9 @@ module Cash {
         /**
          * 
          */
-        public setPlace(place: Cash.PlaceInterface): void {
-            this.place = new Cash.Place(place);
-
+        public setPlace(place: Cash.PlaceInterface = { id: 0, location: "" }): Activity {
+            this.place = new devPlan.Place(place.id != null ? place.id : 0, place.location != null ? place.location : "");
+            return this;
         }
         /**
          * 
@@ -294,8 +246,9 @@ module Cash {
         /**
          * 
          */
-        public setStartsAt(starts_at: string): void {
+        public setStartsAt(starts_at: string): Activity {
             this.starts_at = starts_at;
+            return this;
 
         }
         /**
@@ -307,8 +260,9 @@ module Cash {
         /**
          * 
          */
-        public setStartsAtTimestamp(starts_at_timestamp: number): void {
+        public setStartsAtTimestamp(starts_at_timestamp: number): Activity {
             this.starts_at_timestamp = starts_at_timestamp;
+            return this;
 
         }
         /**
@@ -320,35 +274,33 @@ module Cash {
         /**
          * 
          */
-        public setState(state: number): void {
+        public setState(state: number): Activity {
             this.state = state;
+            return this;
 
         }
         /**
          * 
          */
-        public getTutor(): Cash.Tutor {
+        public getTutor(): Tutor {
             return this.tutor;
         }
         /**
          * 
          */
-        public setTutor(tutor: Cash.TutorInterface): void {
-            if (tutor != null) {
-                this.tutor = new Cash.Tutor(tutor);
-            } else {
-                this.tutor = new Cash.Tutor();
-            }
+        public setTutor(tutor: Cash.TutorInterface): Activity {
+            this.tutor = new Tutor(tutor.id, tutor.name, tutor.moodle_url);
+            return this;
         }
         /**
          * Returns number of school lessons
          */
         public getNumberOfSchoolLessons(): number {
             var counter: number = 0;
-            for (var i = 0; i <= Cash.Activity.alarms.length; i++) {
-                if (Cash.Activity.alarms[i] == this.getStartsAt()) {
-                    for (var j = i; j <= Cash.Activity.alarms.length; j++) {
-                        if (Cash.Activity.alarms[j] <= this.getEndsAt()) {
+            for (var i = 0; i <= devPlan.Activity.alarms.length; i++) {
+                if (devPlan.Activity.alarms[i] == this.getStartsAt()) {
+                    for (var j = i; j <= devPlan.Activity.alarms.length; j++) {
+                        if (devPlan.Activity.alarms[j] <= this.getEndsAt()) {
                             counter++;
                         }
                     }
@@ -360,7 +312,7 @@ module Cash {
         /**
          * 
          */
-        public static generateHash(activity: Cash.Activity): string {
+        public static generateHash(activity: Activity): string {
             return activity.getGroup().getId() + '-' + activity.getName() + '-' + activity.getCategory() + '-' + activity.getTutor().getId();
         }
         /**
@@ -386,7 +338,7 @@ module Cash {
                     (devPlan.Generate.month[date.getMonth()].toLowerCase().indexOf(item) > -1) ||
                     (devPlan.Generate.dayOfWeek[date.getDay()].toLowerCase().indexOf(item) > -1) ||
                     (date.getDate().toString().toLowerCase().indexOf(item) > -1) ||
-
+                    //
                     (containsIndexGroups(indexgroup, item))) {
                     //
                     values.push(true);

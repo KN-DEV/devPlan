@@ -22,37 +22,38 @@ module devPlan {
          * 
          */
         static month: string[] = [
-            "Styczeń",
-            "Luty",
-            "Marzec",
-            "Kwiecień",
-            "Maj",
-            "Czerwiec",
-            "Lipiec",
-            "Sierpień",
-            "Wrzesień",
-            "Październik",
-            "Listopad",
-            "Grudzień"
+            "Stycznia",
+            "Lutego",
+            "Marca",
+            "Kwietnia",
+            "Maja",
+            "Czerwca",
+            "Lipica",
+            "Sierpnia",
+            "Września",
+            "Października",
+            "Listopada",
+            "Grudnia"
         ];
 
         /**
          * 
          */
-        static dateInformation(activity: Cash.Activity): string {
+        static dateInformation(activity: devPlan.Activity): string {
             var date: Date = new Date(activity.getStartsAtTimestamp() * 1000);
-            return '<li class="list-group-item list-group-item-info date"    data-toggle="collapse" data-parent="#accordion" href="#' + activity.getDate() + '.activities"><p id="' +
-                activity.getDate() + '" class="h4" >' +
-                '<span>' + Generate.dayOfWeek[date.getDay()] + '</span> ' +
-                '<span class="pull-right">' + date.getDate() + ' - ' + Generate.month[date.getMonth()] + ' - ' + date.getFullYear() + '' +
-                '</span>' +
-            //                '<span data-toggle="collapse" data-parent="#accordion" href="#' + activity.getDate() + '.activities" class="pull-right"><i class="fa fa-fw fa-chevron-up animate-transform"></i></span>' +
-                '</p></li>';
+            return '<li class="list-group-item list-group-item-info date" data-toggle="collapse" data-parent="#accordion" href="#' + activity.getDate() + '.activities">' +
+                '<h4 id="' + activity.getDate() + '" >' +
+
+                Generate.dayOfWeek[date.getDay()] + ', ' +
+                date.getDate() + ' ' +
+                Generate.month[date.getMonth()] +
+
+                '</h4></li>';
         }
         /**
          * 
          */
-        static nameInformation(activity: Cash.Activity): string {
+        static activityName(activity: devPlan.Activity): string {
             return '<span class="name">' +
                 (activity.getName().length != 0 ? activity.getName() : '&nbsp;') +
                 '</span>';
@@ -61,55 +62,61 @@ module devPlan {
         /**
          * 
          */
-        static noteInformation(activity: Cash.Activity): string {
-            return (activity.getNotes() != null) ? '<span class="note" title="Notatka dotycząca zajęć">Notatka: ' +
+        static activityNote(activity: devPlan.Activity): string {
+            return (activity.getNotes().length > 0) ? '<span class="note" title="Notatka dotycząca zajęć">Notatka: ' +
                 activity.getNotes() + '</span>' : '';
         }
 
         /**
          * 
          */
-        static bellInformation(activity: Cash.Activity): string {
-            return '<span class="bell" title="Zajęcia rozpoczynają się o: ' +
-                activity.getStartsAt() + ' i kończą o ' + activity.getEndsAt() + '">' +
-                '<strong><i class="fa fa-fw fa-bell"></i>' +
+        static activityStartStop(activity: devPlan.Activity): string {
+            return '<span class="bell" title="Zajęcia od ' +
+                activity.getStartsAt() + ' do ' + activity.getEndsAt() + '">' +
+                '<i class="fa fa-fw fa-clock-o"></i>' +
                 activity.getStartsAt() + " - " + activity.getEndsAt() +
-                '</strong></span>';
-        }
-        /**
-         * 
-         */
-        static categoryInformation(activity: Cash.Activity): string {
-            var color: string = "";
-            switch (activity.getCategory()) {
-                case "wykład":
-                    color = "warning";
-                    break;
-                case "wykład do wyboru":
-                    color = "warning";
-                    break;
-                case "lektorat":
-                    color = "success";
-                    break;
-                case "ćwiczenia":
-                    color = "primary";
-                    break;
-                case "egzamin":
-                    color = "danger";
-                    break;
-                default:
-                    color = "danger";
-                    break;
-            }
-            return '<span class="label label-' + color + ' category" title="Typ zajęć">' +
-                '<i class="fa fa-fw fa-tag"></i>' +
-                activity.getCategory() +
                 '</span>';
         }
         /**
          * 
          */
-        static locationInformation(activity: Cash.Activity): string {
+        static activityCategory(activity: devPlan.Activity): string {
+            var color: string;
+            var value: string;
+            switch (activity.getCategory()) {
+                case "wykład":
+                    color = "warning";
+                    value = "W";
+                    break;
+                case "wykład do wyboru":
+                    color = "warning";
+                    value = "W";
+                    break;
+                case "lektorat":
+                    color = "success";
+                    value = "L";
+                    break;
+                case "ćwiczenia":
+                    color = "primary";
+                    value = "Ć";
+                    break;
+                case "egzamin":
+                    color = "danger";
+                    value = "E";
+                    break;
+                default:
+                    color = "danger";
+                    value = "*";
+                    break;
+            }
+            return '<span class="label label-' + color + ' category pull-right" title="' + activity.getCategory() + '">' +
+                value +
+                '</span>';
+        }
+        /**
+         * 
+         */
+        static activityLocation(activity: devPlan.Activity): string {
             if (activity.getPlace().getLocation().length > 0) {
 
                 if (devPlan.Init.placesInUse == true) {
@@ -121,40 +128,54 @@ module devPlan {
                         activity.getPlace().getLocation() +
                         '</a>' +
                         '</span>';
+                } else {
+                    return '<span class="location" title="Sala ' +
+                        activity.getPlace().getLocation() +
+                        '"><i class="fa fa-fw fa-map-marker"></i>' +
+                        activity.getPlace().getLocation() +
+                        '</span>';
                 }
-                return '<span class="location" title="Sala ' +
-                    activity.getPlace().getLocation() +
-                    '"><i class="fa fa-fw fa-map-marker"></i>' +
-                    activity.getPlace().getLocation() +
-                    '</span>';
+            } else {
+                return '';
             }
-            return '';
         }
         /**
          * 
          */
         static activityCounter(min: number, max: number): string {
-            return '<span class="counter" title="Zajęcia z kolei: ' + min + '">Zajęcia z kolei: ' + min + '/' + max + '</span><wbr>';
+            return '<span class="counter" title="Zajęcia z kolei: ' + min + '">' + min + '/' + max + '</span>';
         }
         /**
          * 
          */
         static hourInformation(value: number, have: number, all: number): string {
-            return '<span class="hour" title="Ilość jednostek lekcyjnych:">' +
-                'Godziny lekcyjne od ' + ((have - value) + 1) + ' do ' + have + '(' + all + ')</span> ';
+            return '<span class="hour" title="Godziny lekcyjne">' +
+                ((have - value) + 1) + '-' + have + '/' + all + '</span> ';
         }
         /**
          * 
          */
-        static tutorInformation(activity: Cash.Activity): string {
-            return '<span class="tutor"><small>' + (activity.getTutor().getMoodleUrl() != null ?
-                '<a href="' + activity.getTutor().getMoodleUrl() +
-                '" title=" ' + activity.getTutor().getName() + ' - Wizytówka E-Uczelna "><i class="fa fa-globe fa-fw"></i></a>' : "") +
-                '<a href="timetable.html?timetable=t' + activity.getTutor().id +
-                '" title="Kliknij aby zobaczyć devPlan: ' + activity.getTutor().getName() + '">' + activity.getTutor().getName() + '</a></small><span>';
+        static activityTutorsList(activity: devPlan.Activity): string {
+
+            if (devPlan.Init.placesInUse == true) {
+                return '<span class="tutor">' +
+                    (activity.getTutor().getMoodleUrl() != null ?
+                    '<a   href="' + activity.getTutor().getMoodleUrl() + '" title=" ' + activity.getTutor().getName() + ' - Wizytówka E-Uczelna "><i class="fa fa-globe fa-fw"></i></a>' : "") +
+
+                    '<a   href="timetable.html?timetable=t' + activity.getTutor().getId() +
+                    '" title="Kliknij aby zobaczyć devPlan: ' + activity.getTutor().getName() + '">' + activity.getTutor().getName() + '</a>' +
+                    '<span>';
+            } else {
+                return '<span class="tutor">' +
+                    (activity.getTutor().getMoodleUrl() != null ?
+                    '<a   href="' + activity.getTutor().getMoodleUrl() + '" title=" ' + activity.getTutor().getName() + ' - Wizytówka E-Uczelna "><i class="fa fa-globe fa-fw"></i></a>' : "") +
+
+                    activity.getTutor().getName() +
+                    '<span>';
+            }
         }
         /**
-         * 
+         * @since 0.8
          */
         static devPlanParamButton(item: any, id: number, type: string): string {
             var color: string;
@@ -167,9 +188,6 @@ module devPlan {
                     break;
                 case "p":
                     color = "info";
-                    break;
-                default:
-                    color = "default";
                     break;
             }
             return '<div class="btn-group btn-group-sm devPlanParam">' +
@@ -184,66 +202,175 @@ module devPlan {
                 '</button>' +
                 '</div>';
         }
-
-
-        public static groupList(groups: Cash.Group[]= []): string {
+        /**
+         * Generates groups list
+         * @since 0.8
+         */
+        public static activityGroupsList(groups: devPlan.Group[]= []): string {
             var data: string = '';
             for (var j = 0; j < groups.length; j++) {
                 if (groups[j] != null) {
-                    data = data + '<span class="group"><a href="timetable.html?timetable=g' + groups[j].getId() + '"title="Kliknij aby zobaczyć devPlan: ' + groups[j].getName() + '">' + groups[j].getName() + "</a></span>" + '<wbr>';
-                    if (j < (groups.length - 1)) {
-                        data = data + ' | ';
-                    }
+                    data = data + '<span class="group"><a href="timetable.html?timetable=g' + groups[j].getId() + '"title="Kliknij aby zobaczyć devPlan: ' + groups[j].getName() + '">' + groups[j].getName() + "</a></span>";
                 }
             }
             return data;
         }
-
-        public static generateActivity(timetable: Cash.Timetable, activity: Cash.Activity, groups: Cash.Group[]= []): string {
+        
+        /**
+         * Generate activity
+         * @since 0.8
+         */
+        public static activity(timetable: devPlan.Timetable, activity: devPlan.Activity, groups: devPlan.Group[]= []): string {
             var data = '';
             data = data +
-            '<li id="activity' + activity.getId() + '" class="list-group-item activity ' + activity.getCategory().replace(/\s/gi, "-") + '">' +
-            '<p class="h4">' +
-            Generate.nameInformation(activity) +
+            '<li id="activity' + activity.getId() + '" class="list-group-item activity">' +
+            '<div class="row">' +
+            '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">' +
+
+            Generate.activityName(activity) +
+            (Settings.isActivityCategoryVisible() ?
+            Generate.activityCategory(activity) : '') +
+
             //tutor start
-            ((Settings.getActivityTutor() == true) ?
-            Generate.tutorInformation(activity) : '') +
-            '</p>' +
-            '<div class="clearfix"></div>' +
+            '</div>' +
             //tutor stop
             //note start
-            ((Settings.getActivityNote() == true) ?
-            ('<p class="h5">' +
-            Generate.noteInformation(activity) +
-            '</p><div class="clearfix"></div>') : '');
+            ((Settings.getActivityNote() == true && activity.getNotes().length >0) ?
+            ('<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">' +
+            Generate.activityNote(activity) +
+            '</div>') : '');
             //note stop
 
             if (Settings.getActivityBell() ||
                 Settings.getActivityLocation() ||
-                Settings.getActivityCategory() ||
+                Settings.getActivityTutorsList() ||
                 Settings.getClassCounter() ||
                 Settings.getClassHourCounter()) {
                 //
-                data = data + '<p class="h5">' +
+                data = data + '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">' +
+
                 (Settings.getActivityBell() ?
-                Generate.bellInformation(activity) : '') + ' ' +
+                Generate.activityStartStop(activity) + ' <wbr>' : '') +
+
                 (Settings.getActivityLocation() ?
-                Generate.locationInformation(activity) : '') + ' ' +
-                (Settings.getActivityCategory() ?
-                Generate.categoryInformation(activity) : '') + ' ' +
+                Generate.activityLocation(activity) + ' <wbr>' : '') +
+
+
+
                 (Settings.getClassCounter() ?
-                Generate.activityCounter(timetable.getPositionOfActivity(activity), timetable.getMaxNumberOfOccurencesOfActivity(activity)) : '') + ' ' +
+                Generate.activityCounter(timetable.getPositionOfActivity(activity), timetable.getMaxNumberOfOccurencesOfActivity(activity)) + ' <wbr>' : '') +
+
                 (Settings.getClassHourCounter() ?
-                Generate.hourInformation(activity.getNumberOfSchoolLessons(), timetable.sumAllHoursOfActivity(activity), timetable.sumAllHoursOfActivity(activity, true)) : '') + ' ';
-                data = data + '</p><div class="clearfix"></div>';
+                Generate.hourInformation(activity.getNumberOfSchoolLessons(), timetable.sumAllHoursOfActivity(activity), timetable.sumAllHoursOfActivity(activity, true)) + ' <wbr>' : '') +
+
+                ((timetable.getParams().haveOnlyOneTutor() == false && Settings.getActivityTutorsList()) ?
+                Generate.activityTutorsList(activity) : '');
+
+                data = data + '</div>';
             }
-            if (Settings.getActivityGroup()) {
-                data = data + '<p class="h6">' +
-                Generate.groupList(groups) +
-                '</p><div class="clearfix"></div>';
+            if (timetable.getParams().haveOnlyOneGroup() == false && Settings.getActivityGroup()) {
+                data = data + '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">' +
+                Generate.activityGroupsList(groups) +
+                '</div>';
             }
-            data = data + '</li>';
+
+            data = data + '</div></li>';
             return data;
+        }
+
+        /**
+         *
+         */
+        static timetable(timetable: devPlan.Timetable): void {
+            console.log("showTimetable", timetable);
+            var data = "";
+            var date = "";
+            $("#timetable-results").empty();
+
+            if (timetable.getActivities().length > 0) {
+                var activity: devPlan.Activity;
+
+                var daysCounter: number = 0;
+
+                var j = 0;
+                for (var i = 0; i < timetable.getActivities().length; i++) {
+                    activity = timetable.getActivities()[i];
+                    /**
+                     * zajęcia dla wielu grup - lista grup
+                     */
+                    j = i;
+                    var groups: devPlan.Group[] = [];
+                    do {
+                        if (timetable.getActivities()[j].getGroup() != null) {
+                            groups[groups.length] = timetable.getActivities()[j].getGroup();
+                        }
+                    } while (timetable.getActivities()[++j] != null &&
+                        activity.getName() == timetable.getActivities()[j].getName() &&
+                        activity.getEndsAtTimestamp() == timetable.getActivities()[j].getEndsAtTimestamp());
+                    /**
+                     * 
+                     */
+                    var indexgroup = "";
+                    groups = groups.sort((a: any, b: any): any => { return a.getName() >= b.getName(); });
+                    for (var k = 0; k < groups.length; k++) {
+                        indexgroup = indexgroup + ' ' + groups[k].getName();
+                    }
+                    /**
+                     * 
+                     */
+                    if (activity.getDate() >= timetable.getDateFromDatesListByPosition(timetable.getDatePositionInDatesList(Settings.getCurrentDate()) + (Settings.getPage() * Settings.getTimetablePeriod())) || Settings.getTimetableType() == 0) {
+                        /**
+                         * Filtr
+                         */
+                        if (activity.contains(Settings.getActivityNameFilter(), indexgroup) == true) {
+                            /**
+                             * Cały dzień
+                             */
+                            if (date != activity.getDate()) {
+                                /**
+                                 * Ilość kolejnych zajęć
+                                 */
+                                if (Settings.getTimetablePeriod() != 0 && daysCounter >= Settings.getTimetablePeriod() && Settings.getTimetableType() != 0) {
+                                    break;
+                                }
+                                daysCounter++;
+                                if (date != "") {
+                                    data = data + '</div></div>';
+                                }
+                                data = data + '<div class="day">' + Generate.dateInformation(activity) +
+                                '<div id="' + activity.getDate() + '" class="activities collapse in ">';
+                                date = activity.getDate();
+                            }
+                            /**
+                             * zajęcia dla wielu grup - opuszcza kolejne
+                             */
+                            if (timetable.getActivities()[i - 1] != null &&
+                                activity.getName() == timetable.getActivities()[i - 1].getName() &&
+                                activity.getEndsAtTimestamp() == timetable.getActivities()[i - 1].getEndsAtTimestamp()) {
+                                continue;
+                            }
+                            /**
+                             * Pojedyncze zajęcia
+                             */
+                            data = data + Generate.activity(timetable, activity, groups);
+                        }
+                    }
+                }
+                //end of loop
+                if (data.length == 0 && Settings.getActivityNameFilter().length > 0) {
+                    data = data + '<li class="list-group-item"><p class="h4 text-center">Brak wyników</p>';
+                }
+            } else {
+                data = data + '<li class="list-group-item"><p class="h4 text-center">Przykro nam. Ten devPlan nie posiada żadnych zajęć.</p>';
+            }
+            $("#timetable-results").append(data);
+            // binds chevron animation
+            bindAnimation();
+            $('.activity').popover({
+                placement: 'auto',
+                trigger: 'click',
+                html: true
+            });
         }
     }
 }

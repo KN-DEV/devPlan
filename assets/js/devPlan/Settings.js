@@ -3,6 +3,38 @@ var devPlan;
     var Settings = (function () {
         function Settings() {
         }
+        Settings.getPage = function () {
+            return Settings.page;
+        };
+
+        Settings.setPage = function (page) {
+            if (typeof page === "undefined") { page = 0; }
+            Settings.page = page;
+            return Settings;
+        };
+
+        Settings.increasePage = function () {
+            if (devPlan.Init.getTimetable().isValidPositionInDatesList(devPlan.Init.getTimetable().getDatePositionInDatesList(Settings.getCurrentDate()) + (Settings.getPage() * Settings.getTimetablePeriod()) + 1)) {
+                Settings.setPage(Settings.getPage() + 1);
+
+                $("button.devPlanTimetablePeriodNavigation.decrease").removeAttr("disabled");
+            } else {
+                $("button.devPlanTimetablePeriodNavigation.increase").attr("disabled", "disabled");
+            }
+            return Settings;
+        };
+
+        Settings.decreasePage = function () {
+            if (devPlan.Init.getTimetable().isValidPositionInDatesList(devPlan.Init.getTimetable().getDatePositionInDatesList(Settings.getCurrentDate()) + (Settings.getPage() * Settings.getTimetablePeriod()) - 1)) {
+                Settings.setPage(Settings.getPage() - 1);
+
+                $("button.devPlanTimetablePeriodNavigation.increase").removeAttr("disabled");
+            } else {
+                $("button.devPlanTimetablePeriodNavigation.decrease").attr("disabled", "disabled");
+            }
+            return Settings;
+        };
+
         Settings.getClassCounter = function () {
             return Settings.classCounter;
         };
@@ -10,6 +42,11 @@ var devPlan;
         Settings.setClassCounter = function (status) {
             if (typeof status === "undefined") { status = false; }
             Settings.classCounter = status;
+            if (Settings.getClassCounter() == true) {
+                $("input.devPlanSettingsActivityClassCounter").attr("checked", "checked");
+            } else {
+                $("input.devPlanSettingsActivityClassCounter").removeAttr("checked");
+            }
             return Settings;
         };
 
@@ -20,16 +57,22 @@ var devPlan;
         Settings.setClassHourCounter = function (status) {
             if (typeof status === "undefined") { status = false; }
             Settings.classHourCounter = status;
+            if (Settings.getClassHourCounter() == true) {
+                $("input.devPlanSettingsActivityClassHourCounter").attr("checked", "checked");
+            }
             return Settings;
         };
 
-        Settings.getActivityCategory = function () {
-            return Settings.activityCategory;
+        Settings.isActivityCategoryVisible = function () {
+            return Settings.activityCategoryVisibility;
         };
 
-        Settings.setActivityCategory = function (status) {
+        Settings.setCategoryVisibility = function (status) {
             if (typeof status === "undefined") { status = false; }
-            Settings.activityCategory = status;
+            Settings.activityCategoryVisibility = status;
+            if (Settings.isActivityCategoryVisible() == true) {
+                $("input.devPlanSettingsShowActivityCategory").attr("checked", "checked");
+            }
             return Settings;
         };
 
@@ -40,6 +83,9 @@ var devPlan;
         Settings.setActivityBell = function (status) {
             if (typeof status === "undefined") { status = false; }
             Settings.activityBell = status;
+            if (Settings.getActivityBell()) {
+                $("input.devPlanSettingsActivityBell").attr("checked", "checked");
+            }
             return Settings;
         };
 
@@ -50,6 +96,9 @@ var devPlan;
         Settings.setActivityLocation = function (status) {
             if (typeof status === "undefined") { status = false; }
             Settings.activityLocation = status;
+            if (Settings.getActivityLocation()) {
+                $("input.devPlanSettingsActivityLocation").attr("checked", "checked");
+            }
             return Settings;
         };
 
@@ -60,6 +109,9 @@ var devPlan;
         Settings.setActivityNote = function (status) {
             if (typeof status === "undefined") { status = false; }
             Settings.activityNote = status;
+            if (Settings.getActivityNote()) {
+                $("input.devPlanSettingsActivityNote").attr("checked", "checked");
+            }
             return Settings;
         };
 
@@ -70,16 +122,22 @@ var devPlan;
         Settings.setActivityGroup = function (status) {
             if (typeof status === "undefined") { status = false; }
             Settings.activityGroup = status;
+            if (Settings.getActivityGroup()) {
+                $("input.devPlanSettingsActivityGroup").attr("checked", "checked");
+            }
             return Settings;
         };
 
-        Settings.getActivityTutor = function () {
-            return Settings.activityTutor;
+        Settings.getActivityTutorsList = function () {
+            return Settings.activityTutorsList;
         };
 
-        Settings.setActivityTutor = function (status) {
+        Settings.setActivityTutorsList = function (status) {
             if (typeof status === "undefined") { status = false; }
-            Settings.activityTutor = status;
+            Settings.activityTutorsList = status;
+            if (Settings.getActivityTutorsList()) {
+                $("input.devPlanSettingsactivityTutorsList").attr("checked", "checked");
+            }
             return Settings;
         };
         Settings.getTimetableType = function () {
@@ -89,25 +147,38 @@ var devPlan;
         Settings.setTimetableType = function (status) {
             if (typeof status === "undefined") { status = 0; }
             Settings.timetableType = status;
+            if (Settings.getTimetableType() == 0) {
+                $("input.devPlanSettingsTimetablePeriod").attr("disabled", "disabled");
+                $("button.devPlanTimetablePeriodNavigation").attr("disabled", "disabled");
+            } else {
+                $("input.devPlanSettingsTimetablePeriod").removeAttr("disabled");
+                $("button.devPlanTimetablePeriodNavigation").removeAttr("disabled");
+            }
+            $('input.devPlanSettingsTimetableType[value=\"' + Settings.getTimetableType() + '\"]').attr("checked", "checked");
             return Settings;
         };
         Settings.getTimetablePeriod = function () {
-            return Settings.timetablePeriod;
+            return +Settings.timetablePeriod;
         };
 
         Settings.setTimetablePeriod = function (status) {
             if (typeof status === "undefined") { status = 0; }
             Settings.timetablePeriod = status;
+            Settings.setPage();
+            $('input.devPlanSettingsTimetablePeriod[value=\"' + devPlan.Settings.getTimetablePeriod() + '\"]').attr("checked", "checked");
             return Settings;
         };
 
-        Settings.getDevPlanRedirect = function () {
-            return Settings.devPlanRedirect;
+        Settings.getTimetableRedirect = function () {
+            return Settings.timetableRedirect;
         };
 
-        Settings.setDevPlanRedirect = function (status) {
+        Settings.setTimetableRedirect = function (status) {
             if (typeof status === "undefined") { status = false; }
-            Settings.devPlanRedirect = status;
+            Settings.timetableRedirect = status;
+            if (Settings.getTimetableRedirect()) {
+                $("input.devPlanSettingsTimetableRedirect").attr("checked", "checked");
+            }
             return Settings;
         };
 
@@ -116,10 +187,11 @@ var devPlan;
         };
 
         Settings.setTimetableParams = function (status) {
-            if (typeof status === "undefined") { status = new Cash.Params(); }
+            if (typeof status === "undefined") { status = new devPlan.Params(); }
             Settings.timetableParams = status;
             return Settings;
         };
+
         Settings.getActivityNameFilter = function () {
             return Settings.activityNameFilter;
         };
@@ -127,61 +199,47 @@ var devPlan;
         Settings.setActivityNameFilter = function (status) {
             if (typeof status === "undefined") { status = ""; }
             Settings.activityNameFilter = status;
+            $('input.devPlanSettingsActivityNameFilter').attr('value', Settings.getActivityNameFilter());
             return Settings;
         };
 
         Settings.load = function () {
             $.cookie.json = true;
             var data = $.cookie('devPlan.Settings');
+            console.log(data);
             if (data) {
                 Settings.setClassCounter(data.classCounter);
                 Settings.setClassHourCounter(data.classHourCounter);
-                Settings.setActivityCategory(data.activityCategory);
+                Settings.setCategoryVisibility(data.activityCategory);
                 Settings.setActivityBell(data.activityBell);
                 Settings.setActivityLocation(data.activityLocation);
                 Settings.setActivityNote(data.activityNote);
                 Settings.setActivityGroup(data.activityGroup);
-                Settings.setActivityTutor(data.activityTutor);
+                Settings.setActivityTutorsList(data.activityTutorsList);
                 Settings.setTimetableType(data.timetableType);
                 Settings.setTimetablePeriod(data.timetablePeriod);
-                Settings.setDevPlanRedirect(data.devPlanRedirect);
+                Settings.setTimetableRedirect(data.timetableRedirect);
+            } else {
+                Settings.setClassCounter(Settings.getClassCounter());
+                Settings.setClassHourCounter(Settings.getClassHourCounter());
+                Settings.setCategoryVisibility(Settings.isActivityCategoryVisible());
+                Settings.setActivityBell(Settings.getActivityBell());
+                Settings.setActivityLocation(Settings.getActivityBell());
+                Settings.setActivityNote(Settings.getActivityNote());
+                Settings.setActivityGroup(Settings.getActivityGroup());
+                Settings.setActivityTutorsList(Settings.getActivityTutorsList());
+                Settings.setTimetableType(Settings.getTimetableType());
+                Settings.setTimetablePeriod(Settings.getTimetablePeriod());
+                Settings.setTimetableRedirect(Settings.getTimetableRedirect());
             }
+
             var data = $.cookie('devPlan.Params');
             if (data) {
-                Settings.setTimetableParams(new Cash.Params(data.group_id, data.tutor_id, data.place_id));
+                Settings.setTimetableParams(new devPlan.Params(data.group_id, data.tutor_id, data.place_id));
             }
-            if (Settings.getClassCounter()) {
-                $("#classCounter").attr("checked", "checked");
-            }
-            if (Settings.getClassHourCounter()) {
-                $("#classHourCounter").attr("checked", "checked");
-            }
-            if (Settings.getActivityCategory()) {
-                $("#activityCategory").attr("checked", "checked");
-            }
-            if (Settings.getActivityBell()) {
-                $("#activityBell").attr("checked", "checked");
-            }
-            if (Settings.getActivityLocation()) {
-                $("#activityLocation").attr("checked", "checked");
-            }
-            if (Settings.getActivityNote()) {
-                $("#activityNote").attr("checked", "checked");
-            }
-            if (Settings.getActivityGroup()) {
-                $("#activityGroup").attr("checked", "checked");
-            }
-            if (Settings.getActivityTutor()) {
-                $("#activityTutor").attr("checked", "checked");
-            }
-            if (Settings.getDevPlanRedirect()) {
-                $("#devPlanRedirect").attr("checked", "checked");
-            }
-            $('#timetableType' + Settings.getTimetableType()).attr("checked", "checked");
-            $('#timetablePeriod' + Settings.getTimetablePeriod()).attr("checked", "checked");
-
             return Settings;
         };
+
         Settings.loadTimetableParam = function () {
             Settings.getTimetableParams().getGroups().forEach(function (index, item) {
                 for (var i = 0; i < devPlan.Init.getGroups().length; i++) {
@@ -210,17 +268,16 @@ var devPlan;
             var data = {
                 classCounter: Settings.getClassCounter(),
                 classHourCounter: Settings.getClassHourCounter(),
-                activityCategory: Settings.getActivityCategory(),
+                activityCategory: Settings.isActivityCategoryVisible(),
                 activityBell: Settings.getActivityBell(),
                 activityLocation: Settings.getActivityLocation(),
                 activityNote: Settings.getActivityNote(),
                 activityGroup: Settings.getActivityGroup(),
-                activityTutor: Settings.getActivityTutor(),
+                activityTutorsList: Settings.getActivityTutorsList(),
                 timetableType: Settings.getTimetableType(),
                 timetablePeriod: Settings.getTimetablePeriod(),
-                devPlanRedirect: Settings.getDevPlanRedirect(),
-                timetableParams: Settings.getTimetableParams(),
-                activityNameFilter: ''
+                timetableRedirect: Settings.getTimetableRedirect(),
+                timetableParams: Settings.getTimetableParams()
             };
             $.cookie.json = true;
             $.cookie('devPlan.Settings', data, { expires: 1000 });
@@ -238,8 +295,8 @@ var devPlan;
             return result && decodeURIComponent(result[1]) || "";
         };
 
-        Settings.getCurrentDate = function () {
-            var date = new Date();
+        Settings.transformDateToDateStamp = function (date) {
+            if (typeof date === "undefined") { date = new Date(); }
             var month = "";
             if (date.getMonth() <= 9) {
                 month = '0' + (date.getMonth() + 1);
@@ -257,55 +314,60 @@ var devPlan;
             return date.getFullYear() + '-' + month + '-' + day;
         };
 
+        Settings.getCurrentDate = function (daysToAdd) {
+            if (typeof daysToAdd === "undefined") { daysToAdd = 0; }
+            var date = new Date();
+            date.setDate(date.getDate() + daysToAdd);
+            return Settings.transformDateToDateStamp(date);
+        };
+
         Settings.addTimetableParam = function (item) {
             var g = devPlan.Init.searchGroupId(item);
             var t = devPlan.Init.searchTutorId(item);
             var p = devPlan.Init.searchPlaceId(item);
-
             if (g > 0 && t == 0 && p == 0) {
-                $(".devPlanParams").append('<button title="' + item + '" id="g' + g + '" class="devPlanParam btn btn-xs btn-primary" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + g + '" type="g">' + ((item.length > 50) ? item.substr(0, 50) + '...' : item) + '' + '</button>');
+                $(".devPlanParams").append(devPlan.Generate.devPlanParamButton(item, g, "g"));
                 Settings.setTimetableParams(Settings.getTimetableParams().addGroup(g));
             }
             if (g == 0 && t > 0 && p == 0) {
-                $(".devPlanParams").append('<button title="' + item + '"  id="t' + t + '" class="devPlanParam btn btn-xs btn-success" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + t + '" type="t">' + ((item.length > 50) ? item.substr(0, 50) + '...' : item) + '' + '</button>');
+                $(".devPlanParams").append(devPlan.Generate.devPlanParamButton(item, t, "t"));
                 Settings.setTimetableParams(Settings.getTimetableParams().addTutor(t));
             }
             if (g == 0 && t == 0 && p > 0) {
-                $(".devPlanParams").append('<button  title="' + item + '"  id="p' + p + '" class="devPlanParam btn btn-xs btn-info" onclick="devPlan.Settings.removeTimetableParam(this);" value="' + p + '" type="p">' + ((item.length > 50) ? item.substr(0, 50) + '...' : item) + '' + '</button>');
+                $(".devPlanParams").append(devPlan.Generate.devPlanParamButton(item, p, "p"));
                 Settings.setTimetableParams(Settings.getTimetableParams().addPlace(p));
             }
-            if (Settings.getTimetableParams().isEmpty()) {
-                $(".devPlanUrl").empty();
-            } else {
-                $(".devPlanUrl").empty().append('http://devplan.uek.krakow.pl/timetable.html?timetable=<wbr>' + Settings.getTimetableParams().toString());
-            }
+            Settings.devPlanUrl();
             $('.devPlanQrCodeImg').empty().qrcode('http://devplan.uek.krakow.pl/timetable.html?timetable=' + Settings.getTimetableParams().toString());
         };
+
         Settings.removeTimetableParam = function (item) {
             var item = $(item);
-            if (item.attr("type") == "g") {
-                Settings.setTimetableParams(Settings.getTimetableParams().removeGroup(parseInt(item.attr("value"))));
+            if (item.attr("data-type") == "g") {
+                Settings.setTimetableParams(Settings.getTimetableParams().removeGroup(parseInt(item.attr("data-value"))));
             }
-            if (item.attr("type") == "t") {
-                Settings.setTimetableParams(Settings.getTimetableParams().removeTutor(parseInt(item.attr("value"))));
+            if (item.attr("data-type") == "t") {
+                Settings.setTimetableParams(Settings.getTimetableParams().removeTutor(parseInt(item.attr("data-value"))));
             }
-            if (item.attr("type") == "p") {
-                Settings.setTimetableParams(Settings.getTimetableParams().removePlace(parseInt(item.attr("value"))));
+            if (item.attr("data-type") == "p") {
+                Settings.setTimetableParams(Settings.getTimetableParams().removePlace(parseInt(item.attr("data-value"))));
             }
-
-            item.remove();
-            if (Settings.getTimetableParams().isEmpty()) {
-                $(".devPlanUrl").empty();
-            } else {
-                $(".devPlanUrl").empty().append('http://devplan.uek.krakow.pl/timetable.html?timetable=<wbr>' + Settings.getTimetableParams().toString());
-            }
+            item.parent().remove();
+            Settings.devPlanUrl();
             $('.devPlanQrCodeImg').empty().qrcode('http://devplan.uek.krakow.pl/timetable.html?timetable=' + Settings.getTimetableParams().toString());
+        };
+
+        Settings.devPlanUrl = function () {
+            var devPlanUrl = $(".devPlanUrl").empty();
+            if (!Settings.getTimetableParams().isEmpty()) {
+                devPlanUrl.append('http://devplan.uek.krakow.pl/timetable.html?timetable=<wbr>' + Settings.getTimetableParams().toString());
+            }
         };
         Settings.classCounter = false;
 
         Settings.classHourCounter = false;
 
-        Settings.activityCategory = true;
+        Settings.activityCategoryVisibility = true;
 
         Settings.activityBell = true;
 
@@ -315,17 +377,19 @@ var devPlan;
 
         Settings.activityGroup = true;
 
-        Settings.activityTutor = true;
+        Settings.activityTutorsList = true;
 
         Settings.timetableType = 1;
 
         Settings.timetablePeriod = 0;
 
-        Settings.timetableParams = new Cash.Params();
+        Settings.timetableRedirect = false;
+
+        Settings.timetableParams = new devPlan.Params();
 
         Settings.activityNameFilter = "";
 
-        Settings.devPlanRedirect = false;
+        Settings.page = 0;
         return Settings;
     })();
     devPlan.Settings = Settings;

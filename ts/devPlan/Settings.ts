@@ -19,7 +19,7 @@ module devPlan {
         /**
          * 
          */
-        private static activityCategory: boolean = true;
+        private static activityCategoryVisibility: boolean = true;
         /**
          * 
          */
@@ -39,7 +39,7 @@ module devPlan {
         /**
          * 
          */
-        private static activityTutor: boolean = true;
+        private static activityTutorsList: boolean = true;
         /**
          * 
          */
@@ -55,45 +55,64 @@ module devPlan {
         /**
          * 
          */
-        public static timetableParams: Cash.Params = new Cash.Params();
+        public static timetableParams: devPlan.Params = new devPlan.Params();
         /**
          * 
          */
         private static activityNameFilter: string = "";
         /**
-         * 
+         * @since 0.8
          */
         private static page: number = 0;
         /**
-         * 
+         * Returns page
+         * @since 0.8
          */
         public static getPage(): number {
             return Settings.page;
         }
         /**
-         * 
+         * Sets page
+         * @since 0.8
          */
-        public static setPage(page: any = 0): Settings {
-            page = parseInt(page);
+        public static setPage(page: number = 0): Settings {
             Settings.page = page;
             return Settings;
         }
         /**
-         * 
+         * @since 0.8
          */
         public static increasePage(): Settings {
-            console.log("days", Settings.getPage());
-            Settings.setPage(Settings.getPage() + Settings.getTimetablePeriod());
-            console.log("days", Settings.getPage());
+            if (devPlan.Init.getTimetable().isValidPositionInDatesList(
+                devPlan.Init.getTimetable().getDatePositionInDatesList(Settings.getCurrentDate()) +
+                (Settings.getPage() * Settings.getTimetablePeriod()) + 1)) {
+
+                Settings.setPage(Settings.getPage() + 1);
+
+                $("button.devPlanTimetablePeriodNavigation.decrease").removeAttr("disabled");
+            } else {
+
+                $("button.devPlanTimetablePeriodNavigation.increase").attr("disabled", "disabled");
+
+            }
             return Settings;
         }
         /**
-         * 
+         * @since 0.8
          */
         public static decreasePage(): Settings {
-            console.log("days", Settings.getPage());
-            Settings.setPage(Settings.getPage() - Settings.getTimetablePeriod());
-            console.log("days", Settings.getPage());
+            if (devPlan.Init.getTimetable().isValidPositionInDatesList(
+                devPlan.Init.getTimetable().getDatePositionInDatesList(Settings.getCurrentDate()) +
+                (Settings.getPage() * Settings.getTimetablePeriod()) - 1)) {
+
+                Settings.setPage(Settings.getPage() - 1);
+
+                $("button.devPlanTimetablePeriodNavigation.increase").removeAttr("disabled");
+
+            } else {
+
+                $("button.devPlanTimetablePeriodNavigation.decrease").attr("disabled", "disabled");
+            }
             return Settings;
         }
         /**
@@ -109,6 +128,9 @@ module devPlan {
             Settings.classCounter = status;
             if (Settings.getClassCounter() == true) {
                 $("input.devPlanSettingsActivityClassCounter").attr("checked", "checked");
+            } else {
+                $("input.devPlanSettingsActivityClassCounter").removeAttr("checked");
+
             }
             return Settings;
         }
@@ -131,16 +153,16 @@ module devPlan {
         /**
          * 
          */
-        static getActivityCategory(): boolean {
-            return Settings.activityCategory;
+        static isActivityCategoryVisible(): boolean {
+            return Settings.activityCategoryVisibility;
         }
         /**
          * 
          */
-        static setActivityCategory(status: boolean = false): Settings {
-            Settings.activityCategory = status;
-            if (Settings.getActivityCategory() == true) {
-                $("input.devPlanSettingsActivityCategory").attr("checked", "checked");
+        static setCategoryVisibility(status: boolean = false): Settings {
+            Settings.activityCategoryVisibility = status;
+            if (Settings.isActivityCategoryVisible() == true) {
+                $("input.devPlanSettingsShowActivityCategory").attr("checked", "checked");
             }
             return Settings;
         }
@@ -211,16 +233,16 @@ module devPlan {
         /**
          * 
          */
-        static getActivityTutor(): boolean {
-            return Settings.activityTutor;
+        static getActivityTutorsList(): boolean {
+            return Settings.activityTutorsList;
         }
         /**
          *
          */
-        static setActivityTutor(status: boolean = false): Settings {
-            Settings.activityTutor = status;
-            if (Settings.getActivityTutor()) {
-                $("input.devPlanSettingsActivityTutor").attr("checked", "checked");
+        static setActivityTutorsList(status: boolean = false): Settings {
+            Settings.activityTutorsList = status;
+            if (Settings.getActivityTutorsList()) {
+                $("input.devPlanSettingsactivityTutorsList").attr("checked", "checked");
             }
             return Settings;
         }
@@ -285,13 +307,13 @@ module devPlan {
         /**
          * 
          */
-        static getTimetableParams(): Cash.Params {
+        static getTimetableParams(): devPlan.Params {
             return Settings.timetableParams;
         }
         /**
          *
          */
-        static setTimetableParams(status: Cash.Params = new Cash.Params()): Settings {
+        static setTimetableParams(status: devPlan.Params = new devPlan.Params()): Settings {
             Settings.timetableParams = status;
             return Settings;
         }
@@ -319,20 +341,32 @@ module devPlan {
             if (data) {
                 Settings.setClassCounter(data.classCounter);
                 Settings.setClassHourCounter(data.classHourCounter);
-                Settings.setActivityCategory(data.activityCategory);
+                Settings.setCategoryVisibility(data.activityCategory);
                 Settings.setActivityBell(data.activityBell);
                 Settings.setActivityLocation(data.activityLocation);
                 Settings.setActivityNote(data.activityNote);
                 Settings.setActivityGroup(data.activityGroup);
-                Settings.setActivityTutor(data.activityTutor);
+                Settings.setActivityTutorsList(data.activityTutorsList);
                 Settings.setTimetableType(data.timetableType);
                 Settings.setTimetablePeriod(data.timetablePeriod);
                 Settings.setTimetableRedirect(data.timetableRedirect);
+            } else {
+                Settings.setClassCounter(Settings.getClassCounter());
+                Settings.setClassHourCounter(Settings.getClassHourCounter());
+                Settings.setCategoryVisibility(Settings.isActivityCategoryVisible());
+                Settings.setActivityBell(Settings.getActivityBell());
+                Settings.setActivityLocation(Settings.getActivityBell());
+                Settings.setActivityNote(Settings.getActivityNote());
+                Settings.setActivityGroup(Settings.getActivityGroup());
+                Settings.setActivityTutorsList(Settings.getActivityTutorsList());
+                Settings.setTimetableType(Settings.getTimetableType());
+                Settings.setTimetablePeriod(Settings.getTimetablePeriod());
+                Settings.setTimetableRedirect(Settings.getTimetableRedirect());
             }
 
             var data: any = $.cookie('devPlan.Params');
             if (data) {
-                Settings.setTimetableParams(new Cash.Params(data.group_id, data.tutor_id, data.place_id));
+                Settings.setTimetableParams(new devPlan.Params(data.group_id, data.tutor_id, data.place_id));
             }
             return Settings;
         }
@@ -369,12 +403,12 @@ module devPlan {
             var data: Settings = {
                 classCounter: Settings.getClassCounter(),
                 classHourCounter: Settings.getClassHourCounter(),
-                activityCategory: Settings.getActivityCategory(),
+                activityCategory: Settings.isActivityCategoryVisible(),
                 activityBell: Settings.getActivityBell(),
                 activityLocation: Settings.getActivityLocation(),
                 activityNote: Settings.getActivityNote(),
                 activityGroup: Settings.getActivityGroup(),
-                activityTutor: Settings.getActivityTutor(),
+                activityTutorsList: Settings.getActivityTutorsList(),
                 timetableType: Settings.getTimetableType(),
                 timetablePeriod: Settings.getTimetablePeriod(),
                 timetableRedirect: Settings.getTimetableRedirect(),

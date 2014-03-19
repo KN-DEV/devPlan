@@ -1,12 +1,4 @@
-module Cash {
-    /**
-     * Model of Timetable param data
-     */
-    export interface ParamsInterface {
-        group_id: number[];
-        tutor_id: number[];
-        place_id: number[];
-    }
+module devPlan {
     /**
      * 
      */
@@ -27,9 +19,9 @@ module Cash {
          * 
          */
         constructor(groups: number[]= [], tutors: number[]= [], places: number[]= []) {
-            this.setGroups(groups);
-            this.setTutors(tutors);
-            this.setPlaces(places);
+            this.setGroups(groups != null ? groups : []);
+            this.setTutors(tutors != null ? tutors : []);
+            this.setPlaces(places != null ? places : []);
         }
         /**
          * 
@@ -40,7 +32,7 @@ module Cash {
         /**
          * 
          */
-        public setGroups(groups: number[]= []): Cash.Params {
+        public setGroups(groups: number[]= []): devPlan.Params {
             this.group_id = groups.sort((a, b) => {return a - b });
             return this;
         }
@@ -59,7 +51,7 @@ module Cash {
         /**
          * 
          */
-        public addGroup(id: number): Cash.Params {
+        public addGroup(id: number): devPlan.Params {
             if (!this.checkIfGroupIdExists(id)) {
                 this.getGroups().push(id);
                 this.setGroups(this.getGroups().sort((a, b) => {return a - b }));
@@ -69,7 +61,7 @@ module Cash {
         /**
          * 
          */
-        public removeGroup(id: number): Cash.Params {
+        public removeGroup(id: number): devPlan.Params {
 
             for (var i = 0; i < this.getGroups().length; i++) {
                 if (this.getGroups()[i] == id) {
@@ -87,7 +79,7 @@ module Cash {
         /**
          * 
          */
-        public setTutors(tutors: number[]= []): Cash.Params {
+        public setTutors(tutors: number[]= []): devPlan.Params {
             this.tutor_id = tutors.sort((a, b) => {return a - b });
             return this;
         }
@@ -106,7 +98,7 @@ module Cash {
         /**
          * 
          */
-        public addTutor(id: number): Cash.Params {
+        public addTutor(id: number): devPlan.Params {
             if (!this.checkIfTutorIdExists(id)) {
                 this.getTutors().push(id);
                 this.setTutors(this.getTutors().sort((a, b) => {return a - b }));
@@ -116,7 +108,7 @@ module Cash {
         /**
          * 
          */
-        public removeTutor(id: number): Cash.Params {
+        public removeTutor(id: number): devPlan.Params {
 
 
             for (var i = 0; i < this.getTutors().length; i++) {
@@ -135,7 +127,7 @@ module Cash {
         /**
          * 
          */
-        public setPlaces(places: number[]= []): Cash.Params {
+        public setPlaces(places: number[]= []): devPlan.Params {
             this.place_id = places.sort((a, b) => {return a - b });
             return this;
         }
@@ -154,7 +146,7 @@ module Cash {
         /**
          * 
          */
-        public addPlace(id: number): Cash.Params {
+        public addPlace(id: number): devPlan.Params {
             if (!this.checkIfPlaceIdExists(id)) {
                 this.getPlaces().push(id);
                 this.setPlaces(this.getPlaces().sort((a, b) => {return a - b }));
@@ -164,7 +156,7 @@ module Cash {
         /**
          * 
          */
-        public removePlace(id: number): Cash.Params {
+        public removePlace(id: number): devPlan.Params {
             for (var i = 0; i < this.getPlaces().length; i++) {
                 if (this.getPlaces()[i] == id) {
                     this.getPlaces().splice(i, 1);
@@ -172,11 +164,28 @@ module Cash {
             }
             return this;
         }
+
         /**
-         * 
+         * @since 0.8
          */
         public isEmpty() {
             return (this.getGroups().length == 0) && (this.getTutors().length == 0) && (this.getPlaces().length == 0);
+        }
+
+        /**
+         * Checks if object contains only one element in tutor_id and nothing else
+         * @since 0.8
+         */
+        public haveOnlyOneTutor(): boolean {
+            return (this.getGroups().length == 0 && this.getTutors().length == 1 && this.getPlaces().length == 0);
+        }
+        
+        /**
+         * Checks if object contains only one element in tutor_id and nothing else
+         * @since 0.8
+         */
+        public haveOnlyOneGroup(): boolean {
+            return (this.getGroups().length == 1 && this.getTutors().length == 0 && this.getPlaces().length == 0);
         }
         /**
          * 
@@ -195,10 +204,10 @@ module Cash {
             return data;
         }
         /**
-         * Creates new Cash.Params object from given query
+         * Creates new devPlan.Params object from given query
          */
-        public static fromString(str: string = ""): Cash.Params {
-            var params = new Cash.Params();
+        public static fromString(str: string = ""): devPlan.Params {
+            var params = new devPlan.Params();
             var paramsArray: string[] = str.match(/[gtp][0-9]*/gi);
 
             if (paramsArray != null) {

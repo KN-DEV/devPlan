@@ -14,46 +14,37 @@ module Cash {
         /**
          * Gets list of all groups available in cash service
          */
-        public static getGroupsList(cache: boolean = false, ttl: number = 1): JQueryXHR {
-
+        public static getGroupsList(useCache: boolean = false, ttl: number = 1): JQueryXHR {
             return $.ajax({
                 url: Cash.Api.host + "groups",
                 type: "GET",
                 success: (data) => {
-                    console.log("Cash.Api.getTutorsList() - success", data);
                     devPlan.Init.setGroups(data);
                 },
-                error: () => {
-                    console.log("Cash.Api.getTutorsList() - error");
-                },
-                cacheJStorage: cache,
+                cacheJStorage: useCache,
                 cacheTTL: (3600 * ttl),
-                cacheKey: "Cash.groups",
+                cacheKey: "groups",
                 isCacheValid: () => {
-                    return $.jStorage.get("Cash.places", false);
-
+                    return $.jStorage.get("groups", false);
                 }
             });
         }
         /**
          * Gets list of all tutors available in cash service
          */
-        public static getTutorsList(cache: boolean = false, ttl: number = 1): JQueryXHR {
+        public static getTutorsList(useCache: boolean = false, ttl: number = 1): JQueryXHR {
             return $.ajax({
                 url: Cash.Api.host + "tutors",
                 type: "GET",
                 success: (data) => {
-                    console.log("Cash.Api.getTutorsList() - success", data);
                     devPlan.Init.setTutors(data);
                 },
-                error: () => {
-                    console.log("Cash.Api.getTutorsList() - error");
-                },
-                cacheJStorage: cache,
+
+                cacheJStorage: useCache,
                 cacheTTL: (3600000 * ttl),
-                cacheKey: "Cash.tutors",
+                cacheKey: "tutors",
                 isCacheValid: () => {
-                    return $.jStorage.get("Cash.places", false);
+                    return $.jStorage.get("tutors", false);
 
                 }
 
@@ -62,23 +53,19 @@ module Cash {
         /**
         * Gets list of all places available in cash service
         */
-        public static getPlacesList(cache: boolean = false, ttl: number = 1): JQueryXHR {
+        public static getPlacesList(useCache: boolean = false, ttl: number = 1): JQueryXHR {
             return $.ajax({
                 url: Cash.Api.host + "places",
                 type: "GET",
                 dataType: 'json',
                 success: (data) => {
                     devPlan.Init.setPlaces(data);
-                    console.log("Cash.Api.getPlacesList() - success", data);
                 },
-                error: () => {
-                    console.log("Cash.Api.getPlacesList() - error");
-                },
-                cacheJStorage: cache,
-                cacheKey: "Cash.places",
+                cacheJStorage: useCache,
+                cacheKey: "places",
                 cacheTTL: (3600000 * ttl),
                 isCacheValid: () => {
-                    return $.jStorage.get("Cash.places", false);
+                    return $.jStorage.get("places", false);
 
                 }
             });
@@ -86,22 +73,15 @@ module Cash {
         /**
          * Registers timetable
          */
-        public static registerTimetable(params: Cash.Params): JQueryXHR {
+        public static registerTimetable(groups: number[]= [], tutors: number[]= [], places: number[]= []): JQueryXHR {
             return $.ajax({
                 url: Cash.Api.host + "timetables",
                 type: "POST",
                 dataType: 'json',
-                // cache: false,
                 data: {
-                    group_id: params.getGroups(),
-                    tutor_id: params.getTutors(),
-                    place_id: params.getPlaces()
-                },
-                success: (data: any) => {
-                    console.log("Cash.Api.registerTimetable() - success", params.toString(), data);
-                },
-                error: () => {
-                    console.log("Cash.Api.registerTimetable() - error", params.toString());
+                    group_id: groups,
+                    tutor_id: tutors,
+                    place_id: places
                 },
                 cacheJStorage: false
             });
@@ -109,48 +89,30 @@ module Cash {
         /**
          * 
          */
-        public static getTimetable(params: Cash.Params, cache: boolean = false, ttl: number = 1): JQueryXHR {
+        public static getTimetable(query: string, cache: boolean = false, ttl: number = 1, notOverRide= true): JQueryXHR {
             return $.ajax({
-                url: Cash.Api.host + "timetables/" + params.toString(),
+                url: Cash.Api.host + "timetables/" + query,
                 type: "GET",
                 dataType: 'json',
-                // cache: false,
                 success: (data: any) => {
                     devPlan.Init.setTimetable(data);
-                    console.log("Cash.Api.getTimetable() - success", params.toString(), data);
-                },
-                error: () => {
-                    console.log("Cash.Api.getTimetable() - error", params.toString());
                 },
                 cacheJStorage: cache,
-                cacheKey: params.toString(),
+                cacheKey: query,
                 cacheTTL: (3600000 * ttl),
                 isCacheValid: () => {
-
-                    return true;
-                    //                    $.when(Cash.Api.getTimetableVersion(params))
-                    //                        .done((currentInfo: any = null) => {
-                    //                            console.log($.jStorage.get(params.toString()));
-                    //                            return Cash.Api.isUpToDateVersion($.jStorage.get(params.toString()), currentInfo);
-                    //                        }).always(() => {return $.jStorage.get(params.toString(), false) });
+                    return true && notOverRide;
                 }
             });
         }
         /**
          *
          */
-        public static getTimetableVersion(params: Cash.Params): any {
+        public static getTimetableVersion(query: string): any {
             return $.ajax({
-                url: Cash.Api.host + "timetables/" + params.toString() + "/versions",
+                url: Cash.Api.host + "timetables/" + query + "/versions",
                 type: "GET",
                 dataType: 'json',
-                // cache: false,
-                success: (data: any) => {
-                    console.log("Cash.Api.getTimetableVersion() - success", params.toString(), data);
-                },
-                error: () => {
-                    console.log("Cash.Api.getTimetable() - error", params.toString());
-                },
                 cacheJStorage: false,
             });
         }

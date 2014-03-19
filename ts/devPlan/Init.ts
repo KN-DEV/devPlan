@@ -2,7 +2,10 @@
 /// <reference path="../DefinitelyTyped/bootstrap/bootstrap.d.ts" />
 /// <reference path="../DefinitelyTyped/jquery.cookie/jquery.cookie.d.ts" />
 /// <reference path="../DefinitelyTyped/storejs/storejs.d.ts" />
-/// <reference path="../Cash/Timetable.ts" />
+
+/// <reference path="../Cash/Timetable.d.ts" />
+/// <reference path="./Timetable.ts" />
+/// <reference path="./Timetable/Version.ts" />
 /// <reference path="../Cash/Api.ts" />
 /// <reference path="Settings.ts" />
 /// <reference path="Generate.ts" />
@@ -14,9 +17,6 @@
 /**
  * devPlan App
  */
-
-
-
 module devPlan {
 
     export enum CacheTime {
@@ -32,23 +32,23 @@ module devPlan {
     export class Init {
 
         public static placesInUse: boolean = false;
+        public static tutorsInUse: boolean = true;
         /**
          * Keeps list of groups from Cash service
          */
-        private static groups: Cash.Group[] = [];
-
+        private static groups: devPlan.Group[] = [];
         /**
          * Keeps list of tutors from Cash service
          */
-        private static tutors: Cash.Tutor[] = [];
+        private static tutors: devPlan.Tutor[] = [];
         /**
          * Keeps list of places from Cash service
          */
-        private static places: Cash.Place[] = [];
+        private static places: devPlan.Place[] = [];
         /**
          * 
          */
-        static timetable: Cash.Timetable;
+        static timetable: devPlan.Timetable;
         constructor() {
             Settings.load();
             /**
@@ -58,7 +58,7 @@ module devPlan {
             /**
              * Tworzy obiekt Params
              */
-            var params: Cash.Params = Cash.Params.fromString(Settings.getUrlParam('timetable'));
+            var params: devPlan.Params = devPlan.Params.fromString(Settings.getUrlParam('timetable'));
             /**
              * Sprawdza czy obiekt Params jest pusty
              */
@@ -88,42 +88,18 @@ module devPlan {
                  * Sprawdza czy istnieje jakikolwiek parametr do planu
                  */
                 if (!params.isEmpty()) {
+                    Init.loadTimetable(params);
+                    console.log("Koniec");
 
-
-
-                    $.when(Cash.Api.getTimetable(params, true, CacheTime.Timetable))
-                        .done((response: any) => {
-                            Init.showTimetable(Init.getTimetable());
-                            $("#timetable-panel-spinner").remove();
-                        }).fail(() => {
-
-                            if (Init.getTimetable() == null) {
-
-                                $.when(Cash.Api.registerTimetable(params))
-                                    .done(() => {
-                                        $.when(Cash.Api.getTimetable(params, true, CacheTime.Timetable))
-                                            .done((response: any) => {
-                                                Init.showTimetable(Init.getTimetable());
-                                                $("#timetable-panel-spinner").remove();
-                                            }).fail((response: any) => {
-                                            });
-                                    }).fail(() => {
-                                    });
-                            } else {
-                                Init.showTimetable(Init.getTimetable());
-                                $("#timetable-panel-spinner").remove();
-                            }
-                        });
                 } else {
                     $("#timetable-panel-spinner").remove();
                 }
-
             }
 
             $.when(
-                Cash.Api.getGroupsList(true, CacheTime.Group),
-                Cash.Api.getTutorsList(true, CacheTime.Tutor),
-                (devPlan.Init.placesInUse == true ? Cash.Api.getPlacesList(true, CacheTime.Place) : null)
+                Cash.Api.getGroupsList(true, 12),
+                devPlan.Init.tutorsInUse == true ? Cash.Api.getTutorsList(true, 12) : null,
+                Init.placesInUse ? Cash.Api.getPlacesList(true, 12) : null
                 )
                 .done((groups: any, tutors: any, places: any) => {
 
@@ -137,8 +113,8 @@ module devPlan {
                         .typeahead({
                             source: Init.typeaheadDataCreator(
                                 Init.getGroups(),
-                                Init.getTutors(),
-                                devPlan.Init.placesInUse == true ? Init.getPlaces() : []
+                                (devPlan.Init.tutorsInUse == true ? Init.getTutors() : []),
+                                (devPlan.Init.placesInUse == true ? Init.getPlaces() : [])
                                 ),
                             items: 15,
                             updater: (item: any) => {
@@ -148,10 +124,9 @@ module devPlan {
                                 if (group > 0 && tutor == 0 && place == 0) {
                                     window.location.replace('timetable.html?timetable=g' + group);
                                 }
-                                if (group == 0 && tutor > 0 && place == 0) {
+                                if (devPlan.Init.tutorsInUse == true && group == 0 && tutor > 0 && place == 0) {
                                     window.location.replace('timetable.html?timetable=t' + tutor);
                                 }
-
                                 if (devPlan.Init.placesInUse == true && group == 0 && tutor == 0 && place > 0) {
                                     window.location.replace('timetable.html?timetable=p' + place);
                                 }
@@ -229,11 +204,15 @@ module devPlan {
                         });
                     }
                 });
+
+
+
         }
+
         /**
          *
          */
-        static getGroups(): Cash.Group[] {
+        static getGroups(): devPlan.Group[] {
             return Init.groups;
         }
         /**
@@ -241,7 +220,7 @@ module devPlan {
          */
         static setGroups(groups: Cash.GroupInterface[]= []): Init {
             for (var group in groups) {
-                Init.groups.push(new Cash.Group(groups[group]));
+                Init.groups.push(new devPlan.Group(groups[group].id, groups[group].name));
             }
             Init.groups = Init.getGroups().sort((a: any, b: any) => {return a.getName() - b.getName() });
             return Init;
@@ -262,9 +241,12 @@ module devPlan {
             return found ? id : 0;
         }
         /**
-         *
+         * 
          */
-        static getTutors(): Cash.Tutor[] {
+        /**
+  *
+  */
+        static getTutors(): devPlan.Tutor[] {
             return Init.tutors;
         }
         /**
@@ -272,7 +254,7 @@ module devPlan {
          */
         static setTutors(tutors: Cash.TutorInterface[]= []): Init {
             for (var tutor in tutors) {
-                Init.tutors.push(new Cash.Tutor(tutors[tutor]));
+                Init.tutors.push(new devPlan.Tutor(tutors[tutor].id, tutors[tutor].name));
             }
             Init.tutors = Init.getTutors().sort((a: any, b: any) => {return a.getName() - b.getName() });
             return Init;
@@ -292,10 +274,11 @@ module devPlan {
             }
             return found ? id : 0;
         }
+
         /**
         *
         */
-        static getPlaces(): Cash.Place[] {
+        static getPlaces(): devPlan.Place[] {
             return Init.places;
         }
         /**
@@ -304,7 +287,7 @@ module devPlan {
         static setPlaces(places: any = []): Init {
             for (var place in places) {
 
-                Init.places.push(new Cash.Place(places[place]));
+                Init.places.push(new devPlan.Place(places[place]));
             }
             Init.places = Init.getPlaces().sort((a: any, b: any) => {return a.getLocation() - b.getLocation() });
             return Init;
@@ -324,117 +307,55 @@ module devPlan {
             }
             return found ? id : 0;
         }
+
+
+        static loadTimetable(params: devPlan.Params) {
+
+            $.when(Cash.Api.getTimetable(params.toString(), true, CacheTime.Timetable))
+                .done((response: any) => {
+                    Generate.timetable(Init.getTimetable());
+                    $("#timetable-panel-spinner").remove();
+                }).fail(() => {
+                    if (Init.getTimetable() == null) {
+                        $.when(Cash.Api.registerTimetable(params.getGroups(), params.getTutors(), params.getPlaces()))
+                            .done(() => {
+                                $.when(Cash.Api.getTimetable(params.toString(), true, CacheTime.Timetable))
+                                    .done((response: any) => {
+                                        Generate.timetable(Init.getTimetable());
+                                        $("#timetable-panel-spinner").remove();
+                                    });
+                            });
+                    } else {
+                        Generate.timetable(Init.getTimetable());
+                        $("#timetable-panel-spinner").remove();
+                        $.when(Cash.Api.getTimetableVersion(Init.getTimetable().getParams().toString()))
+                            .done((data: any) => {
+                                if (Init.getTimetable().isUpToDate(data) == false) {
+                                    Init.loadTimetable(params);
+                                }
+                            });
+                    }
+                });
+        }
         /**
          *
          */
-        static getTimetable(): Cash.Timetable {
+        static getTimetable(): devPlan.Timetable {
             return Init.timetable;
         }
         /**
          *
          */
-        static setTimetable(timetable?: Cash.TimetableInterface) {
-            Init.timetable = new Cash.Timetable(timetable);
+        static setTimetable(timetable: any) {
+            console.log(timetable);
+            Init.timetable = new devPlan.Timetable(timetable);
             return Init;
         }
-        /**
-         *
-         */
-        static showTimetable(timetable: Cash.Timetable): void {
-            console.log("showTimetable", timetable);
-            var data = "";
-            var date = "";
-            $("#timetable-results").empty();
 
-            if (timetable.getActivities().length > 0) {
-                var activity: Cash.Activity;
-
-                var daysCounter: number = 0;
-
-                var j = 0;
-                for (var i = 0; i < timetable.getActivities().length; i++) {
-                    activity = timetable.getActivities()[i];
-                    /**
-                     * zajęcia dla wielu grup - lista grup
-                     */
-                    j = i;
-                    var groups: Cash.Group[] = [];
-                    do {
-                        if (timetable.getActivities()[j].getGroup() != null) {
-                            groups[groups.length] = new Cash.Group(timetable.getActivities()[j].getGroup());
-                        }
-                    } while (timetable.getActivities()[++j] != null &&
-                        activity.getName() == timetable.getActivities()[j].getName() &&
-                        activity.getEndsAtTimestamp() == timetable.getActivities()[j].getEndsAtTimestamp());
-                    /**
-                     * 
-                     */
-                    var indexgroup = "";
-                    groups = groups.sort((a: any, b: any): any => { return a.getName() >= b.getName(); });
-                    for (var k = 0; k < groups.length; k++) {
-                        indexgroup = indexgroup + ' ' + groups[k].getName();
-                    }
-                    /**
-                     * 
-                     */
-                    if (activity.getDate() >= Settings.getCurrentDate(Settings.getPage()) || Settings.getTimetableType() == 0) {
-                        /**
-                         * Filtr
-                         */
-                        if (activity.contains(Settings.getActivityNameFilter(), indexgroup) == true) {
-                            /**
-                             * Cały dzień
-                             */
-                            if (date != activity.getDate()) {
-                                /**
-                                 * Ilość kolejnych zajęć
-                                 */
-                                if (Settings.getTimetablePeriod() != 0 && daysCounter >= Settings.getTimetablePeriod() && Settings.getTimetableType() != 0) {
-                                    break;
-                                }
-                                daysCounter++;
-                                if (date != "") {
-                                    data = data + '</div>';
-                                }
-                                data = data + Generate.dateInformation(activity) +
-                                '<div id="' + activity.getDate() + '" class="activities collapse in">';
-                                date = activity.getDate();
-                            }
-                            /**
-                             * zajęcia dla wielu grup - opuszcza kolejne
-                             */
-                            if (timetable.getActivities()[i - 1] != null &&
-                                activity.getName() == timetable.getActivities()[i - 1].getName() &&
-                                activity.getEndsAtTimestamp() == timetable.getActivities()[i - 1].getEndsAtTimestamp()) {
-                                continue;
-                            }
-                            /**
-                             * Pojedyncze zajęcia
-                             */
-                            data = data + Generate.generateActivity(timetable, activity, groups);
-                        }
-                    }
-                }
-                //end of loop
-                if (data.length == 0 && Settings.getActivityNameFilter().length > 0) {
-                    data = data + '<li class="list-group-item"><p class="h4 text-center">Brak wyników</p>';
-                }
-            } else {
-                data = data + '<li class="list-group-item"><p class="h4 text-center">Przykro nam. Ten devPlan nie posiada żadnych zajęć.</p>';
-            }
-            $("#timetable-results").append(data);
-            // binds chevron animation
-            bindAnimation();
-            $('.activity').popover({
-                placement: 'auto',
-                trigger: 'click',
-                html: true
-            });
-        }
         /**
          * 
          */
-        static typeaheadDataCreator(groups: Cash.Group[]= [], tutors: Cash.Tutor[]= [], places: Cash.Place[]= []): string[] {
+        static typeaheadDataCreator(groups: devPlan.Group[]= [], tutors: devPlan.Tutor[]= [], places: devPlan.Place[]= []): string[] {
             var data: string[] = [];
             for (var i = 0; i < groups.length; i++) {
                 data.push(Init.groups[i].getName());
@@ -450,7 +371,7 @@ module devPlan {
         /**
          * 
          */
-        static setUpButtons(params: Cash.Params): void {
+        static setUpButtons(params: devPlan.Params): void {
             if (params.isEmpty() == false) {
                 $(".devPlanWizardNavbarIconLink")
                     .removeAttr("data-toggle")
@@ -496,6 +417,9 @@ module devPlan {
                     '</button>');
             }
         }
+
+
+
     }
 }
 
@@ -521,6 +445,9 @@ function containsIndexGroups(indexgroups: string = '', query: string = ''): bool
     }
     return true;
 }
+
+
+
 /**
  * 
  */

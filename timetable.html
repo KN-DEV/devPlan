@@ -80,31 +80,33 @@
 				<div id="devPlanShowResults" class="panel panel-default">
 					<div class="panel-heading hidden-print">
 						<div class="row">
-							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-								<div class="input-group">
-									<!-- devPlanTimetableActivityFilter start -->
-									<input type="text"
-										class="form-control form-inline devPlanSettingsActivityNameFilter"
-										onkeyup="devPlan.Settings.setActivityNameFilter(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
-									<!-- devPlanTimetableActivityFilter stop -->
-									<!-- devPlanTimetablePeriodNavigation start -->
-									<div class="input-group-btn ">
-										<button
-											class="btn btn-primary devPlanTimetablePeriodNavigation"
-											type="button"
-											onClick="devPlan.Settings.decreasePage(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
-											<i class="fa fa-fw fa-chevron-left"></i>
-										</button>
-										<button
-											class="btn btn-primary devPlanTimetablePeriodNavigation"
-											type="button"
-											onClick="devPlan.Settings.increasePage(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
-											<i class="fa fa-fw fa-chevron-right"></i>
-										</button>
-									</div>
-									<!-- devPlanTimetablePeriodNavigation stop -->
-								</div>
+							<!-- devPlanTimetableActivityFilter start -->
+							<div class="col-lg-10 col-md-10 col-sm-10 col-xs-7">
+								<input type="text"
+									class="form-control form-inline input-sm devPlanSettingsActivityNameFilter"
+									placeholder="Filtruj"
+									onkeyup="devPlan.Settings.setActivityNameFilter(this.value).save(); devPlan.Generate.timetable(devPlan.Init.getTimetable());">
 							</div>
+							<!-- devPlanTimetableActivityFilter stop -->
+							<!-- devPlanTimetablePeriodNavigation start -->
+							<div class="col-lg-2 col-md-2 col-sm-2 col-xs-5">
+								<div class="btn-group btn-group-sm pull-right">
+									<button
+										class="btn btn-primary devPlanTimetablePeriodNavigation decrease"
+										type="button"
+										onClick="devPlan.Settings.decreasePage(); devPlan.Generate.timetable(devPlan.Init.getTimetable());">
+										<i class="fa fa-fw fa-chevron-left"></i>
+									</button>
+									<button
+										class="btn btn-primary  devPlanTimetablePeriodNavigation increase"
+										type="button"
+										onClick="devPlan.Settings.increasePage(); devPlan.Generate.timetable(devPlan.Init.getTimetable());">
+										<i class="fa fa-fw fa-chevron-right"></i>
+									</button>
+								</div>
+
+							</div>
+							<!-- devPlanTimetablePeriodNavigation stop -->
 						</div>
 					</div>
 					<div id="timetable-panel-spinner" class="panel-body">
@@ -179,7 +181,7 @@
 								<div class="checkbox">
 									<label><input type="checkbox"
 										class="devPlanSettingsTimetableRedirect"
-										onClick="devPlan.Settings.setTimetableRedirect(!devPlan.Settings.getTimetableRedirect()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
+										onClick="devPlan.Settings.setTimetableRedirect(!devPlan.Settings.getTimetableRedirect()).save(); devPlan.Generate.timetable(devPlan.Init.getTimetable());">
 										Automatycznie przekierowywuj do devPlan</label>
 								</div>
 							</div>
@@ -220,14 +222,14 @@
 									<label><input type="radio" value="1"
 										name="devPlanSettingsTimetableType"
 										class="devPlanSettingsTimetableType"
-										onClick="devPlan.Settings.setTimetableType(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
+										onClick="devPlan.Settings.setTimetableType(this.value).save(); devPlan.Generate.timetable(devPlan.Init.getTimetable());">
 										Nadchodzące </label>
 								</div>
 								<div class="radio">
 									<label><input type="radio" value="0"
 										name="devPlanSettingsTimetableType"
 										class="devPlanSettingsTimetableType"
-										onClick="devPlan.Settings.setTimetableType(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
+										onClick="devPlan.Settings.setTimetableType(this.value).save(); devPlan.Generate.timetable(devPlan.Init.getTimetable());">
 										Wszystkie </label>
 								</div>
 								<legend>Ilość wyświetlanych dni</legend>
@@ -235,77 +237,77 @@
 									<label><input type="radio" value=3
 										name="devPlanSettingsTimetablePeriod"
 										class="devPlanSettingsTimetablePeriod"
-										onClick="devPlan.Settings.setTimetablePeriod(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
+										onClick="devPlan.Settings.setTimetablePeriod(this.value).save(); devPlan.Generate.timetable(devPlan.Init.getTimetable());">
 										3 </label>
 								</div>
 								<div class="radio">
 									<label><input type="radio" value=7
 										name="devPlanSettingsTimetablePeriod"
 										class="devPlanSettingsTimetablePeriod"
-										onClick="devPlan.Settings.setTimetablePeriod(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
+										onClick="devPlan.Settings.setTimetablePeriod(this.value).save(); devPlan.Generate.timetable(devPlan.Init.getTimetable());">
 										7 </label>
 								</div>
 								<div class="radio">
 									<label><input type="radio" value=14
 										name="devPlanSettingsTimetablePeriod"
 										class="devPlanSettingsTimetablePeriod"
-										onClick="devPlan.Settings.setTimetablePeriod(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
+										onClick="devPlan.Settings.setTimetablePeriod(this.value).save(); devPlan.Generate.timetable(devPlan.Init.getTimetable());">
 										14 </label>
 								</div>
 								<div class="radio">
 									<label><input type="radio" value=0
 										name="devPlanSettingsTimetablePeriod"
 										class="devPlanSettingsTimetablePeriod"
-										onClick="devPlan.Settings.setTimetablePeriod(this.value).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
+										onClick="devPlan.Settings.setTimetablePeriod(this.value).save(); devPlan.Generate.timetable(devPlan.Init.getTimetable());">
 										Wszystkie </label>
 								</div>
 								<legend>Wyświetlaj: </legend>
 								<div class="checkbox">
 									<label><input type="checkbox"
-										class="devPlanSettingsActivityTutor"
-										onClick="devPlan.Settings.setActivityTutor(!devPlan.Settings.getActivityTutor()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
+										class="devPlanSettingsactivityTutorsList"
+										onClick="devPlan.Settings.setActivityTutorsList(!devPlan.Settings.getActivityTutorsList()).save(); devPlan.Generate.timetable(devPlan.Init.getTimetable());">
 										informacje o prowadzącym </label>
 								</div>
 								<div class="checkbox">
 									<label><input type="checkbox"
 										class="devPlanSettingsActivityNote"
-										onClick="devPlan.Settings.setActivityNote(!devPlan.Settings.getActivityNote()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
+										onClick="devPlan.Settings.setActivityNote(!devPlan.Settings.getActivityNote()).save(); devPlan.Generate.timetable(devPlan.Init.getTimetable());">
 										notatki do zajęć </label>
 								</div>
 								<div class="checkbox">
 									<label><input type="checkbox"
 										class="devPlanSettingsActivityBell"
-										onClick="devPlan.Settings.setActivityBell(!devPlan.Settings.getActivityBell()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
+										onClick="devPlan.Settings.setActivityBell(!devPlan.Settings.getActivityBell()).save(); devPlan.Generate.timetable(devPlan.Init.getTimetable());">
 										godzinę rozpoczęcia i zakończenia zajęć </label>
 								</div>
 								<div class="checkbox">
 									<label><input type="checkbox"
 										class="devPlanSettingsActivityLocation"
-										onClick="devPlan.Settings.setActivityLocation(!devPlan.Settings.getActivityLocation()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
+										onClick="devPlan.Settings.setActivityLocation(!devPlan.Settings.getActivityLocation()).save(); devPlan.Generate.timetable(devPlan.Init.getTimetable());">
 										informacje o lokalizacji zajęć </label>
 								</div>
 								<div class="checkbox">
 									<label><input type="checkbox"
-										class="devPlanSettingsActivityCategory"
-										onClick="devPlan.Settings.setActivityCategory(!devPlan.Settings.getActivityCategory()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
+										class="devPlanSettingsShowActivityCategory"
+										onClick="devPlan.Settings.setCategoryVisibility(!devPlan.Settings.isActivityCategoryVisible()).save(); devPlan.Generate.timetable(devPlan.Init.getTimetable());">
 										informacje o typie zajęć </label>
 								</div>
 								<div class="checkbox">
 									<label><input type="checkbox"
 										class="devPlanSettingsActivityGroup"
-										onClick="devPlan.Settings.setActivityGroup(!devPlan.Settings.getActivityGroup()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
+										onClick="devPlan.Settings.setActivityGroup(!devPlan.Settings.getActivityGroup()).save(); devPlan.Generate.timetable(devPlan.Init.getTimetable());">
 										informacje o grupach uczestniczących w zajęciach </label>
 								</div>
 								<div class="checkbox">
 									<label><input type="checkbox"
 										class="devPlanSettingsActivityClassCounter"
-										onClick="devPlan.Settings.setClassCounter(!devPlan.Settings.getClassCounter()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
+										onClick="devPlan.Settings.setClassCounter(!devPlan.Settings.getClassCounter()).save(); devPlan.Generate.timetable(devPlan.Init.getTimetable());">
 										informacje na tamat numeru kolejnych zajęć </label>
 								</div>
 								<div class="checkbox">
 									<label><input type="checkbox"
 										class="devPlanSettingsActivityClassHourCounter"
-										onClick="devPlan.Settings.setClassHourCounter(!devPlan.Settings.getClassHourCounter()).save(); devPlan.Init.showTimetable(devPlan.Init.getTimetable());">
+										onClick="devPlan.Settings.setClassHourCounter(!devPlan.Settings.getClassHourCounter()).save(); devPlan.Generate.timetable(devPlan.Init.getTimetable());">
 										informacje na temat ilości godzin lekcyjnych </label>
 								</div>
 							</fieldset>

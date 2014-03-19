@@ -14,10 +14,15 @@ var devPlan;
         };
 
         Settings.increasePage = function () {
-            if (devPlan.Init.getTimetable().isValidPositionInDatesList(devPlan.Init.getTimetable().getDatePositionInDatesList(Settings.getCurrentDate()) + (Settings.getPage() * Settings.getTimetablePeriod()) + 1)) {
-                Settings.setPage(Settings.getPage() + 1);
-
-                $("button.devPlanTimetablePeriodNavigation.decrease").removeAttr("disabled");
+            if (devPlan.Init.getTimetable().getDatePositionInDatesList(Settings.getCurrentDate()) != -1) {
+                if (devPlan.Init.getTimetable().isValidPositionInDatesList(devPlan.Init.getTimetable().getDatePositionInDatesList(Settings.getCurrentDate()) + ((Settings.getPage() + 1) * Settings.getTimetablePeriod()))) {
+                    Settings.setPage(Settings.getPage() + 1);
+                }
+                if (devPlan.Init.getTimetable().isValidPositionInDatesList(devPlan.Init.getTimetable().getDatePositionInDatesList(Settings.getCurrentDate()) + ((Settings.getPage() + 1) * Settings.getTimetablePeriod()) + 1)) {
+                    $("button.devPlanTimetablePeriodNavigation.decrease").removeAttr("disabled");
+                } else {
+                    $("button.devPlanTimetablePeriodNavigation.increase").attr("disabled", "disabled");
+                }
             } else {
                 $("button.devPlanTimetablePeriodNavigation.increase").attr("disabled", "disabled");
             }
@@ -25,13 +30,18 @@ var devPlan;
         };
 
         Settings.decreasePage = function () {
-            if (devPlan.Init.getTimetable().isValidPositionInDatesList(devPlan.Init.getTimetable().getDatePositionInDatesList(Settings.getCurrentDate()) + (Settings.getPage() * Settings.getTimetablePeriod()) - 1)) {
-                Settings.setPage(Settings.getPage() - 1);
+            console.log(devPlan.Init.getTimetable().getDatePositionInDatesList(Settings.getCurrentDate()) + ((Settings.getPage()) * Settings.getTimetablePeriod()));
 
+            if (devPlan.Init.getTimetable().isValidPositionInDatesList(devPlan.Init.getTimetable().getDatePositionInDatesList(Settings.getCurrentDate()) + ((Settings.getPage()) * Settings.getTimetablePeriod()))) {
+                Settings.setPage(Settings.getPage() - 1);
+            }
+
+            if (devPlan.Init.getTimetable().isValidPositionInDatesList(devPlan.Init.getTimetable().getDatePositionInDatesList(Settings.getCurrentDate()) + ((Settings.getPage()) * Settings.getTimetablePeriod()))) {
                 $("button.devPlanTimetablePeriodNavigation.increase").removeAttr("disabled");
             } else {
                 $("button.devPlanTimetablePeriodNavigation.decrease").attr("disabled", "disabled");
             }
+
             return Settings;
         };
 

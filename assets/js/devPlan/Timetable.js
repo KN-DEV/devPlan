@@ -122,7 +122,7 @@ var devPlan;
         };
 
         Timetable.prototype.isValidPositionInDatesList = function (id) {
-            return id > -1 && id < (this.getDatesList().length - 1);
+            return id > -1 && id < this.getDatesList().length;
         };
 
         Timetable.prototype.pushDateToDatesList = function (date) {

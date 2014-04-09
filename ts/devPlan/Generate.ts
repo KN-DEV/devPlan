@@ -120,7 +120,7 @@ module devPlan {
          */
         static activityTutorsList(activity: devPlan.Activity): string {
 
-            if (devPlan.Init.placesInUse == true) {
+            if (devPlan.Init.tutorsInUse == true) {
                 return '<span class="tutor">' +
                     (activity.getTutor().getMoodleUrl() != null ?
                     '<a href="' + activity.getTutor().getMoodleUrl() + '" title=" ' + activity.getTutor().getName() + ' - Wizytówka E-Uczelna ">E-Wizytówka</a> ' : "") +

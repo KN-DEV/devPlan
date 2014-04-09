@@ -1339,7 +1339,7 @@ var devPlan;
         };
 
         Generate.activityTutorsList = function (activity) {
-            if (devPlan.Init.placesInUse == true) {
+            if (devPlan.Init.tutorsInUse == true) {
                 return '<span class="tutor">' + (activity.getTutor().getMoodleUrl() != null ? '<a href="' + activity.getTutor().getMoodleUrl() + '" title=" ' + activity.getTutor().getName() + ' - Wizytówka E-Uczelna ">E-Wizytówka</a> ' : "") + '<a href="timetable.html?timetable=t' + activity.getTutor().getId() + '">' + activity.getTutor().getName() + '</a>' + '</span> ';
             } else {
                 return '<span class="tutor">' + (activity.getTutor().getMoodleUrl() != null ? '<a href="' + activity.getTutor().getMoodleUrl() + '" title=" ' + activity.getTutor().getName() + ' - Wizytówka E-Uczelna ">E-Wizytówka</a> ' : "") + activity.getTutor().getName() + '</span> ';

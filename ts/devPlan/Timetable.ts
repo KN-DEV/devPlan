@@ -224,7 +224,7 @@ module devPlan {
          */
 
         public isValidPositionInDatesList(id: number) {
-            return id > -1 && id < (this.getDatesList().length - 1);
+            return id >-1 && id < this.getDatesList().length;
         }
         /**
          * Pushs date to dates list when not exists

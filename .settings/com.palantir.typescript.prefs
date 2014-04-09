@@ -1,4 +1,4 @@
-build.path.sourceFolder=ts
+build.path.sourceFolder=
 compiler.codeGenTarget=ECMASCRIPT5
 compiler.compileOnSave=true
 compiler.mapSourceFiles=true
@@ -6,6 +6,8 @@ compiler.moduleGenTarget=SYNCHRONOUS
 compiler.noImplicitAny=true
 compiler.noLib=false
 compiler.optionDirOption=assets/js
+compiler.outputDirOption=
+compiler.outputFileOption=
 compiler.removeComments=true
 eclipse.preferences.version=1
 editor.indentSize=4

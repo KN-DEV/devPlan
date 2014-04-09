@@ -1,4 +1,4 @@
-/// <reference path="../DefinitelyTyped/jquery/jquery.d.ts" />
+/// <reference path="../../typings/jquery/jquery.d.ts" />
 /**
 * Cash service
 */
@@ -45,9 +45,7 @@ module Cash {
                 cacheKey: "tutors",
                 isCacheValid: () => {
                     return $.jStorage.get("tutors", false);
-
                 }
-
             });
         }
         /**
@@ -66,7 +64,6 @@ module Cash {
                 cacheTTL: (3600000 * ttl),
                 isCacheValid: () => {
                     return $.jStorage.get("places", false);
-
                 }
             });
         }

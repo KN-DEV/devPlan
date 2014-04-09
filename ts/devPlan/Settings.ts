@@ -1,5 +1,5 @@
-/// <reference path="../DefinitelyTyped/jquery/jquery.d.ts" />
-/// <reference path="../DefinitelyTyped/jquery.cookie/jquery.cookie.d.ts" />
+/// <reference path="../../typings/jquery/jquery.d.ts" />
+/// <reference path="../../typings/jquery.cookie/jquery.cookie.d.ts" />
 /**
  * 
  */
@@ -83,17 +83,24 @@ module devPlan {
          * @since 0.8
          */
         public static increasePage(): Settings {
-            if (devPlan.Init.getTimetable().isValidPositionInDatesList(
-                devPlan.Init.getTimetable().getDatePositionInDatesList(Settings.getCurrentDate()) +
-                (Settings.getPage() * Settings.getTimetablePeriod()) + 1)) {
-
-                Settings.setPage(Settings.getPage() + 1);
-
-                $("button.devPlanTimetablePeriodNavigation.decrease").removeAttr("disabled");
+            // Czy w ogóle już nie ma nadchodzących zajęć na dzień dzisiejszy
+            if (Init.getTimetable().getDatePositionInDatesList(Settings.getCurrentDate()) != -1) {
+                // Czy istnieją następne zajęcia 
+                if (Init.getTimetable().isValidPositionInDatesList(
+                    Init.getTimetable().getDatePositionInDatesList(Settings.getCurrentDate()) + ((Settings.getPage() + 1) * Settings.getTimetablePeriod())
+                    )
+                    ) {
+                    Settings.setPage(Settings.getPage() + 1);
+                }
+                if (Init.getTimetable().isValidPositionInDatesList(
+                    Init.getTimetable().getDatePositionInDatesList(Settings.getCurrentDate()) + ((Settings.getPage() + 1) * Settings.getTimetablePeriod())
+                    )) {
+                    $("button.devPlanTimetablePeriodNavigation.decrease").removeAttr("disabled");
+                } else {
+                    $("button.devPlanTimetablePeriodNavigation.increase").attr("disabled", "disabled");
+                }
             } else {
-
                 $("button.devPlanTimetablePeriodNavigation.increase").attr("disabled", "disabled");
-
             }
             return Settings;
         }
@@ -101,28 +108,34 @@ module devPlan {
          * @since 0.8
          */
         public static decreasePage(): Settings {
+
+            // Czy istnieje zajęcia poprzednie
             if (devPlan.Init.getTimetable().isValidPositionInDatesList(
-                devPlan.Init.getTimetable().getDatePositionInDatesList(Settings.getCurrentDate()) +
-                (Settings.getPage() * Settings.getTimetablePeriod()) - 1)) {
-
+                devPlan.Init.getTimetable().getDatePositionInDatesList(
+                    Settings.getCurrentDate()) + ((Settings.getPage() - 1) * Settings.getTimetablePeriod())
+                )) {
                 Settings.setPage(Settings.getPage() - 1);
-
-                $("button.devPlanTimetablePeriodNavigation.increase").removeAttr("disabled");
-
+            }
+            if (devPlan.Init.getTimetable().isValidPositionInDatesList(
+                devPlan.Init.getTimetable().getDatePositionInDatesList(
+                    Settings.getCurrentDate()) + ((Settings.getPage() - 1) * Settings.getTimetablePeriod())
+                )) {
+                $("button.devPlanTimetablePeriodNavigation.increase")
+                    .removeAttr("disabled");
             } else {
-
-                $("button.devPlanTimetablePeriodNavigation.decrease").attr("disabled", "disabled");
+                $("button.devPlanTimetablePeriodNavigation.decrease")
+                    .attr("disabled", "disabled");
             }
             return Settings;
         }
         /**
-         * 
+         *
          */
         static getClassCounter(): boolean {
             return Settings.classCounter;
         }
         /**
-         * 
+         *
          */
         static setClassCounter(status: boolean = false): Settings {
             Settings.classCounter = status;
@@ -135,13 +148,13 @@ module devPlan {
             return Settings;
         }
         /**
-         * 
+         *
          */
         static getClassHourCounter(): boolean {
             return Settings.classHourCounter;
         }
         /**
-         * 
+         *
          */
         static setClassHourCounter(status: boolean = false): Settings {
             Settings.classHourCounter = status;
@@ -151,13 +164,13 @@ module devPlan {
             return Settings;
         }
         /**
-         * 
+         *
          */
         static isActivityCategoryVisible(): boolean {
             return Settings.activityCategoryVisibility;
         }
         /**
-         * 
+         *
          */
         static setCategoryVisibility(status: boolean = false): Settings {
             Settings.activityCategoryVisibility = status;
@@ -167,13 +180,13 @@ module devPlan {
             return Settings;
         }
         /**
-         * 
+         *
          */
         static getActivityBell(): boolean {
             return Settings.activityBell;
         }
         /**
-         * 
+         *
          */
         static setActivityBell(status: boolean = false): Settings {
             Settings.activityBell = status;
@@ -183,13 +196,13 @@ module devPlan {
             return Settings;
         }
         /**
-         * 
+         *
          */
         static getActivityLocation(): boolean {
             return Settings.activityLocation;
         }
         /**
-         * 
+         *
          */
         static setActivityLocation(status: boolean = false): Settings {
             Settings.activityLocation = status;
@@ -199,13 +212,13 @@ module devPlan {
             return Settings;
         }
         /**
-         * 
+         *
          */
         static getActivityNote(): boolean {
             return Settings.activityNote;
         }
         /**
-         * 
+         *
          */
         static setActivityNote(status: boolean = false): Settings {
             Settings.activityNote = status;
@@ -215,13 +228,13 @@ module devPlan {
             return Settings;
         }
         /**
-         * 
+         *
          */
         static getActivityGroup(): boolean {
             return Settings.activityGroup;
         }
         /**
-         * 
+         *
          */
         static setActivityGroup(status: boolean = false): Settings {
             Settings.activityGroup = status;
@@ -231,7 +244,7 @@ module devPlan {
             return Settings;
         }
         /**
-         * 
+         *
          */
         static getActivityTutorsList(): boolean {
             return Settings.activityTutorsList;
@@ -284,18 +297,18 @@ module devPlan {
          */
         static setTimetablePeriod(status: number = 0): Settings {
             Settings.timetablePeriod = status;
-            Settings.setPage();
+            Settings.setPage(0);
             $('input.devPlanSettingsTimetablePeriod[value=\"' + devPlan.Settings.getTimetablePeriod() + '\"]').attr("checked", "checked");
             return Settings;
         }
         /**
-         * 
+         *
          */
         static getTimetableRedirect(): boolean {
             return Settings.timetableRedirect;
         }
         /**
-         * 
+         *
          */
         static setTimetableRedirect(status: boolean = false): Settings {
             Settings.timetableRedirect = status;
@@ -305,7 +318,7 @@ module devPlan {
             return Settings;
         }
         /**
-         * 
+         *
          */
         static getTimetableParams(): devPlan.Params {
             return Settings.timetableParams;
@@ -318,7 +331,7 @@ module devPlan {
             return Settings;
         }
         /**
-         * 
+         *
          */
         static getActivityNameFilter(): string {
             return Settings.activityNameFilter;
@@ -332,7 +345,7 @@ module devPlan {
             return Settings;
         }
         /**
-         * 
+         *
          */
         static load(): Settings {
             $.cookie.json = true;
@@ -371,7 +384,7 @@ module devPlan {
             return Settings;
         }
         /**
-         * 
+         *
          */
         static loadTimetableParam() {
             Settings.getTimetableParams().getGroups().forEach((index: number, item: number) => {
@@ -420,7 +433,7 @@ module devPlan {
             return Settings;
         }
         /**
-         * 
+         *
          */
         static saveTimetable(): Settings {
             $.cookie.json = true;
@@ -463,7 +476,7 @@ module devPlan {
             return Settings.transformDateToDateStamp(date);
         }
         /**
-         * 
+         *
          */
         static addTimetableParam(item: string) {
             var g: number = Init.searchGroupId(item);
@@ -482,10 +495,11 @@ module devPlan {
                 Settings.setTimetableParams(Settings.getTimetableParams().addPlace(p));
             }
             Settings.devPlanUrl();
-            $('.devPlanQrCodeImg').empty().qrcode('http://devplan.uek.krakow.pl/timetable.html?timetable=' + Settings.getTimetableParams().toString())
+            $('.devPlanQrCodeImg').empty().qrcode('http://devplan.uek.krakow.pl/export/'+ Settings.getTimetableParams().toString());
+            $('.devPlanExportUrl').attr('value', 'http://devplan.uek.krakow.pl/export/' + Settings.getTimetableParams().toString());
         }
         /**
-         * 
+         *
          */
         static removeTimetableParam(item: JQuery) {
             var item: JQuery = $(item);
@@ -512,16 +526,20 @@ module devPlan {
             }
             item.parent().remove();
             Settings.devPlanUrl();
-            $('.devPlanQrCodeImg').empty().qrcode('http://devplan.uek.krakow.pl/timetable.html?timetable=' + Settings.getTimetableParams().toString())
+            $('.devPlanQrCodeImg')
+                .empty()
+                .qrcode('http://devplan.uek.krakow.pl/export/' + Settings.getTimetableParams().toString());
+
+            $('.devPlanExportUrl').attr('value', 'http://devplan.uek.krakow.pl/export/'+ Settings.getTimetableParams().toString());
         }
         /**
-         * 
+         *
          */
         static devPlanUrl(): void {
             var devPlanUrl: any = $(".devPlanUrl").empty();
             if (!Settings.getTimetableParams().isEmpty()) {
-                devPlanUrl.append('http://devplan.uek.krakow.pl/timetable.html?timetable=<wbr>' +
-                    Settings.getTimetableParams().toString());
+                devPlanUrl.append('<a href="http://devplan.uek.krakow.pl/timetable.html?timetable=' +
+                    Settings.getTimetableParams().toString() + '">link</a>');
             }
         }
 

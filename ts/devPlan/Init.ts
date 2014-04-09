@@ -1,7 +1,7 @@
-/// <reference path="../DefinitelyTyped/jquery/jquery.d.ts" />
-/// <reference path="../DefinitelyTyped/bootstrap/bootstrap.d.ts" />
-/// <reference path="../DefinitelyTyped/jquery.cookie/jquery.cookie.d.ts" />
-/// <reference path="../DefinitelyTyped/storejs/storejs.d.ts" />
+/// <reference path="../../typings/jquery/jquery.d.ts" />
+/// <reference path="../../typings/bootstrap/bootstrap.d.ts" />
+/// <reference path="../../typings/jquery.cookie/jquery.cookie.d.ts" />
+/// <reference path="../../typings/storejs/storejs.d.ts" />
 
 /// <reference path="../Cash/Timetable.d.ts" />
 /// <reference path="./Timetable.ts" />
@@ -25,11 +25,11 @@ module devPlan {
         Place= 6,
         Timetable= 6
     }
-
     /**
      * 
      */
     export class Init {
+        public static typeaheadLimit: number = 15;
 
         public static placesInUse: boolean = false;
         public static tutorsInUse: boolean = true;
@@ -99,7 +99,7 @@ module devPlan {
             $.when(
                 Cash.Api.getGroupsList(true, 12),
                 devPlan.Init.tutorsInUse == true ? Cash.Api.getTutorsList(true, 12) : null,
-                Init.placesInUse ? Cash.Api.getPlacesList(true, 12) : null
+                devPlan.Init.placesInUse ? Cash.Api.getPlacesList(true, 12) : null
                 )
                 .done((groups: any, tutors: any, places: any) => {
 
@@ -116,7 +116,7 @@ module devPlan {
                                 (devPlan.Init.tutorsInUse == true ? Init.getTutors() : []),
                                 (devPlan.Init.placesInUse == true ? Init.getPlaces() : [])
                                 ),
-                            items: 15,
+                            items: devPlan.Init.typeaheadLimit,
                             updater: (item: any) => {
                                 var group: number = Init.searchGroupId(item);
                                 var tutor: number = Init.searchTutorId(item);
@@ -142,16 +142,18 @@ module devPlan {
                         $('#' + index + '.devPlanTypeahead').typeahead({
                             source: Init.typeaheadDataCreator(
                                 Init.getGroups(),
-                                Init.getTutors(),
-                                devPlan.Init.placesInUse == true ? Init.getPlaces() : []
+                                (devPlan.Init.tutorsInUse == true ? Init.getTutors() : []),
+                                (devPlan.Init.placesInUse == true ? Init.getPlaces() : [])
                                 ),
-                            items: 15,
+                            items: devPlan.Init.typeaheadLimit,
                             updater: (item: any) => {
                                 Settings.addTimetableParam(item);
                             }
                         });
                     });
-
+                    /**
+                     * Use cache
+                     */
                 }).fail(() => {
                     if ($.jStorage.storageAvailable() == true) {
                         $("#search-input")
@@ -168,7 +170,7 @@ module devPlan {
                          */
                         $("#search-input").typeahead({
                             source: data,
-                            items: 15,
+                            items: devPlan.Init.typeaheadLimit,
                             updater: (item: any) => {
                                 var group: number = Init.searchGroupId(item);
                                 var tutor: number = Init.searchTutorId(item);

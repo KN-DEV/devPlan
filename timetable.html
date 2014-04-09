@@ -81,7 +81,7 @@
 					<div class="panel-heading hidden-print">
 						<div class="row">
 							<!-- devPlanTimetableActivityFilter start -->
-							<div class="col-lg-10 col-md-10 col-sm-10 col-xs-7">
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 								<input type="text"
 									class="form-control form-inline input-sm devPlanSettingsActivityNameFilter"
 									placeholder="Filtruj"
@@ -89,23 +89,23 @@
 							</div>
 							<!-- devPlanTimetableActivityFilter stop -->
 							<!-- devPlanTimetablePeriodNavigation start -->
-							<div class="col-lg-2 col-md-2 col-sm-2 col-xs-5">
-								<div class="btn-group btn-group-sm pull-right">
-									<button
-										class="btn btn-primary devPlanTimetablePeriodNavigation decrease"
-										type="button"
-										onClick="devPlan.Settings.decreasePage(); devPlan.Generate.timetable(devPlan.Init.getTimetable());">
-										<i class="fa fa-fw fa-chevron-left"></i>
-									</button>
-									<button
-										class="btn btn-primary  devPlanTimetablePeriodNavigation increase"
-										type="button"
-										onClick="devPlan.Settings.increasePage(); devPlan.Generate.timetable(devPlan.Init.getTimetable());">
-										<i class="fa fa-fw fa-chevron-right"></i>
-									</button>
-								</div>
+							<!-- 							<div class="col-lg-2 col-md-2 col-sm-2 col-xs-5"> -->
+							<!-- 								<div class="btn-group btn-group-sm pull-right"> -->
+							<!-- 									<button -->
+							<!-- 										class="btn btn-primary devPlanTimetablePeriodNavigation decrease" -->
+							<!-- 										type="button" -->
+							<!-- 										onClick="devPlan.Settings.decreasePage(); devPlan.Generate.timetable(devPlan.Init.getTimetable());"> -->
+							<!-- 										<i class="fa fa-fw fa-chevron-left"></i> -->
+							<!-- 									</button> -->
+							<!-- 									<button -->
+							<!-- 										class="btn btn-primary  devPlanTimetablePeriodNavigation increase" -->
+							<!-- 										type="button" -->
+							<!-- 										onClick="devPlan.Settings.increasePage(); devPlan.Generate.timetable(devPlan.Init.getTimetable());"> -->
+							<!-- 										<i class="fa fa-fw fa-chevron-right"></i> -->
+							<!-- 									</button> -->
+							<!-- 								</div> -->
 
-							</div>
+							<!-- 							</div> -->
 							<!-- devPlanTimetablePeriodNavigation stop -->
 						</div>
 					</div>
@@ -156,14 +156,11 @@
 					<div class="tab-pane active" id="devPlanSettingsGeneral">
 						<div class="modal-body">
 							<p>
-								Skopiuj devPlan lub go
-								<button type="button" class="btn btn-link" data-toggle="modal"
-									data-target="#devPlanQrCode">
-									<i class="fa fa-fw fa-qrcode"></i> zeskanuj
-								</button>
-								i podziel się z innymi.
+								Skopiuj <span class="devPlanUrl btn-link">link</span> lub go <a
+									href="#" type="button" data-toggle="modal"
+									data-target="#devPlanQrCode"> zeskanuj </a> i podziel się z
+								innymi.
 							</p>
-							<div class="form-group devPlanUrl"></div>
 							<div class="form-group">
 								<label>Twój devPlan zawiera zajęcia:</label>
 								<div class="btn-toolbar devPlanParams"></div>
@@ -185,8 +182,6 @@
 										Automatycznie przekierowywuj do devPlan</label>
 								</div>
 							</div>
-
-
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-default pull-left"
@@ -205,9 +200,6 @@
 									data-target="#devPlanExportGoogle">Eksportuj devPlan do
 									Google Calendar itp</a>
 							</p>
-							<p>
-								<a href="" class="btn btn-success">Pobierz devPlan do pliku</a>
-							</p>
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-default"
@@ -217,7 +209,7 @@
 					<div class="tab-pane fade " id="devPlanSettingsView">
 						<div class="modal-body">
 							<fieldset>
-								<legend>Zajęcia: </legend>
+								<legend>Pokaż zajęcia: </legend>
 								<div class="radio">
 									<label><input type="radio" value="1"
 										name="devPlanSettingsTimetableType"
@@ -232,35 +224,35 @@
 										onClick="devPlan.Settings.setTimetableType(this.value).save(); devPlan.Generate.timetable(devPlan.Init.getTimetable());">
 										Wszystkie </label>
 								</div>
-								<legend>Ilość wyświetlanych dni</legend>
-								<div class="radio">
-									<label><input type="radio" value=3
-										name="devPlanSettingsTimetablePeriod"
-										class="devPlanSettingsTimetablePeriod"
-										onClick="devPlan.Settings.setTimetablePeriod(this.value).save(); devPlan.Generate.timetable(devPlan.Init.getTimetable());">
-										3 </label>
-								</div>
-								<div class="radio">
-									<label><input type="radio" value=7
-										name="devPlanSettingsTimetablePeriod"
-										class="devPlanSettingsTimetablePeriod"
-										onClick="devPlan.Settings.setTimetablePeriod(this.value).save(); devPlan.Generate.timetable(devPlan.Init.getTimetable());">
-										7 </label>
-								</div>
-								<div class="radio">
-									<label><input type="radio" value=14
-										name="devPlanSettingsTimetablePeriod"
-										class="devPlanSettingsTimetablePeriod"
-										onClick="devPlan.Settings.setTimetablePeriod(this.value).save(); devPlan.Generate.timetable(devPlan.Init.getTimetable());">
-										14 </label>
-								</div>
-								<div class="radio">
-									<label><input type="radio" value=0
-										name="devPlanSettingsTimetablePeriod"
-										class="devPlanSettingsTimetablePeriod"
-										onClick="devPlan.Settings.setTimetablePeriod(this.value).save(); devPlan.Generate.timetable(devPlan.Init.getTimetable());">
-										Wszystkie </label>
-								</div>
+								<!-- 								<legend>Ilość wyświetlanych dni</legend> -->
+								<!-- 								<div class="radio"> -->
+								<!-- 									<label><input type="radio" value=3 -->
+								<!-- 										name="devPlanSettingsTimetablePeriod" -->
+								<!-- 										class="devPlanSettingsTimetablePeriod" -->
+								<!-- 										onClick="devPlan.Settings.setTimetablePeriod(this.value).save(); devPlan.Generate.timetable(devPlan.Init.getTimetable());"> -->
+								<!-- 										3 </label> -->
+								<!-- 								</div> -->
+								<!-- 								<div class="radio"> -->
+								<!-- 									<label><input type="radio" value=7 -->
+								<!-- 										name="devPlanSettingsTimetablePeriod" -->
+								<!-- 										class="devPlanSettingsTimetablePeriod" -->
+								<!-- 										onClick="devPlan.Settings.setTimetablePeriod(this.value).save(); devPlan.Generate.timetable(devPlan.Init.getTimetable());"> -->
+								<!-- 										7 </label> -->
+								<!-- 								</div> -->
+								<!-- 								<div class="radio"> -->
+								<!-- 									<label><input type="radio" value=14 -->
+								<!-- 										name="devPlanSettingsTimetablePeriod" -->
+								<!-- 										class="devPlanSettingsTimetablePeriod" -->
+								<!-- 										onClick="devPlan.Settings.setTimetablePeriod(this.value).save(); devPlan.Generate.timetable(devPlan.Init.getTimetable());"> -->
+								<!-- 										14 </label> -->
+								<!-- 								</div> -->
+								<!-- 								<div class="radio"> -->
+								<!-- 									<label><input type="radio" value=0 -->
+								<!-- 										name="devPlanSettingsTimetablePeriod" -->
+								<!-- 										class="devPlanSettingsTimetablePeriod" -->
+								<!-- 										onClick="devPlan.Settings.setTimetablePeriod(this.value).save(); devPlan.Generate.timetable(devPlan.Init.getTimetable());"> -->
+								<!-- 										Wszystkie </label> -->
+								<!-- 								</div> -->
 								<legend>Wyświetlaj: </legend>
 								<div class="checkbox">
 									<label><input type="checkbox"
@@ -363,6 +355,9 @@
 						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
 							<div class="devPlanQrCodeImg img-responsive"></div>
 						</div>
+						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
+							<input class="form-control devPlanExportUrl" value="" />
+						</div>
 					</div>
 				</div>
 				<div class="modal-footer">
@@ -411,6 +406,7 @@
 		</div>
 	</div>
 	<!-- issue stop -->
+
 	<footer class="hidden-print">
 		<div class="container">
 			<div class="row">

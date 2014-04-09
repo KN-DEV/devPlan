@@ -1,4 +1,4 @@
-/// <reference path="../DefinitelyTyped/jquery/jquery.d.ts" />
+/// <reference path="../../typings/jquery/jquery.d.ts" />
 
 module devPlan {
     export function bindAnimation(): void {

@@ -102,6 +102,9 @@ module Cash {
                 }
             });
         }
+        public static removeTimetableCache(query:string){
+            $.jStorage.deleteKey(query);    
+        }
         /**
          *
          */
@@ -115,10 +118,10 @@ module Cash {
         }
         public static isUpToDateVersion(local: any, downloaded: any): boolean {
             if (local == null || downloaded == null) {
-                console.log("TEST", local, downloaded);
+              //  console.log("TEST", local, downloaded);
                 return false;
             } else {
-                console.log(JSON.stringify(local.versions) == JSON.stringify(downloaded.versions));
+            //    console.log(JSON.stringify(local.versions) == JSON.stringify(downloaded.versions));
                 return JSON.stringify(local.versions) == JSON.stringify(downloaded.versions);
             }
         }

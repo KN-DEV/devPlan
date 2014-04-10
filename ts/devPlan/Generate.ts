@@ -241,7 +241,7 @@ module devPlan {
          *
          */
         static timetable(timetable: devPlan.Timetable): void {
-            console.log("showTimetable", timetable);
+          //  console.log("showTimetable", timetable);
             var data = "";
             var date = "";
             $("#timetable-results").empty();

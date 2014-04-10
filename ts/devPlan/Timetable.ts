@@ -264,6 +264,7 @@ module devPlan {
         }
 
         public isUpToDate(versions: devPlan.TimetableVersion): boolean {
+            console.log(JSON.stringify(new devPlan.TimetableVersion(this.getId(), this.getVersions())),JSON.stringify(versions));
             return JSON.stringify(new devPlan.TimetableVersion(this.getId(), this.getVersions())) == JSON.stringify(versions);
         }
     }

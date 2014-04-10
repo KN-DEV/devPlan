@@ -324,7 +324,7 @@ module devPlan {
                     Generate.timetable(Init.getTimetable());
                     $("#timetable-panel-spinner").remove();
                 }).fail(() => {
-                    if (Init.getTimetable() == null) {
+                    if (Init.getTimetable().getActivities().length == 0) {
                         $.when(Cash.Api.registerTimetable(params.getGroups(), params.getTutors(), params.getPlaces()))
                             .done(() => {
                                 $.when(Cash.Api.getTimetable(params.toString(), true, CacheTime.Timetable))
@@ -339,6 +339,7 @@ module devPlan {
                         $.when(Cash.Api.getTimetableVersion(Init.getTimetable().getParams().toString()))
                             .done((data: any) => {
                                 if (Init.getTimetable().isUpToDate(data) == false) {
+                                    Cash.Api.removeTimetableCache(params.toString());
                                     Init.loadTimetable(params);
                                 }
                             });
@@ -355,7 +356,7 @@ module devPlan {
          *
          */
         static setTimetable(timetable: any) {
-            console.log(timetable);
+            //  console.log(timetable);
             Init.timetable = new devPlan.Timetable(timetable);
             return Init;
         }

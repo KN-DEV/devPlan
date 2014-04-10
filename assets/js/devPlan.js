@@ -319,211 +319,6 @@ var devPlan;
 })(devPlan || (devPlan = {}));
 var devPlan;
 (function (devPlan) {
-    function bindAnimation() {
-        $('li.date').find('a').on("click", function () {
-            $(this).parent().find('i.fa-chevron-up').toggleClass('animate-down');
-        });
-    }
-    devPlan.bindAnimation = bindAnimation;
-})(devPlan || (devPlan = {}));
-var devPlan;
-(function (devPlan) {
-    var Generate = (function () {
-        function Generate() {
-        }
-        Generate.dateInformation = function (activity) {
-            var date = new Date(activity.getStartsAtTimestamp() * 1000);
-            return '<li class="list-group-item list-group-item-info date" data-toggle="collapse" data-parent="#accordion" href="#' + activity.getDate() + '.activities">' + '<h4 id="' + activity.getDate() + '">' + Generate.dayOfWeek[date.getDay()] + ', ' + date.getDate() + ' ' + Generate.month[date.getMonth()] + '</h4></li>';
-        };
-
-        Generate.activityName = function (activity) {
-            return '<span class="name">' + (activity.getName().length != 0 ? activity.getName() : '&nbsp;') + '</span>';
-        };
-
-        Generate.activityNote = function (activity) {
-            return (activity.getNotes().length > 0) ? '<span class="note" title="Notatka dotycząca zajęć">' + activity.getNotes() + '</span>' : '';
-        };
-
-        Generate.activityStartStop = function (start, stop) {
-            return '<span class="bell">' + start.getHours() + ':' + (start.getMinutes() < 10 ? '0' : '') + start.getMinutes() + " - " + stop.getHours() + ':' + (stop.getMinutes() < 10 ? '0' : '') + stop.getMinutes() + '</span>';
-        };
-
-        Generate.activityCategory = function (activity) {
-            return '<span class="category pull-right" title="' + activity.getCategory() + '">' + activity.getCategory() + '</span>';
-        };
-
-        Generate.activityLocation = function (activity) {
-            if (activity.getPlace().getLocation().length > 0) {
-                if (devPlan.Init.placesInUse == true) {
-                    return '<span class="location">' + '<a href="timetable.html?timetable=p' + activity.getPlace().getId() + '">' + activity.getPlace().getLocation() + '</a>' + '</span>';
-                } else {
-                    return '<span class="location">' + activity.getPlace().getLocation() + '</span>';
-                }
-            } else {
-                return '';
-            }
-        };
-
-        Generate.activityCounter = function (min, max) {
-            return '<span class="counter pull-right" title="Zajęcia z kolei: ' + min + '">' + min + '/' + max + '</span>';
-        };
-
-        Generate.hourInformation = function (value, have, all) {
-            return '<span class="hour pull-right" title="Godziny lekcyjne">' + ((have - value) + 1) + '-' + have + '/' + all + '</span> ';
-        };
-
-        Generate.activityTutorsList = function (activity) {
-            if (devPlan.Init.tutorsInUse == true) {
-                return '<span class="tutor">' + (activity.getTutor().getMoodleUrl() != null ? '<a href="' + activity.getTutor().getMoodleUrl() + '" title=" ' + activity.getTutor().getName() + ' - Wizytówka E-Uczelna ">E-Wizytówka</a> ' : "") + '<a href="timetable.html?timetable=t' + activity.getTutor().getId() + '">' + activity.getTutor().getName() + '</a>' + '</span> ';
-            } else {
-                return '<span class="tutor">' + (activity.getTutor().getMoodleUrl() != null ? '<a href="' + activity.getTutor().getMoodleUrl() + '" title=" ' + activity.getTutor().getName() + ' - Wizytówka E-Uczelna ">E-Wizytówka</a> ' : "") + activity.getTutor().getName() + '</span> ';
-            }
-        };
-
-        Generate.devPlanParamButton = function (item, id, type) {
-            var color;
-            switch (type) {
-                case "g":
-                    color = "primary";
-                    break;
-                case "t":
-                    color = "success";
-                    break;
-                case "p":
-                    color = "info";
-                    break;
-            }
-            return '<div class="btn-group btn-group-sm devPlanParam">' + '<button title="' + item + '" class="btn btn-' + color + '" >' + '<strong>' + ((item.length > 50) ? item.substr(0, 50) + '...' : item) + '' + '</strong>' + '</button>' + '<button class="btn btn-danger"  data-value="' + id + '"' + ' data-type="' + type + '" onclick="devPlan.Settings.removeTimetableParam(this);">' + '<i class="fa fa-fw fa-trash-o"></i>' + '</button>' + '</div>';
-        };
-
-        Generate.activityGroupsList = function (groups) {
-            if (typeof groups === "undefined") { groups = []; }
-            var data = '';
-            for (var j = 0; j < groups.length; j++) {
-                if (groups[j] != null) {
-                    data = data + '<span class="group"><a href="timetable.html?timetable=g' + groups[j].getId() + '"title="Kliknij aby zobaczyć devPlan: ' + groups[j].getName() + '">' + groups[j].getName() + "</a></span>";
-                }
-            }
-            return data;
-        };
-
-        Generate.activity = function (timetable, activity, groups) {
-            if (typeof groups === "undefined") { groups = []; }
-            var data = '';
-            data = data + '<li id="activity' + activity.getId() + '" class="list-group-item activity">' + '<div class="row">' + '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">' + Generate.activityName(activity) + (devPlan.Settings.isActivityCategoryVisible() ? Generate.activityCategory(activity) : '') + '</div>' + ((devPlan.Settings.getActivityNote() == true && activity.getNotes().length > 0) ? ('<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">' + Generate.activityNote(activity) + '</div>') : '');
-
-            if (devPlan.Settings.getActivityBell() || devPlan.Settings.getActivityLocation() || devPlan.Settings.getActivityTutorsList() || devPlan.Settings.getClassCounter() || devPlan.Settings.getClassHourCounter()) {
-                data = data + '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">' + (devPlan.Settings.getActivityBell() ? Generate.activityStartStop(new Date(activity.getStartsAtTimestamp() * 1000), new Date(activity.getEndsAtTimestamp() * 1000)) + '<wbr>' : '') + (devPlan.Settings.getActivityLocation() ? Generate.activityLocation(activity) + '<wbr>' : '') + (timetable.getParams().haveOnlyOneTutor() == false && devPlan.Settings.getActivityTutorsList() ? Generate.activityTutorsList(activity) + '<wbr>' : '') + (devPlan.Settings.getClassCounter() ? Generate.activityCounter(timetable.getPositionOfActivity(activity), timetable.getMaxNumberOfOccurencesOfActivity(activity)) + '<wbr>' : '') + (devPlan.Settings.getClassHourCounter() ? Generate.hourInformation(activity.getNumberOfSchoolLessons(), timetable.sumAllHoursOfActivity(activity), timetable.sumAllHoursOfActivity(activity, true)) + '<wbr>' : '');
-
-                data = data + '</div>';
-            }
-            if (timetable.getParams().haveOnlyOneGroup() == false && devPlan.Settings.getActivityGroup()) {
-                data = data + '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">' + Generate.activityGroupsList(groups) + '</div>';
-            }
-
-            data = data + '</div></li>';
-            return data;
-        };
-
-        Generate.timetable = function (timetable) {
-            console.log("showTimetable", timetable);
-            var data = "";
-            var date = "";
-            $("#timetable-results").empty();
-
-            if (timetable.getActivities().length > 0) {
-                var activity;
-
-                var daysCounter = 0;
-
-                var j = 0;
-                for (var i = 0; i < timetable.getActivities().length; i++) {
-                    activity = timetable.getActivities()[i];
-
-                    j = i;
-                    var groups = [];
-                    do {
-                        if (timetable.getActivities()[j].getGroup() != null) {
-                            groups[groups.length] = timetable.getActivities()[j].getGroup();
-                        }
-                    } while(timetable.getActivities()[++j] != null && activity.getName() == timetable.getActivities()[j].getName() && activity.getEndsAtTimestamp() == timetable.getActivities()[j].getEndsAtTimestamp());
-
-                    var indexgroup = "";
-                    groups = groups.sort(function (a, b) {
-                        return a.getName() >= b.getName();
-                    });
-                    for (var k = 0; k < groups.length; k++) {
-                        indexgroup = indexgroup + ' ' + groups[k].getName();
-                    }
-
-                    if (activity.getDate() >= timetable.getDateFromDatesListByPosition(timetable.getDatePositionInDatesList(devPlan.Settings.getCurrentDate()) + (devPlan.Settings.getPage() * devPlan.Settings.getTimetablePeriod())) || devPlan.Settings.getTimetableType() == 0) {
-                        if (activity.contains(devPlan.Settings.getActivityNameFilter(), indexgroup) == true) {
-                            if (date != activity.getDate()) {
-                                if (devPlan.Settings.getTimetablePeriod() != 0 && daysCounter >= devPlan.Settings.getTimetablePeriod() && devPlan.Settings.getTimetableType() != 0) {
-                                    break;
-                                }
-                                daysCounter++;
-                                if (date != "") {
-                                    data = data + '</div></div>';
-                                }
-                                data = data + '<div class="day">' + Generate.dateInformation(activity) + '<div id="' + activity.getDate() + '" class="activities collapse in ">';
-                                date = activity.getDate();
-                            }
-
-                            if (timetable.getActivities()[i - 1] != null && activity.getName() == timetable.getActivities()[i - 1].getName() && activity.getEndsAtTimestamp() == timetable.getActivities()[i - 1].getEndsAtTimestamp()) {
-                                continue;
-                            }
-
-                            data = data + Generate.activity(timetable, activity, groups);
-                        }
-                    }
-                }
-
-                if (data.length == 0 && devPlan.Settings.getActivityNameFilter().length > 0) {
-                    data = data + '<li class="list-group-item"><p class="h4 text-center">Brak wyników</p>';
-                }
-            } else {
-                data = data + '<li class="list-group-item"><p class="h4 text-center">Przykro nam. Ten devPlan nie posiada żadnych zajęć.</p>';
-            }
-            $("#timetable-results").append(data);
-
-            devPlan.bindAnimation();
-            $('.activity').popover({
-                placement: 'auto',
-                trigger: 'click',
-                html: true
-            });
-        };
-        Generate.dayOfWeek = [
-            "Niedziela",
-            "Poniedziałek",
-            "Wtorek",
-            "Środa",
-            "Czwartek",
-            "Piątek",
-            "Sobota"
-        ];
-
-        Generate.month = [
-            "Stycznia",
-            "Lutego",
-            "Marca",
-            "Kwietnia",
-            "Maja",
-            "Czerwca",
-            "Lipica",
-            "Sierpnia",
-            "Września",
-            "Października",
-            "Listopada",
-            "Grudnia"
-        ];
-        return Generate;
-    })();
-    devPlan.Generate = Generate;
-})(devPlan || (devPlan = {}));
-var devPlan;
-(function (devPlan) {
     var Params = (function () {
         function Params(groups, tutors, places) {
             if (typeof groups === "undefined") { groups = []; }
@@ -933,6 +728,7 @@ var devPlan;
         };
 
         Timetable.prototype.isUpToDate = function (versions) {
+            console.log(JSON.stringify(new devPlan.TimetableVersion(this.getId(), this.getVersions())), JSON.stringify(versions));
             return JSON.stringify(new devPlan.TimetableVersion(this.getId(), this.getVersions())) == JSON.stringify(versions);
         };
         return Timetable;
@@ -1069,6 +865,9 @@ var Cash;
                 }
             });
         };
+        Api.removeTimetableCache = function (query) {
+            $.jStorage.deleteKey(query);
+        };
 
         Api.getTimetableVersion = function (query) {
             return $.ajax({
@@ -1080,10 +879,8 @@ var Cash;
         };
         Api.isUpToDateVersion = function (local, downloaded) {
             if (local == null || downloaded == null) {
-                console.log("TEST", local, downloaded);
                 return false;
             } else {
-                console.log(JSON.stringify(local.versions) == JSON.stringify(downloaded.versions));
                 return JSON.stringify(local.versions) == JSON.stringify(downloaded.versions);
             }
         };
@@ -1306,7 +1103,7 @@ var devPlan;
         Settings.load = function () {
             $.cookie.json = true;
             var data = $.cookie('devPlan.Settings');
-            console.log(data);
+
             if (data) {
                 Settings.setClassCounter(data.classCounter);
                 Settings.setClassHourCounter(data.classHourCounter);
@@ -1500,6 +1297,210 @@ var devPlan;
         return Settings;
     })();
     devPlan.Settings = Settings;
+})(devPlan || (devPlan = {}));
+var devPlan;
+(function (devPlan) {
+    var Generate = (function () {
+        function Generate() {
+        }
+        Generate.dateInformation = function (activity) {
+            var date = new Date(activity.getStartsAtTimestamp() * 1000);
+            return '<li class="list-group-item list-group-item-info date" data-toggle="collapse" data-parent="#accordion" href="#' + activity.getDate() + '.activities">' + '<h4 id="' + activity.getDate() + '">' + Generate.dayOfWeek[date.getDay()] + ', ' + date.getDate() + ' ' + Generate.month[date.getMonth()] + '</h4></li>';
+        };
+
+        Generate.activityName = function (activity) {
+            return '<span class="name">' + (activity.getName().length != 0 ? activity.getName() : '&nbsp;') + '</span>';
+        };
+
+        Generate.activityNote = function (activity) {
+            return (activity.getNotes().length > 0) ? '<span class="note" title="Notatka dotycząca zajęć">' + activity.getNotes() + '</span>' : '';
+        };
+
+        Generate.activityStartStop = function (start, stop) {
+            return '<span class="bell">' + start.getHours() + ':' + (start.getMinutes() < 10 ? '0' : '') + start.getMinutes() + " - " + stop.getHours() + ':' + (stop.getMinutes() < 10 ? '0' : '') + stop.getMinutes() + '</span>';
+        };
+
+        Generate.activityCategory = function (activity) {
+            return '<span class="category pull-right" title="' + activity.getCategory() + '">' + activity.getCategory() + '</span>';
+        };
+
+        Generate.activityLocation = function (activity) {
+            if (activity.getPlace().getLocation().length > 0) {
+                if (devPlan.Init.placesInUse == true) {
+                    return '<span class="location">' + '<a href="timetable.html?timetable=p' + activity.getPlace().getId() + '">' + activity.getPlace().getLocation() + '</a>' + '</span>';
+                } else {
+                    return '<span class="location">' + activity.getPlace().getLocation() + '</span>';
+                }
+            } else {
+                return '';
+            }
+        };
+
+        Generate.activityCounter = function (min, max) {
+            return '<span class="counter pull-right" title="Zajęcia z kolei: ' + min + '">' + min + '/' + max + '</span>';
+        };
+
+        Generate.hourInformation = function (value, have, all) {
+            return '<span class="hour pull-right" title="Godziny lekcyjne">' + ((have - value) + 1) + '-' + have + '/' + all + '</span> ';
+        };
+
+        Generate.activityTutorsList = function (activity) {
+            if (devPlan.Init.tutorsInUse == true) {
+                return '<span class="tutor">' + (activity.getTutor().getMoodleUrl() != null ? '<a href="' + activity.getTutor().getMoodleUrl() + '" title=" ' + activity.getTutor().getName() + ' - Wizytówka E-Uczelna ">E-Wizytówka</a> ' : "") + '<a href="timetable.html?timetable=t' + activity.getTutor().getId() + '">' + activity.getTutor().getName() + '</a>' + '</span> ';
+            } else {
+                return '<span class="tutor">' + (activity.getTutor().getMoodleUrl() != null ? '<a href="' + activity.getTutor().getMoodleUrl() + '" title=" ' + activity.getTutor().getName() + ' - Wizytówka E-Uczelna ">E-Wizytówka</a> ' : "") + activity.getTutor().getName() + '</span> ';
+            }
+        };
+
+        Generate.devPlanParamButton = function (item, id, type) {
+            var color;
+            switch (type) {
+                case "g":
+                    color = "primary";
+                    break;
+                case "t":
+                    color = "success";
+                    break;
+                case "p":
+                    color = "info";
+                    break;
+            }
+            return '<div class="btn-group btn-group-sm devPlanParam">' + '<button title="' + item + '" class="btn btn-' + color + '" >' + '<strong>' + ((item.length > 50) ? item.substr(0, 50) + '...' : item) + '' + '</strong>' + '</button>' + '<button class="btn btn-danger"  data-value="' + id + '"' + ' data-type="' + type + '" onclick="devPlan.Settings.removeTimetableParam(this);">' + '<i class="fa fa-fw fa-trash-o"></i>' + '</button>' + '</div>';
+        };
+
+        Generate.activityGroupsList = function (groups) {
+            if (typeof groups === "undefined") { groups = []; }
+            var data = '';
+            for (var j = 0; j < groups.length; j++) {
+                if (groups[j] != null) {
+                    data = data + '<span class="group"><a href="timetable.html?timetable=g' + groups[j].getId() + '"title="Kliknij aby zobaczyć devPlan: ' + groups[j].getName() + '">' + groups[j].getName() + "</a></span>";
+                }
+            }
+            return data;
+        };
+
+        Generate.activity = function (timetable, activity, groups) {
+            if (typeof groups === "undefined") { groups = []; }
+            var data = '';
+            data = data + '<li id="activity' + activity.getId() + '" class="list-group-item activity">' + '<div class="row">' + '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">' + Generate.activityName(activity) + (devPlan.Settings.isActivityCategoryVisible() ? Generate.activityCategory(activity) : '') + '</div>' + ((devPlan.Settings.getActivityNote() == true && activity.getNotes().length > 0) ? ('<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">' + Generate.activityNote(activity) + '</div>') : '');
+
+            if (devPlan.Settings.getActivityBell() || devPlan.Settings.getActivityLocation() || devPlan.Settings.getActivityTutorsList() || devPlan.Settings.getClassCounter() || devPlan.Settings.getClassHourCounter()) {
+                data = data + '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">' + (devPlan.Settings.getActivityBell() ? Generate.activityStartStop(new Date(activity.getStartsAtTimestamp() * 1000), new Date(activity.getEndsAtTimestamp() * 1000)) + '<wbr>' : '') + (devPlan.Settings.getActivityLocation() ? Generate.activityLocation(activity) + '<wbr>' : '') + (timetable.getParams().haveOnlyOneTutor() == false && devPlan.Settings.getActivityTutorsList() ? Generate.activityTutorsList(activity) + '<wbr>' : '') + (devPlan.Settings.getClassCounter() ? Generate.activityCounter(timetable.getPositionOfActivity(activity), timetable.getMaxNumberOfOccurencesOfActivity(activity)) + '<wbr>' : '') + (devPlan.Settings.getClassHourCounter() ? Generate.hourInformation(activity.getNumberOfSchoolLessons(), timetable.sumAllHoursOfActivity(activity), timetable.sumAllHoursOfActivity(activity, true)) + '<wbr>' : '');
+
+                data = data + '</div>';
+            }
+            if (timetable.getParams().haveOnlyOneGroup() == false && devPlan.Settings.getActivityGroup()) {
+                data = data + '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">' + Generate.activityGroupsList(groups) + '</div>';
+            }
+
+            data = data + '</div></li>';
+            return data;
+        };
+
+        Generate.timetable = function (timetable) {
+            var data = "";
+            var date = "";
+            $("#timetable-results").empty();
+
+            if (timetable.getActivities().length > 0) {
+                var activity;
+
+                var daysCounter = 0;
+
+                var j = 0;
+                for (var i = 0; i < timetable.getActivities().length; i++) {
+                    activity = timetable.getActivities()[i];
+
+                    j = i;
+                    var groups = [];
+                    do {
+                        if (timetable.getActivities()[j].getGroup() != null) {
+                            groups[groups.length] = timetable.getActivities()[j].getGroup();
+                        }
+                    } while(timetable.getActivities()[++j] != null && activity.getName() == timetable.getActivities()[j].getName() && activity.getEndsAtTimestamp() == timetable.getActivities()[j].getEndsAtTimestamp());
+
+                    var indexgroup = "";
+                    groups = groups.sort(function (a, b) {
+                        return a.getName() >= b.getName();
+                    });
+                    for (var k = 0; k < groups.length; k++) {
+                        indexgroup = indexgroup + ' ' + groups[k].getName();
+                    }
+
+                    if (activity.getDate() >= timetable.getDateFromDatesListByPosition(timetable.getDatePositionInDatesList(devPlan.Settings.getCurrentDate()) + (devPlan.Settings.getPage() * devPlan.Settings.getTimetablePeriod())) || devPlan.Settings.getTimetableType() == 0) {
+                        if (activity.contains(devPlan.Settings.getActivityNameFilter(), indexgroup) == true) {
+                            if (date != activity.getDate()) {
+                                if (devPlan.Settings.getTimetablePeriod() != 0 && daysCounter >= devPlan.Settings.getTimetablePeriod() && devPlan.Settings.getTimetableType() != 0) {
+                                    break;
+                                }
+                                daysCounter++;
+                                if (date != "") {
+                                    data = data + '</div></div>';
+                                }
+                                data = data + '<div class="day">' + Generate.dateInformation(activity) + '<div id="' + activity.getDate() + '" class="activities collapse in ">';
+                                date = activity.getDate();
+                            }
+
+                            if (timetable.getActivities()[i - 1] != null && activity.getName() == timetable.getActivities()[i - 1].getName() && activity.getEndsAtTimestamp() == timetable.getActivities()[i - 1].getEndsAtTimestamp()) {
+                                continue;
+                            }
+
+                            data = data + Generate.activity(timetable, activity, groups);
+                        }
+                    }
+                }
+
+                if (data.length == 0 && devPlan.Settings.getActivityNameFilter().length > 0) {
+                    data = data + '<li class="list-group-item"><p class="h4 text-center">Brak wyników</p>';
+                }
+            } else {
+                data = data + '<li class="list-group-item"><p class="h4 text-center">Przykro nam. Ten devPlan nie posiada żadnych zajęć.</p>';
+            }
+            $("#timetable-results").append(data);
+
+            devPlan.bindAnimation();
+            $('.activity').popover({
+                placement: 'auto',
+                trigger: 'click',
+                html: true
+            });
+        };
+        Generate.dayOfWeek = [
+            "Niedziela",
+            "Poniedziałek",
+            "Wtorek",
+            "Środa",
+            "Czwartek",
+            "Piątek",
+            "Sobota"
+        ];
+
+        Generate.month = [
+            "Stycznia",
+            "Lutego",
+            "Marca",
+            "Kwietnia",
+            "Maja",
+            "Czerwca",
+            "Lipica",
+            "Sierpnia",
+            "Września",
+            "Października",
+            "Listopada",
+            "Grudnia"
+        ];
+        return Generate;
+    })();
+    devPlan.Generate = Generate;
+})(devPlan || (devPlan = {}));
+var devPlan;
+(function (devPlan) {
+    function bindAnimation() {
+        $('li.date').find('a').on("click", function () {
+            $(this).parent().find('i.fa-chevron-up').toggleClass('animate-down');
+        });
+    }
+    devPlan.bindAnimation = bindAnimation;
 })(devPlan || (devPlan = {}));
 if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
     var msViewportStyle = document.createElement("style");
@@ -1700,7 +1701,7 @@ var devPlan;
                 devPlan.Generate.timetable(Init.getTimetable());
                 $("#timetable-panel-spinner").remove();
             }).fail(function () {
-                if (Init.getTimetable() == null) {
+                if (Init.getTimetable().getActivities().length == 0) {
                     $.when(Cash.Api.registerTimetable(params.getGroups(), params.getTutors(), params.getPlaces())).done(function () {
                         $.when(Cash.Api.getTimetable(params.toString(), true, 6 /* Timetable */)).done(function (response) {
                             devPlan.Generate.timetable(Init.getTimetable());
@@ -1712,6 +1713,7 @@ var devPlan;
                     $("#timetable-panel-spinner").remove();
                     $.when(Cash.Api.getTimetableVersion(Init.getTimetable().getParams().toString())).done(function (data) {
                         if (Init.getTimetable().isUpToDate(data) == false) {
+                            Cash.Api.removeTimetableCache(params.toString());
                             Init.loadTimetable(params);
                         }
                     });
@@ -1724,7 +1726,6 @@ var devPlan;
         };
 
         Init.setTimetable = function (timetable) {
-            console.log(timetable);
             Init.timetable = new devPlan.Timetable(timetable);
             return Init;
         };
@@ -1811,3 +1812,4 @@ function sendIssue() {
         }
     });
 }
+//# sourceMappingURL=devPlan.js.map

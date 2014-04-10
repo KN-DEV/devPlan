@@ -350,7 +350,7 @@ module devPlan {
         static load(): Settings {
             $.cookie.json = true;
             var data: any = $.cookie('devPlan.Settings');
-            console.log(data);
+          //  console.log(data);
             if (data) {
                 Settings.setClassCounter(data.classCounter);
                 Settings.setClassHourCounter(data.classHourCounter);

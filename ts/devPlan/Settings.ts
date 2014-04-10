@@ -495,9 +495,14 @@ module devPlan {
                 Settings.setTimetableParams(Settings.getTimetableParams().addPlace(p));
             }
             Settings.devPlanUrl();
-            $('.devPlanQrCodeImg').empty().qrcode('http://devplan.uek.krakow.pl/export/'+ Settings.getTimetableParams().toString());
-            $('.devPlanExportUrl').attr('value', 'http://devplan.uek.krakow.pl/export/' + Settings.getTimetableParams().toString());
-        }
+            
+            var str = Settings.getTimetableParams().toString();
+            var regex = /([a-zA-Z])/g;
+            str = str.replace(regex, "<wbr>$1");
+
+            $('.devPlanExportUrl').html('http://devplan.uek.krakow.pl/export/' + str);
+        }        
+
         /**
          *
          */

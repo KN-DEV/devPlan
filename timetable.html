@@ -155,12 +155,6 @@
 				<div class="tab-content">
 					<div class="tab-pane active" id="devPlanSettingsGeneral">
 						<div class="modal-body">
-							<p>
-								Skopiuj <span class="devPlanUrl btn-link">link</span> lub go <a
-									href="#" type="button" data-toggle="modal"
-									data-target="#devPlanQrCode"> zeskanuj </a> i podziel się z
-								innymi.
-							</p>
 							<div class="form-group">
 								<label>Twój devPlan zawiera zajęcia:</label>
 								<div class="btn-toolbar devPlanParams"></div>
@@ -174,6 +168,12 @@
 									językowej), nazwisko prowadzącego lub interesującą Cię nazwę
 									sali.</p>
 							</div>
+							<p>
+								Skopiuj <span class="devPlanUrl btn-link">link</span> lub go <a
+									href="#" type="button" data-toggle="modal"
+									data-target="#devPlanQrCode"> zeskanuj </a> i podziel się z
+								innymi.
+							</p>
 							<div class="form-group">
 								<div class="checkbox">
 									<label><input type="checkbox"
@@ -194,12 +194,21 @@
 					<div class="tab-pane" id="devPlanExport">
 						<div class="modal-body">
 							<p class="lead">Dajemy Ci możliwość eksportu devPlanu do
-								takich kalendarzy jak Google Calendar, Outlook itp.</p>
-							<p>
-								<a class="btn btn-warning" data-toggle="modal"
-									data-target="#devPlanExportGoogle">Eksportuj devPlan do
-									Google Calendar itp</a>
-							</p>
+								takich kalendarzy jak Google Calendar, Outlook itp.
+                            </p>
+							<!--<p>-->
+								<!--<a class="btn btn-warning" data-toggle="modal"-->
+									<!--data-target="#devPlanExportGoogle"></a>-->
+							<!--</p>-->
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
+                                    <!--<a href="" class="btn btn-success devPlanExportUrl">Pobierz kalendarz</a>-->
+                                    <div class="well devPlanExportUrl"></div>
+                                </div>
+                                <!--<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">-->
+                                    <!--<input class="form-control devPlanExportUrl" value="" />-->
+                                <!--</div>-->
+                            </div>
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-default"
@@ -351,14 +360,6 @@
 						kalendarza Google</h4>
 				</div>
 				<div class="modal-body">
-					<div class="row">
-						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
-							<div class="devPlanQrCodeImg img-responsive"></div>
-						</div>
-						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
-							<input class="form-control devPlanExportUrl" value="" />
-						</div>
-					</div>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default pull-left"
@@ -422,7 +423,7 @@
 							title="Zgłoś błąd" class="">Zgłoś błąd</a></li>
 						<li class="footer-menu-divider">&sdot;</li>
 						<li><a href="http://dev.uek.krakow.pl"
-							title="Koło Naukowe Programistów dev">KN Programistów dev</a></li>
+							title="Koło Naukowe Programistów dev">O nas</a></li>
 					</ul>
 				</div>
 			</div>

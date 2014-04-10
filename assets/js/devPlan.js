@@ -777,7 +777,7 @@ var Cash;
             if (typeof useCache === "undefined") { useCache = false; }
             if (typeof ttl === "undefined") { ttl = 1; }
             return $.ajax({
-                url: Cash.Api.host + "groups",
+                url: Cash.Api.host + "groups?t=" + new Date().getTime(),
                 type: "GET",
                 success: function (data) {
                     devPlan.Init.setGroups(data);
@@ -795,7 +795,7 @@ var Cash;
             if (typeof useCache === "undefined") { useCache = false; }
             if (typeof ttl === "undefined") { ttl = 1; }
             return $.ajax({
-                url: Cash.Api.host + "tutors",
+                url: Cash.Api.host + "tutors?t=" + new Date().getTime(),
                 type: "GET",
                 success: function (data) {
                     devPlan.Init.setTutors(data);
@@ -813,7 +813,7 @@ var Cash;
             if (typeof useCache === "undefined") { useCache = false; }
             if (typeof ttl === "undefined") { ttl = 1; }
             return $.ajax({
-                url: Cash.Api.host + "places",
+                url: Cash.Api.host + "places?t=" + new Date().getTime(),
                 type: "GET",
                 dataType: 'json',
                 success: function (data) {
@@ -850,7 +850,7 @@ var Cash;
             if (typeof ttl === "undefined") { ttl = 1; }
             if (typeof notOverRide === "undefined") { notOverRide = true; }
             return $.ajax({
-                url: Cash.Api.host + "timetables/" + query,
+                url: Cash.Api.host + "timetables/" + query + '?t=' + new Date().getTime(),
                 type: "GET",
                 dataType: 'json',
                 success: function (data) {
@@ -867,7 +867,7 @@ var Cash;
 
         Api.getTimetableVersion = function (query) {
             return $.ajax({
-                url: Cash.Api.host + "timetables/" + query + "/versions",
+                url: Cash.Api.host + "timetables/" + query + "/versions?t=" + new Date().getTime(),
                 type: "GET",
                 dataType: 'json',
                 cacheJStorage: false
@@ -1524,7 +1524,7 @@ var devPlan;
                 params = devPlan.Settings.getTimetableParams();
             }
 
-            if (devPlan.Settings.getTimetableRedirect() && !params.isEmpty() && (window.location.href.indexOf("timetable.html") == -1)) {
+            if (devPlan.Settings.getTimetableRedirect() == true && params.isEmpty() == false && (window.location.href.indexOf("index.html") == -1 && window.location.href.indexOf("timetable.html") == -1)) {
                 window.location.replace('timetable.html?timetable=' + params.toString());
             }
 

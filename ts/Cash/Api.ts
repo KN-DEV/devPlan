@@ -16,7 +16,7 @@ module Cash {
          */
         public static getGroupsList(useCache: boolean = false, ttl: number = 1): JQueryXHR {
             return $.ajax({
-                url: Cash.Api.host + "groups",
+                url: Cash.Api.host + "groups?t=" + new Date().getTime(),
                 type: "GET",
                 success: (data) => {
                     devPlan.Init.setGroups(data);
@@ -34,7 +34,7 @@ module Cash {
          */
         public static getTutorsList(useCache: boolean = false, ttl: number = 1): JQueryXHR {
             return $.ajax({
-                url: Cash.Api.host + "tutors",
+                url: Cash.Api.host + "tutors?t=" + new Date().getTime(),
                 type: "GET",
                 success: (data) => {
                     devPlan.Init.setTutors(data);
@@ -53,7 +53,7 @@ module Cash {
         */
         public static getPlacesList(useCache: boolean = false, ttl: number = 1): JQueryXHR {
             return $.ajax({
-                url: Cash.Api.host + "places",
+                url: Cash.Api.host + "places?t=" + new Date().getTime(),
                 type: "GET",
                 dataType: 'json',
                 success: (data) => {
@@ -88,7 +88,7 @@ module Cash {
          */
         public static getTimetable(query: string, cache: boolean = false, ttl: number = 1, notOverRide= true): JQueryXHR {
             return $.ajax({
-                url: Cash.Api.host + "timetables/" + query,
+                url: Cash.Api.host + "timetables/" + query + '?t=' + new Date().getTime(),
                 type: "GET",
                 dataType: 'json',
                 success: (data: any) => {
@@ -107,7 +107,7 @@ module Cash {
          */
         public static getTimetableVersion(query: string): any {
             return $.ajax({
-                url: Cash.Api.host + "timetables/" + query + "/versions",
+                url: Cash.Api.host + "timetables/" + query + "/versions?t="+ new Date().getTime(),
                 type: "GET",
                 dataType: 'json',
                 cacheJStorage: false,

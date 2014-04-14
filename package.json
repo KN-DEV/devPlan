@@ -1,6 +1,6 @@
 {
   "name": "devPlan",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "devPlan =======",
   "main": "index.js",
   "scripts": {
@@ -10,13 +10,18 @@
     "type": "git",
     "url": "https://github.com/KN-DEV/devPlan.git"
   },
-  "author": "",
-  "license": "BSD",
-  "readmeFilename": "README.md",
-  "gitHead": "620d2945a5e53d5b2bbe29b38402be2f976f2835",
+  "author": "Przemysław Płyś",
+  "license": "BSD-2-Clause",
   "devDependencies": {
     "tsd": "~0.5.7",
     "grunt": "~0.4.4",
     "grunt-typescript": "~0.3.0"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/KN-DEV/devPlan/issues"
+  },
+  "dependencies": {},
+  "keywords": [
+    "dePlan"
+  ]
 }

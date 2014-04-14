@@ -14,6 +14,7 @@
 /// <reference path="AnimateChevron.ts" />
 /// <reference path="windowsPhone.ts" />
 
+
 /**
  * devPlan App
  */
@@ -324,7 +325,8 @@ module devPlan {
                     Generate.timetable(Init.getTimetable());
                     $("#timetable-panel-spinner").remove();
                 }).fail(() => {
-                    if (Init.getTimetable().getActivities().length == 0) {
+                    if (typeof Init.getTimetable() === 'undefined') {
+                                console.log("fail");
                         $.when(Cash.Api.registerTimetable(params.getGroups(), params.getTutors(), params.getPlaces()))
                             .done(() => {
                                 $.when(Cash.Api.getTimetable(params.toString(), true, CacheTime.Timetable))

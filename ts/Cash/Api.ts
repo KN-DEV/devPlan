@@ -18,7 +18,7 @@ module Cash {
             return $.ajax({
                 url: Cash.Api.host + "groups?t=" + new Date().getTime(),
                 type: "GET",
-                success: (data) => {
+                success: (data:any) => {
                     devPlan.Init.setGroups(data);
                 },
                 cacheJStorage: useCache,

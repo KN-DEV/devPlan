@@ -1,1 +1,0 @@
-interface JQueryStatic { jStorage: any; }

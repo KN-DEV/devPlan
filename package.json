@@ -1,22 +1,31 @@
 {
   "name": "devPlan",
-  "version": "0.0.0",
-  "description": "devPlan =======",
-  "main": "index.js",
+  "version": "2.0.0",
+  "description": "Timetable for Cracow University of Economics",
+  "main": "index.html",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "grunt test"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/KN-DEV/devPlan.git"
   },
-  "author": "",
-  "license": "BSD",
-  "readmeFilename": "README.md",
-  "gitHead": "620d2945a5e53d5b2bbe29b38402be2f976f2835",
+  "keywords": [
+    "typescript"
+  ],
+  "author": "Przemysław Płyś",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/KN-DEV/devPlan/issues"
+  },
   "devDependencies": {
-    "tsd": "~0.5.7",
     "grunt": "~0.4.4",
-    "grunt-typescript": "~0.3.0"
+    "grunt-contrib-uglify": "~0.4.0",
+    "grunt-typescript": "~0.3.0",
+    "tsd": "~0.5.7",
+    "grunt-contrib-qunit": "~0.4.0",
+    "qunitjs": "~1.14.0",
+    "grunt-contrib-watch": "~0.6.1",
+    "grunt-phonegap": "~0.13.3"
   }
 }
